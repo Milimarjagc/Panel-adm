@@ -389,6 +389,20 @@
             border-color: rgba(255,0,255,0.3);
             color: rgba(255,0,255,0.5);
         }
+        .loader-small {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #00ffff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -730,9 +744,9 @@
         const USDT_ADDR = "0x55d398326f99059fF775485246999027B3197955";
         const BSC_CHAIN_ID = 56;
 
-        // ABI de Membresía (V5) - simplificado
+        // ABIs completos (basados en contratos verificados)
         const abiMembresia = [
-            "function consultarEstado(address) view returns (tuple(uint256 saldoPendiente, uint256 totalGanado, uint256 totalRetirado, uint256 directos, uint256 redTotal, uint256 diasRestantes, bool activo))",
+            "function consultarEstado(address) view returns (uint256 saldoPendiente, uint256 totalGanado, uint256 totalRetirado, uint256 directos, uint256 redTotal, uint256 diasRestantes, bool activo)",
             "function verDetalleRed(address) view returns (uint256[5] memory)",
             "function verDetalleGanancias(address) view returns (uint256[5] memory)",
             "function owner() view returns (address)",
@@ -755,10 +769,12 @@
             "function recuperarTokenExterno(address,uint256) external"
         ];
 
-        // ABI de Turbo
         const abiTurbo = [
-            "function getVaultDashboard(address) view returns (uint256 capitalUsdt, uint256 residualLider, bool calificado, uint256 cronometroLock, uint256 sharePrice)",
+            "function DEFAULT_ADMIN_ROLE() view returns (bytes32)",
+            "function ALLOCATOR_ROLE() view returns (bytes32)",
+            "function GUARDIAN_ROLE() view returns (bytes32)",
             "function hasRole(bytes32 role, address account) view returns (bool)",
+            "function getVaultDashboard(address) view returns (uint256 capitalUsdt, uint256 residualLider, bool calificado, uint256 cronometroLock, uint256 sharePrice)",
             "function saldoRecompensasLider(address) view returns (uint256)",
             "function totalSupply() view returns (uint256)",
             "function totalAssets() view returns (uint256)",
@@ -797,6 +813,8 @@
         let isOwnerV5 = false;
         let toastTimeout;
         let turboLockSec = 0;
+        let refreshInterval;
+        let rolesTurbo = { admin: false, allocator: false, guardian: false };
 
         // Elementos DOM
         const toastDiv = document.getElementById('toast');
@@ -818,7 +836,7 @@
         };
         const v5AdminTab = document.getElementById('v5AdminTab');
 
-        // Subpestañas Turbo (incluye Copy)
+        // Subpestañas Turbo
         const turboSubTabs = document.querySelectorAll('#seccionTurbo .sub-tab');
         const turboSubContents = {
             turboUser: document.getElementById('turboUser'),
@@ -851,6 +869,14 @@
                 }
             }
             return true;
+        }
+
+        function formatTime(seconds) {
+            if (seconds <= 0) return '0s';
+            const d = Math.floor(seconds / 86400);
+            const h = Math.floor((seconds % 86400) / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            return `${d}d ${h}h ${m}m`;
         }
 
         // ========== FUNCIONES DE V5 ==========
@@ -898,7 +924,6 @@
                 const pool = await contractMembresia.poolLiderazgo();
                 document.getElementById('poolLiderazgo').innerText = ethers.utils.formatUnits(pool, 18) + ' USDT';
                 const emergency = await contractMembresia.emergencyMode();
-                document.getElementById('emergencyStatus').innerText = emergency ? 'ACTIVO' : 'INACTIVO';
                 document.getElementById('btnEmergencyWithdraw').style.display = emergency ? 'block' : 'none';
 
                 const bonoN3 = await contractMembresia.bonoNivel3();
@@ -911,17 +936,6 @@
         }
 
         // ========== FUNCIONES DE TURBO ==========
-        function formatTurboUSDT(wei) {
-            return wei ? ethers.utils.formatUnits(wei, 18) : '0.00';
-        }
-        function formatTurboTime(seconds) {
-            if (seconds <= 0) return '0s';
-            const d = Math.floor(seconds / 86400);
-            const h = Math.floor((seconds % 86400) / 3600);
-            const m = Math.floor((seconds % 3600) / 60);
-            return `${d}d ${h}h ${m}m`;
-        }
-
         function actualizarOpcionesRetiroTurbo() {
             const amt = parseFloat(document.getElementById('turboAmtOp').value);
             const montoValido = !isNaN(amt) && amt >= 5;
@@ -1009,62 +1023,107 @@
         async function turboRefresh() {
             if (!contractTurbo || !userAddress) return;
             try {
+                // Obtener roles una vez (o actualizar)
+                if (!rolesTurbo.admin && !rolesTurbo.allocator && !rolesTurbo.guardian) {
+                    const defaultAdminRole = await contractTurbo.DEFAULT_ADMIN_ROLE();
+                    const allocatorRole = await contractTurbo.ALLOCATOR_ROLE();
+                    const guardianRole = await contractTurbo.GUARDIAN_ROLE();
+                    rolesTurbo.admin = await contractTurbo.hasRole(defaultAdminRole, userAddress);
+                    rolesTurbo.allocator = await contractTurbo.hasRole(allocatorRole, userAddress);
+                    rolesTurbo.guardian = await contractTurbo.hasRole(guardianRole, userAddress);
+                }
+
+                // Mostrar/ocultar pestañas según roles
+                turboAdminTab.style.display = rolesTurbo.admin ? 'block' : 'none';
+                turboWalkerTab.style.display = rolesTurbo.allocator ? 'block' : 'none';
+
+                // Datos del dashboard
                 const data = await contractTurbo.getVaultDashboard(userAddress);
-                document.getElementById('turboUserBal').innerText = formatTurboUSDT(data[0]) + ' USDT';
-                document.getElementById('turboLeaderBal').innerText = formatTurboUSDT(data[1]) + ' USDT';
-                document.getElementById('turboStPrice').innerText = formatTurboUSDT(data[4]);
+                if (document.getElementById('turboUserBal')) {
+                    document.getElementById('turboUserBal').innerText = ethers.utils.formatUnits(data[0], 18) + ' USDT';
+                }
+                if (document.getElementById('turboLeaderBal')) {
+                    document.getElementById('turboLeaderBal').innerText = ethers.utils.formatUnits(data[1], 18) + ' USDT';
+                }
+                if (document.getElementById('turboStPrice')) {
+                    document.getElementById('turboStPrice').innerText = ethers.utils.formatUnits(data[4], 18);
+                }
 
                 const stQualy = document.getElementById('turboStQualy');
-                stQualy.innerText = data[2] ? '✅ SISTEMA ACTIVO' : '⏳ MADURANDO (24h)';
-                stQualy.style.color = data[2] ? '#10b981' : '#fbbf24';
+                if (stQualy) {
+                    stQualy.innerText = data[2] ? '✅ SISTEMA ACTIVO' : '⏳ MADURANDO (24h)';
+                    stQualy.style.color = data[2] ? '#10b981' : '#fbbf24';
+                }
 
                 turboLockSec = Number(data[3]);
-                document.getElementById('turboStTimer').innerText = turboLockSec > 0 ? formatTurboTime(turboLockSec) : 'AHORA LIBRE ✅';
+                const timerEl = document.getElementById('turboStTimer');
+                if (timerEl) {
+                    timerEl.innerText = turboLockSec > 0 ? formatTime(turboLockSec) : 'AHORA LIBRE ✅';
+                }
 
                 actualizarOpcionesRetiroTurbo();
 
-                // Verificar roles
-                const isAdmin = await contractTurbo.hasRole('0x0000000000000000000000000000000000000000000000000000000000000000', userAddress);
-                const isWalker = await contractTurbo.hasRole('0x7cf3a903332501a3036a7e0d37e641772eb5d7422204a08573216896174a7a8e', userAddress);
-
-                turboAdminTab.style.display = isAdmin ? 'block' : 'none';
-                turboWalkerTab.style.display = isWalker ? 'block' : 'none';
-
-                if (isAdmin) {
+                // Datos de admin si aplica
+                if (rolesTurbo.admin) {
                     const totalAssets = await contractTurbo.totalAssets();
                     const capitalTrading = await contractTurbo.capitalEnTrading();
                     const tvlNum = parseFloat(ethers.utils.formatUnits(totalAssets, 18));
                     const mktNum = parseFloat(ethers.utils.formatUnits(capitalTrading, 18));
-                    document.getElementById('turboAdminBoveda').innerText = (tvlNum - mktNum).toFixed(2);
-                    document.getElementById('turboAdminTrading').innerText = mktNum.toFixed(2);
+                    if (document.getElementById('turboAdminBoveda')) {
+                        document.getElementById('turboAdminBoveda').innerText = (tvlNum - mktNum).toFixed(2);
+                    }
+                    if (document.getElementById('turboAdminTrading')) {
+                        document.getElementById('turboAdminTrading').innerText = mktNum.toFixed(2);
+                    }
 
                     const minDep = await contractTurbo.minimoDeposito();
                     const earlyFee = await contractTurbo.earlyExitFee();
                     const maxRisk = await contractTurbo.porcentajeMaximoTrading();
                     const maxSend = await contractTurbo.maxEnvioTrading();
-                    document.getElementById('turboConfigMinDep').innerText = formatTurboUSDT(minDep);
-                    document.getElementById('turboConfigEarlyFee').innerText = earlyFee + '%';
-                    document.getElementById('turboConfigMaxRisk').innerText = maxRisk + '%';
-                    document.getElementById('turboConfigMaxSend').innerText = formatTurboUSDT(maxSend);
+                    if (document.getElementById('turboConfigMinDep')) {
+                        document.getElementById('turboConfigMinDep').innerText = ethers.utils.formatUnits(minDep, 18);
+                    }
+                    if (document.getElementById('turboConfigEarlyFee')) {
+                        document.getElementById('turboConfigEarlyFee').innerText = earlyFee + '%';
+                    }
+                    if (document.getElementById('turboConfigMaxRisk')) {
+                        document.getElementById('turboConfigMaxRisk').innerText = maxRisk + '%';
+                    }
+                    if (document.getElementById('turboConfigMaxSend')) {
+                        document.getElementById('turboConfigMaxSend').innerText = ethers.utils.formatUnits(maxSend, 18);
+                    }
 
                     const pending = await contractTurbo.pendingAdminWithdrawal();
                     if (pending && pending.amount > 0) {
-                        document.getElementById('turboPendingAmount').innerText = formatTurboUSDT(pending.amount);
+                        if (document.getElementById('turboPendingAmount')) {
+                            document.getElementById('turboPendingAmount').innerText = ethers.utils.formatUnits(pending.amount, 18);
+                        }
                         const readyAt = Number(pending.readyAt);
                         const now = Math.floor(Date.now() / 1000);
                         const remaining = readyAt > now ? readyAt - now : 0;
-                        document.getElementById('turboPendingReadyAt').innerText = remaining > 0 ? formatTurboTime(remaining) : 'Listo';
+                        if (document.getElementById('turboPendingReadyAt')) {
+                            document.getElementById('turboPendingReadyAt').innerText = remaining > 0 ? formatTime(remaining) : 'Listo';
+                        }
                     } else {
-                        document.getElementById('turboPendingAmount').innerText = '0.00';
-                        document.getElementById('turboPendingReadyAt').innerText = '--';
+                        if (document.getElementById('turboPendingAmount')) {
+                            document.getElementById('turboPendingAmount').innerText = '0.00';
+                        }
+                        if (document.getElementById('turboPendingReadyAt')) {
+                            document.getElementById('turboPendingReadyAt').innerText = '--';
+                        }
                     }
                 }
 
-                if (isWalker) {
+                // Datos de allocator (walker)
+                if (rolesTurbo.allocator) {
                     const capitalTrading = await contractTurbo.capitalEnTrading();
                     const maxLoss = await contractTurbo.maxLossPerReport();
-                    document.getElementById('turboWalkerCapitalTrading').innerText = formatTurboUSDT(capitalTrading);
-                    document.getElementById('turboWalkerMaxLoss').innerText = formatTurboUSDT(maxLoss);
+                    if (document.getElementById('turboWalkerCapitalTrading')) {
+                        document.getElementById('turboWalkerCapitalTrading').innerText = ethers.utils.formatUnits(capitalTrading, 18);
+                    }
+                    if (document.getElementById('turboWalkerMaxLoss')) {
+                        document.getElementById('turboWalkerMaxLoss').innerText = ethers.utils.formatUnits(maxLoss, 18);
+                    }
                 }
 
             } catch (e) {
@@ -1075,7 +1134,7 @@
         // ========== BOTONES DE MEMBRESÍA ==========
         document.getElementById('btnApprove').onclick = async () => {
             try {
-                const tx = await usdtContract.approve(CONTRACT_ADDR_MEMBRESIA, ethers.utils.parseUnits("100", 18));
+                const tx = await usdtContract.approve(CONTRACT_ADDR_MEMBRESIA, ethers.utils.parseUnits("1000", 18));
                 showToast('Autorizando...');
                 await tx.wait();
                 showToast('✅ USDT autorizado');
@@ -1362,6 +1421,15 @@
 
                 showToast('✅ Conectado');
 
+                // Refrescar cada 30 segundos
+                if (refreshInterval) clearInterval(refreshInterval);
+                refreshInterval = setInterval(() => {
+                    if (userAddress) {
+                        loadUserDataV5();
+                        turboRefresh();
+                    }
+                }, 30000);
+
             } catch (e) {
                 showToast('Error conectando: ' + e.message, true);
             }
@@ -1414,9 +1482,11 @@
             }).catch(() => showToast('Error al copiar', true));
         });
 
-        // Inicialización
+        // Inicialización: si ya hay cuenta conectada al cargar
         window.addEventListener('load', () => {
-            if (window.ethereum && window.ethereum.selectedAddress) btnConnect.click();
+            if (window.ethereum && window.ethereum.selectedAddress) {
+                setTimeout(() => btnConnect.click(), 500);
+            }
         });
     </script>
 </body>
