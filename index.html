@@ -1,36 +1,917 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Test Conexión</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milimar Turbo · Futuro Neón</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Ethers.js -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        /* Efectos neón */
+        .neon-text {
+            text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff;
+        }
+        .neon-border {
+            box-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+        }
+        .neon-box {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 0, 255, 0.3);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+        }
+        .tab-active {
+            border-bottom: 2px solid #00ffff;
+            color: #00ffff;
+            text-shadow: 0 0 8px #00ffff;
+        }
+        /* Loader */
+        .loader {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #00ffff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* Fondo de partículas canvas */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        /* Estilos para acordeones */
+        details > summary {
+            list-style: none;
+        }
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+        details[open] .chevron {
+            transform: rotate(180deg);
+        }
+        .chevron {
+            transition: transform 0.3s;
+        }
+    </style>
 </head>
-<body>
-    <button id="connect">Conectar</button>
-    <p id="status">No conectado</p>
+<body class="text-white relative">
+    <canvas id="particles-canvas"></canvas>
+
+    <div id="app" class="relative z-10 min-h-screen p-4 md:p-6">
+        <!-- Navbar -->
+        <nav class="neon-box rounded-xl p-4 flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+            <h1 class="text-3xl font-bold neon-text">MILIMAR TURBO</h1>
+            <div class="flex flex-wrap gap-3 items-center">
+                <button id="tab-milimar" class="px-5 py-2 rounded-full bg-transparent border border-cyan-400 text-cyan-400 hover:bg-cyan-400/20 transition font-semibold">Milimar V6</button>
+                <button id="tab-turbo" class="px-5 py-2 rounded-full bg-transparent border border-fuchsia-400 text-fuchsia-400 hover:bg-fuchsia-400/20 transition font-semibold">Turbo Vault</button>
+                <button id="connect-btn" class="px-6 py-2 rounded-full bg-gradient-to-r from-cyan-500 to-fuchsia-600 text-white font-bold hover:scale-105 transition transform">🔌 Conectar Wallet</button>
+            </div>
+        </nav>
+
+        <!-- Sección informativa (acordeones) visible sin conexión -->
+        <div id="info-section" class="max-w-4xl mx-auto">
+            <div class="text-center mb-8">
+                <p class="text-2xl font-light neon-text">Bienvenido al futuro de las inversiones</p>
+                <p class="text-gray-300 mt-2">Conecta tu wallet para operar, o explora la información debajo.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Acordeón 1: Direcciones -->
+                <details class="neon-box rounded-xl p-4 group open:neon-border transition">
+                    <summary class="text-xl font-bold cursor-pointer list-none flex justify-between items-center text-cyan-300">
+                        📌 Direcciones de los contratos
+                        <span class="chevron text-2xl">▼</span>
+                    </summary>
+                    <div class="mt-4 space-y-2 text-sm md:text-base">
+                        <p><span class="text-fuchsia-400">Milimar V6:</span> <code class="bg-black/50 px-2 py-1 rounded text-cyan-300">0x35425E6416f799C30938cBc159523B43C1c358B2</code></p>
+                        <p><span class="text-fuchsia-400">Turbo Vault:</span> <code class="bg-black/50 px-2 py-1 rounded text-cyan-300">0xc4158596B8F8E1cE337861dE0eCDc0c3045DbE88</code></p>
+                        <p><span class="text-fuchsia-400">USDT (BSC):</span> <code class="bg-black/50 px-2 py-1 rounded text-cyan-300">0x55d398326f99059fF775485246999027B3197955</code></p>
+                    </div>
+                </details>
+
+                <!-- Acordeón 2: Características Milimar -->
+                <details class="neon-box rounded-xl p-4 group open:neon-border transition">
+                    <summary class="text-xl font-bold cursor-pointer list-none flex justify-between items-center text-cyan-300">
+                        ⚙️ Características del contrato Milimar
+                        <span class="chevron text-2xl">▼</span>
+                    </summary>
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-black/40 p-3 rounded">
+                            <span class="text-fuchsia-400 block font-bold">Sistema MLM</span>
+                            <p>5 niveles de comisiones: 25%, 17%, 10%, 6%, 3% (total 61%).</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded">
+                            <span class="text-fuchsia-400 block font-bold">Pools</span>
+                            <p>Pool de liderazgo (3%) y fondo de solidaridad (1%).</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded">
+                            <span class="text-fuchsia-400 block font-bold">Bono Nivel 3</span>
+                            <p>5 USDT al alcanzar 64 personas en nivel 3 (único).</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded">
+                            <span class="text-fuchsia-400 block font-bold">Retiros</span>
+                            <p>Mínimo 10 USDT, máximo 1000 USDT por tx, requiere 4 directos activos.</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded">
+                            <span class="text-fuchsia-400 block font-bold">Suscripción</span>
+                            <p>10 USDT mensuales, con 2 días de gracia.</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded">
+                            <span class="text-fuchsia-400 block font-bold">Límites de red</span>
+                            <p>Máximo 6 directos iniciales + cupos extra por admin y por alcanzar 50 en red.</p>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Acordeón 3: Características y riesgos Turbo -->
+                <details class="neon-box rounded-xl p-4 group open:neon-border transition">
+                    <summary class="text-xl font-bold cursor-pointer list-none flex justify-between items-center text-cyan-300">
+                        ⚡ Turbo Vault · Características y riesgos
+                        <span class="chevron text-2xl">▼</span>
+                    </summary>
+                    <div class="mt-4 space-y-4">
+                        <div class="bg-black/40 p-4 rounded">
+                            <h3 class="text-fuchsia-400 font-bold text-lg">📈 Características</h3>
+                            <ul class="list-disc list-inside space-y-1 text-sm">
+                                <li>Bóveda ERC4626 que requiere membresía activa en Milimar.</li>
+                                <li>Depósito mínimo: 50 USDT.</li>
+                                <li>Lock de 7 días para retiros sin penalización.</li>
+                                <li>Early exit fee: 10% (mitad a admin, mitad a eventos).</li>
+                                <li>Hasta 80% del capital puede enviarse a trading (bot).</li>
+                                <li>Recompensas a líderes: 8% de los profits para el patrocinador del trigger.</li>
+                                <li>Reportes de profit/loss solo por rol ALLOCATOR.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded border border-red-500/50">
+                            <h3 class="text-red-400 font-bold text-lg">⚠️ Riesgos</h3>
+                            <ul class="list-disc list-inside space-y-1 text-sm">
+                                <li>El capital enviado a trading puede sufrir pérdidas (loss).</li>
+                                <li>Pérdida máxima por reporte: 5000 USDT, con cooldown de 1 hora.</li>
+                                <li>Los retiros anticipados tienen penalización del 10%.</li>
+                                <li>Los roles de administrador pueden pausar el contrato o retirar fondos de tesorería (con timelock de 24h).</li>
+                                <li>El valor del share (precio) fluctúa según resultados de trading.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <!-- Contenido principal (oculto hasta conectar wallet) -->
+        <div id="app-content" class="hidden space-y-6">
+            <!-- Subpestañas Milimar -->
+            <div id="milimar-container" class="hidden">
+                <div class="flex space-x-4 border-b border-fuchsia-500/30 mb-6">
+                    <button id="milimar-sub-user" class="px-4 py-2 font-medium text-cyan-300 tab-active">👤 Usuario</button>
+                    <button id="milimar-sub-admin" class="px-4 py-2 font-medium text-gray-400">🛡️ Administrador</button>
+                </div>
+                <div id="milimar-user-panel" class="neon-box rounded-xl p-6"></div>
+                <div id="milimar-admin-panel" class="neon-box rounded-xl p-6 hidden"></div>
+            </div>
+
+            <!-- Subpestañas Turbo -->
+            <div id="turbo-container" class="hidden">
+                <div class="flex space-x-4 border-b border-cyan-500/30 mb-6">
+                    <button id="turbo-sub-user" class="px-4 py-2 font-medium text-fuchsia-300 tab-active">👤 Usuario</button>
+                    <button id="turbo-sub-admin" class="px-4 py-2 font-medium text-gray-400">🛡️ Administrador</button>
+                </div>
+                <div id="turbo-user-panel" class="neon-box rounded-xl p-6"></div>
+                <div id="turbo-admin-panel" class="neon-box rounded-xl p-6 hidden"></div>
+            </div>
+        </div>
+
+        <!-- Loader -->
+        <div id="loader" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div class="loader"></div>
+        </div>
+    </div>
+
     <script>
-        document.getElementById('connect').onclick = async () => {
-            if (!window.ethereum) {
-                document.getElementById('status').innerText = 'Instala MetaMask';
-                return;
+        (async function() {
+            // ---------- CONSTANTES ----------
+            const MILIMAR_ADDR = "0x35425E6416f799C30938cBc159523B43C1c358B2";
+            const TURBO_ADDR = "0xc4158596B8F8E1cE337861dE0eCDc0c3045DbE88";
+            const USDT_ADDR = "0x55d398326f99059fF775485246999027B3197955";
+            const CHAIN_ID = 56; // BSC mainnet
+            const NETWORK_NAME = "BSC Mainnet";
+
+            // ABIs completos (extraídos de los contratos verificados)
+            const MILIMAR_ABI = [
+                "function usuarios(address) view returns (bool registrado, address patrocinador, uint256 vencimiento, uint256 saldoPendiente, uint256 totalGanado, uint256 totalRetirado, uint256 contadorDirectos, uint256 redTotal, uint256 cuposExtraAdmin, uint256[5] conteoNiveles, uint256[5] gananciasNiveles, bool bonoN3Reclamado, uint256 fechaRegistro, uint256 ultimaActividad, bool activo)",
+                "function consultarEstado(address) view returns (uint256 saldoPendiente, uint256 totalGanado, uint256 totalRetirado, uint256 directos, uint256 redTotal, uint256 diasRestantes, bool activo)",
+                "function verDetalleRed(address) view returns (uint256[5])",
+                "function verDetalleGanancias(address) view returns (uint256[5])",
+                "function owner() view returns (address)",
+                "function poolLiderazgo() view returns (uint256)",
+                "function fondoSolidaridad() view returns (uint256)",
+                "function unirse(address) external",
+                "function renovarSuscripcion() external",
+                "function retirarGanancias() external",
+                "function actualizarPrecio(uint256) external",
+                "function actualizarBonoNivel3(uint256) external",
+                "function premiarLider(address,uint256) external",
+                "function otorgarCuposExtra(address,uint256) external"
+            ];
+
+            const TURBO_ABI = [
+                "function DEFAULT_ADMIN_ROLE() view returns (bytes32)",
+                "function ALLOCATOR_ROLE() view returns (bytes32)",
+                "function GUARDIAN_ROLE() view returns (bytes32)",
+                "function hasRole(bytes32,address) view returns (bool)",
+                "function getVaultDashboard(address) view returns (uint256 capitalUsdt, uint256 residualLider, bool calificadoParaProfit, uint256 cronometroLock, uint256 sharePrice)",
+                "function balanceOf(address) view returns (uint256)",
+                "function allowance(address,address) view returns (uint256)",
+                "function deposit(uint256,address) external returns (uint256)",
+                "function withdraw(uint256,address,address) external returns (uint256)",
+                "function previewRedeem(uint256) view returns (uint256)",
+                "function claimLeaderRewards() external",
+                "function enviarATrading(uint256) external",
+                "function reportProfit(uint256,address) external",
+                "function reportLoss(uint256) external",
+                "function configurarParametros(uint256,uint256,uint256,uint256) external",
+                "function setBotAddress(address) external",
+                "function solicitarRetiroTesoreria(address,uint256,bool) external",
+                "function ejecutarRetiroTesoreria() external",
+                "function pause() external",
+                "function unpause() external"
+            ];
+
+            // Elementos DOM
+            const connectBtn = document.getElementById('connect-btn');
+            const infoSection = document.getElementById('info-section');
+            const appContent = document.getElementById('app-content');
+            const loader = document.getElementById('loader');
+            const tabMilimar = document.getElementById('tab-milimar');
+            const tabTurbo = document.getElementById('tab-turbo');
+            const milimarContainer = document.getElementById('milimar-container');
+            const turboContainer = document.getElementById('turbo-container');
+            const milimarSubUser = document.getElementById('milimar-sub-user');
+            const milimarSubAdmin = document.getElementById('milimar-sub-admin');
+            const milimarUserPanel = document.getElementById('milimar-user-panel');
+            const milimarAdminPanel = document.getElementById('milimar-admin-panel');
+            const turboSubUser = document.getElementById('turbo-sub-user');
+            const turboSubAdmin = document.getElementById('turbo-sub-admin');
+            const turboUserPanel = document.getElementById('turbo-user-panel');
+            const turboAdminPanel = document.getElementById('turbo-admin-panel');
+
+            // Estado
+            let provider, signer, account, chainId;
+            let milimarContract, turboContract, milimarRead, turboRead;
+            let isOwner = false;
+            let turboRoles = { isAdmin: false, isAllocator: false, isGuardian: false };
+
+            // ---------- FUNCIONES AUXILIARES ----------
+            function showLoader(show) {
+                if (show) loader.classList.remove('hidden');
+                else loader.classList.add('hidden');
             }
-            try {
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                await provider.send("eth_requestAccounts", []);
-                const signer = provider.getSigner();
-                const address = await signer.getAddress();
-                document.getElementById('status').innerText = 'Conectado: ' + address;
-                
-                // Intentar leer el contrato de Membresía
-                const contractAddr = "0x35425E6416f799C30938cBc159523B43C1c358B2";
-                const abi = ["function owner() view returns (address)"];
-                const contract = new ethers.Contract(contractAddr, abi, provider);
-                const owner = await contract.owner();
-                console.log('Owner del contrato:', owner);
-            } catch (e) {
-                document.getElementById('status').innerText = 'Error: ' + e.message;
-                console.error(e);
+
+            function formatEther(wei) {
+                return ethers.utils.formatEther(wei);
             }
-        };
+
+            function parseEther(eth) {
+                return ethers.utils.parseEther(eth);
+            }
+
+            // ---------- CONEXIÓN WALLET ----------
+            async function connectWallet() {
+                if (!window.ethereum) {
+                    alert("MetaMask no está instalado");
+                    return;
+                }
+                showLoader(true);
+                try {
+                    const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+                    const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+                    const network = await web3Provider.getNetwork();
+                    if (network.chainId !== CHAIN_ID) {
+                        alert(`Por favor cambia a ${NETWORK_NAME} (Chain ID: ${CHAIN_ID})`);
+                        showLoader(false);
+                        return;
+                    }
+                    provider = web3Provider;
+                    signer = web3Provider.getSigner();
+                    account = accounts[0];
+                    chainId = network.chainId;
+
+                    // Instanciar contratos
+                    milimarContract = new ethers.Contract(MILIMAR_ADDR, MILIMAR_ABI, signer);
+                    turboContract = new ethers.Contract(TURBO_ADDR, TURBO_ABI, signer);
+                    milimarRead = new ethers.Contract(MILIMAR_ADDR, MILIMAR_ABI, provider);
+                    turboRead = new ethers.Contract(TURBO_ADDR, TURBO_ABI, provider);
+
+                    // Verificar roles
+                    await checkRoles();
+
+                    // Actualizar UI
+                    connectBtn.innerText = `${account.slice(0,6)}...${account.slice(-4)}`;
+                    connectBtn.classList.remove('bg-gradient-to-r', 'from-cyan-500', 'to-fuchsia-600');
+                    connectBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                    infoSection.classList.add('hidden');
+                    appContent.classList.remove('hidden');
+                    showMilimar(); // Mostrar Milimar por defecto
+
+                    // Cargar datos iniciales
+                    await loadMilimarUserData();
+                    await loadTurboUserData();
+                } catch (err) {
+                    console.error(err);
+                    alert("Error conectando: " + err.message);
+                } finally {
+                    showLoader(false);
+                }
+            }
+
+            async function checkRoles() {
+                if (!milimarRead || !account) return;
+                try {
+                    const owner = await milimarRead.owner();
+                    isOwner = owner.toLowerCase() === account.toLowerCase();
+
+                    const defaultAdmin = await turboRead.DEFAULT_ADMIN_ROLE();
+                    const allocator = await turboRead.ALLOCATOR_ROLE();
+                    const guardian = await turboRead.GUARDIAN_ROLE();
+                    turboRoles.isAdmin = await turboRead.hasRole(defaultAdmin, account);
+                    turboRoles.isAllocator = await turboRead.hasRole(allocator, account);
+                    turboRoles.isGuardian = await turboRead.hasRole(guardian, account);
+                } catch (err) {
+                    console.warn("Error verificando roles", err);
+                }
+            }
+
+            // ---------- CAMBIO DE PESTAÑAS ----------
+            function showMilimar() {
+                milimarContainer.classList.remove('hidden');
+                turboContainer.classList.add('hidden');
+                tabMilimar.classList.add('bg-cyan-400/20', 'border-cyan-400', 'text-cyan-400');
+                tabTurbo.classList.remove('bg-fuchsia-400/20', 'border-fuchsia-400', 'text-fuchsia-400');
+                tabTurbo.classList.add('bg-transparent', 'border-gray-400', 'text-gray-400');
+                showMilimarSub('user');
+            }
+
+            function showTurbo() {
+                milimarContainer.classList.add('hidden');
+                turboContainer.classList.remove('hidden');
+                tabTurbo.classList.add('bg-fuchsia-400/20', 'border-fuchsia-400', 'text-fuchsia-400');
+                tabMilimar.classList.remove('bg-cyan-400/20', 'border-cyan-400', 'text-cyan-400');
+                tabMilimar.classList.add('bg-transparent', 'border-gray-400', 'text-gray-400');
+                showTurboSub('user');
+            }
+
+            function showMilimarSub(sub) {
+                if (sub === 'user') {
+                    milimarUserPanel.classList.remove('hidden');
+                    milimarAdminPanel.classList.add('hidden');
+                    milimarSubUser.classList.add('tab-active', 'text-cyan-300');
+                    milimarSubUser.classList.remove('text-gray-400');
+                    milimarSubAdmin.classList.remove('tab-active', 'text-fuchsia-300');
+                    milimarSubAdmin.classList.add('text-gray-400');
+                } else {
+                    milimarUserPanel.classList.add('hidden');
+                    milimarAdminPanel.classList.remove('hidden');
+                    milimarSubAdmin.classList.add('tab-active', 'text-fuchsia-300');
+                    milimarSubAdmin.classList.remove('text-gray-400');
+                    milimarSubUser.classList.remove('tab-active', 'text-cyan-300');
+                    milimarSubUser.classList.add('text-gray-400');
+                }
+            }
+
+            function showTurboSub(sub) {
+                if (sub === 'user') {
+                    turboUserPanel.classList.remove('hidden');
+                    turboAdminPanel.classList.add('hidden');
+                    turboSubUser.classList.add('tab-active', 'text-fuchsia-300');
+                    turboSubUser.classList.remove('text-gray-400');
+                    turboSubAdmin.classList.remove('tab-active', 'text-cyan-300');
+                    turboSubAdmin.classList.add('text-gray-400');
+                } else {
+                    turboUserPanel.classList.add('hidden');
+                    turboAdminPanel.classList.remove('hidden');
+                    turboSubAdmin.classList.add('tab-active', 'text-cyan-300');
+                    turboSubAdmin.classList.remove('text-gray-400');
+                    turboSubUser.classList.remove('tab-active', 'text-fuchsia-300');
+                    turboSubUser.classList.add('text-gray-400');
+                }
+            }
+
+            // ---------- CARGA DE DATOS MILIMAR ----------
+            async function loadMilimarUserData() {
+                if (!milimarRead || !account) return;
+                showLoader(true);
+                try {
+                    const user = await milimarRead.usuarios(account);
+                    const estado = await milimarRead.consultarEstado(account);
+                    const detalleRed = await milimarRead.verDetalleRed(account);
+                    const detalleGanancias = await milimarRead.verDetalleGanancias(account);
+                    const poolLiderazgo = await milimarRead.poolLiderazgo();
+                    const fondoSolidaridad = await milimarRead.fondoSolidaridad();
+
+                    let html = `
+                        <h2 class="text-2xl font-bold mb-4 text-cyan-300">📊 Panel Usuario Milimar</h2>
+                    `;
+                    if (!user.registrado) {
+                        html += `
+                            <div class="bg-yellow-900/50 border border-yellow-500 p-4 rounded mb-6">
+                                <p class="mb-2">No estás registrado. Ingresa tu patrocinador:</p>
+                                <input id="patrocinador-input" type="text" placeholder="0x..." class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                                <button id="unirse-btn" class="bg-cyan-600 hover:bg-cyan-700 px-6 py-2 rounded font-bold">Unirse (10 USDT)</button>
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <div class="bg-black/40 p-4 rounded"><span class="text-fuchsia-400">Saldo:</span> ${formatEther(estado.saldoPendiente)} USDT</div>
+                                <div class="bg-black/40 p-4 rounded"><span class="text-fuchsia-400">Ganado:</span> ${formatEther(estado.totalGanado)} USDT</div>
+                                <div class="bg-black/40 p-4 rounded"><span class="text-fuchsia-400">Retirado:</span> ${formatEther(estado.totalRetirado)} USDT</div>
+                                <div class="bg-black/40 p-4 rounded"><span class="text-fuchsia-400">Directos:</span> ${estado.directos}</div>
+                                <div class="bg-black/40 p-4 rounded"><span class="text-fuchsia-400">Red total:</span> ${estado.redTotal}</div>
+                                <div class="bg-black/40 p-4 rounded"><span class="text-fuchsia-400">Días restantes:</span> ${estado.diasRestantes}</div>
+                            </div>
+                            <div class="flex gap-4 mb-6">
+                                <button id="renovar-btn" class="bg-cyan-600 hover:bg-cyan-700 px-6 py-2 rounded font-bold">Renovar (10 USDT)</button>
+                                <button id="retirar-btn" class="bg-fuchsia-600 hover:bg-fuchsia-700 px-6 py-2 rounded font-bold">Retirar ganancias</button>
+                            </div>
+                            <div class="mt-4">
+                                <h3 class="text-xl font-semibold text-cyan-300 mb-2">Red por niveles</h3>
+                                <div class="flex flex-wrap gap-2">${detalleRed.map((c,i)=>`<div class="bg-black/40 p-2 rounded min-w-[60px] text-center"><span class="block text-xs">N${i+1}</span><span class="font-bold">${c.toString()}</span></div>`).join('')}</div>
+                            </div>
+                            <div class="mt-4">
+                                <h3 class="text-xl font-semibold text-fuchsia-300 mb-2">Ganancias por nivel</h3>
+                                <div class="flex flex-wrap gap-2">${detalleGanancias.map((g,i)=>`<div class="bg-black/40 p-2 rounded min-w-[80px] text-center"><span class="block text-xs">N${i+1}</span><span class="font-bold">${formatEther(g)} USDT</span></div>`).join('')}</div>
+                            </div>
+                        `;
+                    }
+                    html += `
+                        <div class="mt-6 text-sm text-gray-400 border-t border-cyan-500/30 pt-4">
+                            <p>Pool Liderazgo: ${formatEther(poolLiderazgo)} USDT</p>
+                            <p>Fondo Solidaridad: ${formatEther(fondoSolidaridad)} USDT</p>
+                        </div>
+                    `;
+                    milimarUserPanel.innerHTML = html;
+
+                    // Asignar eventos si aplica
+                    if (!user.registrado) {
+                        document.getElementById('unirse-btn')?.addEventListener('click', async () => {
+                            const pat = document.getElementById('patrocinador-input').value;
+                            if (!pat) return alert("Ingresa dirección del patrocinador");
+                            try {
+                                showLoader(true);
+                                const tx = await milimarContract.unirse(pat);
+                                await tx.wait();
+                                alert("Registro exitoso");
+                                loadMilimarUserData();
+                            } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                        });
+                    } else {
+                        document.getElementById('renovar-btn')?.addEventListener('click', async () => {
+                            try {
+                                showLoader(true);
+                                const tx = await milimarContract.renovarSuscripcion();
+                                await tx.wait();
+                                alert("Suscripción renovada");
+                                loadMilimarUserData();
+                            } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                        });
+                        document.getElementById('retirar-btn')?.addEventListener('click', async () => {
+                            try {
+                                showLoader(true);
+                                const tx = await milimarContract.retirarGanancias();
+                                await tx.wait();
+                                alert("Retiro exitoso");
+                                loadMilimarUserData();
+                            } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                        });
+                    }
+                } catch (err) {
+                    console.error(err);
+                    milimarUserPanel.innerHTML = `<p class="text-red-400">Error cargando datos: ${err.message}</p>`;
+                } finally {
+                    showLoader(false);
+                }
+            }
+
+            // ---------- CARGA DE DATOS TURBO ----------
+            async function loadTurboUserData() {
+                if (!turboRead || !account) return;
+                showLoader(true);
+                try {
+                    const dash = await turboRead.getVaultDashboard(account);
+                    const balanceShares = await turboRead.balanceOf(account);
+                    const allowance = await turboRead.allowance(account, TURBO_ADDR);
+
+                    const html = `
+                        <h2 class="text-2xl font-bold mb-4 text-fuchsia-300">📈 Panel Usuario Turbo</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-black/40 p-4 rounded"><span class="text-cyan-300">Capital:</span> ${formatEther(dash.capitalUsdt)} USDT</div>
+                            <div class="bg-black/40 p-4 rounded"><span class="text-cyan-300">Recompensas líder:</span> ${formatEther(dash.residualLider)} USDT</div>
+                            <div class="bg-black/40 p-4 rounded"><span class="text-cyan-300">Calificado profit:</span> ${dash.calificadoParaProfit ? '✅ Sí' : '❌ No'}</div>
+                            <div class="bg-black/40 p-4 rounded"><span class="text-cyan-300">Lock restante:</span> ${dash.cronometroLock} s</div>
+                            <div class="bg-black/40 p-4 rounded"><span class="text-cyan-300">Precio share:</span> ${formatEther(dash.sharePrice)} USDT</div>
+                            <div class="bg-black/40 p-4 rounded"><span class="text-cyan-300">Tus shares:</span> ${formatEther(balanceShares)} MTS</div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-black/40 p-4 rounded">
+                                <h3 class="text-xl font-semibold text-cyan-300 mb-2">Depositar USDT</h3>
+                                <input id="deposit-amount" type="text" placeholder="Cantidad (mín 50)" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                                <button id="deposit-btn" class="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded w-full">Depositar</button>
+                            </div>
+                            <div class="bg-black/40 p-4 rounded">
+                                <h3 class="text-xl font-semibold text-fuchsia-300 mb-2">Retirar (shares)</h3>
+                                <input id="withdraw-amount" type="text" placeholder="Cantidad de shares" class="bg-black/50 border border-fuchsia-500 p-2 w-full rounded mb-2 text-white">
+                                <button id="withdraw-btn" class="bg-fuchsia-600 hover:bg-fuchsia-700 px-4 py-2 rounded w-full">Retirar</button>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <button id="claim-rewards-btn" class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded font-bold">Reclamar recompensas líder</button>
+                        </div>
+                    `;
+                    turboUserPanel.innerHTML = html;
+
+                    // Eventos
+                    document.getElementById('deposit-btn')?.addEventListener('click', async () => {
+                        const amount = document.getElementById('deposit-amount').value;
+                        if (!amount || parseFloat(amount) < 50) return alert("Mínimo 50 USDT");
+                        try {
+                            showLoader(true);
+                            const usdt = new ethers.Contract(USDT_ADDR, ["function approve(address,uint256) external returns (bool)"], signer);
+                            const parsed = parseEther(amount);
+                            await usdt.approve(TURBO_ADDR, parsed);
+                            const tx = await turboContract.deposit(parsed, account);
+                            await tx.wait();
+                            alert("Depósito exitoso");
+                            loadTurboUserData();
+                        } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                    });
+
+                    document.getElementById('withdraw-btn')?.addEventListener('click', async () => {
+                        const shares = document.getElementById('withdraw-amount').value;
+                        if (!shares) return alert("Ingresa cantidad de shares");
+                        try {
+                            showLoader(true);
+                            const parsedShares = parseEther(shares);
+                            const assets = await turboRead.previewRedeem(parsedShares);
+                            const tx = await turboContract.withdraw(assets, account, account);
+                            await tx.wait();
+                            alert("Retiro exitoso");
+                            loadTurboUserData();
+                        } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                    });
+
+                    document.getElementById('claim-rewards-btn')?.addEventListener('click', async () => {
+                        try {
+                            showLoader(true);
+                            const tx = await turboContract.claimLeaderRewards();
+                            await tx.wait();
+                            alert("Recompensas reclamadas");
+                            loadTurboUserData();
+                        } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                    });
+                } catch (err) {
+                    console.error(err);
+                    turboUserPanel.innerHTML = `<p class="text-red-400">Error cargando datos: ${err.message}</p>`;
+                } finally {
+                    showLoader(false);
+                }
+            }
+
+            // ---------- PANEL ADMIN MILIMAR ----------
+            async function renderMilimarAdmin() {
+                if (!isOwner) {
+                    milimarAdminPanel.innerHTML = `<p class="text-red-400">No tienes permisos de administrador.</p>`;
+                    return;
+                }
+                const html = `
+                    <h2 class="text-2xl font-bold mb-4 text-fuchsia-300">⚙️ Admin Milimar</h2>
+                    <div class="space-y-4">
+                        <div class="bg-black/40 p-4 rounded">
+                            <h3 class="text-cyan-300 font-semibold">Actualizar precio suscripción</h3>
+                            <input id="admin-precio" type="text" placeholder="Nuevo precio en USDT" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <button id="btn-actualizar-precio" class="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded">Actualizar</button>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded">
+                            <h3 class="text-cyan-300 font-semibold">Actualizar bono nivel 3</h3>
+                            <input id="admin-bono" type="text" placeholder="Nuevo bono en USDT" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <button id="btn-actualizar-bono" class="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded">Actualizar</button>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded">
+                            <h3 class="text-cyan-300 font-semibold">Premiar líder (desde pool)</h3>
+                            <input id="admin-lider" type="text" placeholder="Dirección del líder" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <input id="admin-monto" type="text" placeholder="Monto en USDT" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <button id="btn-premiar" class="bg-fuchsia-600 hover:bg-fuchsia-700 px-4 py-2 rounded">Premiar</button>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded">
+                            <h3 class="text-cyan-300 font-semibold">Otorgar cupos extra</h3>
+                            <input id="admin-cupos-lider" type="text" placeholder="Dirección del líder" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <input id="admin-cupos-cant" type="text" placeholder="Cantidad de cupos" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <button id="btn-cupos" class="bg-fuchsia-600 hover:bg-fuchsia-700 px-4 py-2 rounded">Otorgar</button>
+                        </div>
+                    </div>
+                `;
+                milimarAdminPanel.innerHTML = html;
+
+                document.getElementById('btn-actualizar-precio')?.addEventListener('click', async () => {
+                    const val = document.getElementById('admin-precio').value;
+                    if (!val) return;
+                    try {
+                        showLoader(true);
+                        const tx = await milimarContract.actualizarPrecio(parseEther(val));
+                        await tx.wait();
+                        alert("Precio actualizado");
+                    } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                });
+                document.getElementById('btn-actualizar-bono')?.addEventListener('click', async () => {
+                    const val = document.getElementById('admin-bono').value;
+                    if (!val) return;
+                    try {
+                        showLoader(true);
+                        const tx = await milimarContract.actualizarBonoNivel3(parseEther(val));
+                        await tx.wait();
+                        alert("Bono actualizado");
+                    } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                });
+                document.getElementById('btn-premiar')?.addEventListener('click', async () => {
+                    const lider = document.getElementById('admin-lider').value;
+                    const monto = document.getElementById('admin-monto').value;
+                    if (!lider || !monto) return;
+                    try {
+                        showLoader(true);
+                        const tx = await milimarContract.premiarLider(lider, parseEther(monto));
+                        await tx.wait();
+                        alert("Premio enviado");
+                    } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                });
+                document.getElementById('btn-cupos')?.addEventListener('click', async () => {
+                    const lider = document.getElementById('admin-cupos-lider').value;
+                    const cant = document.getElementById('admin-cupos-cant').value;
+                    if (!lider || !cant) return;
+                    try {
+                        showLoader(true);
+                        const tx = await milimarContract.otorgarCuposExtra(lider, cant);
+                        await tx.wait();
+                        alert("Cupos otorgados");
+                    } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                });
+            }
+
+            // ---------- PANEL ADMIN TURBO ----------
+            async function renderTurboAdmin() {
+                let html = `<h2 class="text-2xl font-bold mb-4 text-cyan-300">⚙️ Admin Turbo</h2>`;
+                if (turboRoles.isAdmin) {
+                    html += `
+                        <div class="bg-black/40 p-4 rounded mb-4">
+                            <h3 class="text-fuchsia-300 font-semibold">Enviar a trading</h3>
+                            <input id="turbo-trading-amt" type="text" placeholder="Cantidad USDT" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <button id="turbo-trading-btn" class="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded">Enviar</button>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded mb-4">
+                            <h3 class="text-fuchsia-300 font-semibold">Configurar parámetros</h3>
+                            <input id="turbo-min" type="text" placeholder="Mínimo depósito (USDT)" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <input id="turbo-multa" type="text" placeholder="Multa early exit (%)" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <input id="turbo-risk" type="text" placeholder="Riesgo máximo (%)" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <input id="turbo-maxsend" type="text" placeholder="Máximo envío trading (USDT)" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <button id="turbo-config-btn" class="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded">Configurar</button>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded mb-4">
+                            <h3 class="text-fuchsia-300 font-semibold">Set bot address</h3>
+                            <input id="turbo-bot" type="text" placeholder="0x..." class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <button id="turbo-bot-btn" class="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded">Actualizar</button>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded mb-4">
+                            <h3 class="text-fuchsia-300 font-semibold">Retiro tesorería (timelock 24h)</h3>
+                            <input id="turbo-treasury-to" type="text" placeholder="Destino" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <input id="turbo-treasury-amt" type="text" placeholder="Cantidad USDT" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <label class="flex items-center space-x-2 mb-2">
+                                <input type="checkbox" id="turbo-treasury-event" class="form-checkbox">
+                                <span>¿Es fondo de eventos?</span>
+                            </label>
+                            <button id="turbo-treasury-request" class="bg-fuchsia-600 hover:bg-fuchsia-700 px-4 py-2 rounded mr-2">Solicitar</button>
+                            <button id="turbo-treasury-execute" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Ejecutar</button>
+                        </div>
+                    `;
+                }
+                if (turboRoles.isAllocator) {
+                    html += `
+                        <div class="bg-black/40 p-4 rounded mb-4">
+                            <h3 class="text-fuchsia-300 font-semibold">Reportar Profit</h3>
+                            <input id="turbo-profit-amt" type="text" placeholder="Monto USDT" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <input id="turbo-profit-user" type="text" placeholder="User trigger (address)" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <button id="turbo-profit-btn" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Reportar</button>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded mb-4">
+                            <h3 class="text-fuchsia-300 font-semibold">Reportar Loss</h3>
+                            <input id="turbo-loss-amt" type="text" placeholder="Monto USDT" class="bg-black/50 border border-cyan-500 p-2 w-full rounded mb-2 text-white">
+                            <button id="turbo-loss-btn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Reportar</button>
+                        </div>
+                    `;
+                }
+                if (turboRoles.isGuardian) {
+                    html += `
+                        <div class="bg-black/40 p-4 rounded mb-4">
+                            <h3 class="text-fuchsia-300 font-semibold">Pausar / Reanudar</h3>
+                            <button id="turbo-pause" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded mr-2">Pausar</button>
+                            <button id="turbo-unpause" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Reanudar</button>
+                        </div>
+                    `;
+                }
+                if (!turboRoles.isAdmin && !turboRoles.isAllocator && !turboRoles.isGuardian) {
+                    html += `<p class="text-red-400">No tienes ningún rol administrativo en Turbo.</p>`;
+                }
+                turboAdminPanel.innerHTML = html;
+
+                // Asignar eventos según roles
+                if (turboRoles.isAdmin) {
+                    document.getElementById('turbo-trading-btn')?.addEventListener('click', async () => {
+                        const amt = document.getElementById('turbo-trading-amt').value;
+                        if (!amt) return;
+                        try {
+                            showLoader(true);
+                            const tx = await turboContract.enviarATrading(parseEther(amt));
+                            await tx.wait();
+                            alert("Capital enviado a trading");
+                        } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                    });
+                    document.getElementById('turbo-config-btn')?.addEventListener('click', async () => {
+                        const min = document.getElementById('turbo-min').value;
+                        const multa = document.getElementById('turbo-multa').value;
+                        const risk = document.getElementById('turbo-risk').value;
+                        const maxsend = document.getElementById('turbo-maxsend').value;
+                        if (!min || !multa || !risk || !maxsend) return;
+                        try {
+                            showLoader(true);
+                            const tx = await turboContract.configurarParametros(
+                                parseEther(min),
+                                multa,
+                                risk,
+                                parseEther(maxsend)
+                            );
+                            await tx.wait();
+                            alert("Parámetros configurados");
+                        } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                    });
+                    document.getElementById('turbo-bot-btn')?.addEventListener('click', async () => {
+                        const bot = document.getElementById('turbo-bot').value;
+                        if (!bot) return;
+                        try {
+                            showLoader(true);
+                            const tx = await turboContract.setBotAddress(bot);
+                            await tx.wait();
+                            alert("Bot address actualizado");
+                        } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                    });
+                    document.getElementById('turbo-treasury-request')?.addEventListener('click', async () => {
+                        const to = document.getElementById('turbo-treasury-to').value;
+                        const amt = document.getElementById('turbo-treasury-amt').value;
+                        const isEvent = document.getElementById('turbo-treasury-event').checked;
+                        if (!to || !amt) return;
+                        try {
+                            showLoader(true);
+                            const tx = await turboContract.solicitarRetiroTesoreria(to, parseEther(amt), isEvent);
+                            await tx.wait();
+                            alert("Retiro solicitado (espera 24h)");
+                        } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                    });
+                    document.getElementById('turbo-treasury-execute')?.addEventListener('click', async () => {
+                        try {
+                            showLoader(true);
+                            const tx = await turboContract.ejecutarRetiroTesoreria();
+                            await tx.wait();
+                            alert("Retiro ejecutado");
+                        } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                    });
+                }
+                if (turboRoles.isAllocator) {
+                    document.getElementById('turbo-profit-btn')?.addEventListener('click', async () => {
+                        const amt = document.getElementById('turbo-profit-amt').value;
+                        const user = document.getElementById('turbo-profit-user').value;
+                        if (!amt || !user) return;
+                        try {
+                            showLoader(true);
+                            const tx = await turboContract.reportProfit(parseEther(amt), user);
+                            await tx.wait();
+                            alert("Profit reportado");
+                        } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                    });
+                    document.getElementById('turbo-loss-btn')?.addEventListener('click', async () => {
+                        const amt = document.getElementById('turbo-loss-amt').value;
+                        if (!amt) return;
+                        try {
+                            showLoader(true);
+                            const tx = await turboContract.reportLoss(parseEther(amt));
+                            await tx.wait();
+                            alert("Loss reportado");
+                        } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                    });
+                }
+                if (turboRoles.isGuardian) {
+                    document.getElementById('turbo-pause')?.addEventListener('click', async () => {
+                        try {
+                            showLoader(true);
+                            const tx = await turboContract.pause();
+                            await tx.wait();
+                            alert("Contrato pausado");
+                        } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                    });
+                    document.getElementById('turbo-unpause')?.addEventListener('click', async () => {
+                        try {
+                            showLoader(true);
+                            const tx = await turboContract.unpause();
+                            await tx.wait();
+                            alert("Contrato reanudado");
+                        } catch (e) { alert("Error: " + e.message); } finally { showLoader(false); }
+                    });
+                }
+            }
+
+            // ---------- EVENTOS DE NAVEGACIÓN ----------
+            connectBtn.addEventListener('click', connectWallet);
+
+            tabMilimar.addEventListener('click', () => {
+                if (!account) return alert("Primero conecta wallet");
+                showMilimar();
+            });
+            tabTurbo.addEventListener('click', () => {
+                if (!account) return alert("Primero conecta wallet");
+                showTurbo();
+            });
+
+            milimarSubUser.addEventListener('click', () => showMilimarSub('user'));
+            milimarSubAdmin.addEventListener('click', () => {
+                if (!isOwner) return alert("No eres el owner");
+                showMilimarSub('admin');
+                renderMilimarAdmin();
+            });
+
+            turboSubUser.addEventListener('click', () => showTurboSub('user'));
+            turboSubAdmin.addEventListener('click', () => {
+                if (!turboRoles.isAdmin && !turboRoles.isAllocator && !turboRoles.isGuardian) return alert("No tienes roles de administrador");
+                showTurboSub('admin');
+                renderTurboAdmin();
+            });
+
+            // ---------- FONDO DE PARTÍCULAS ----------
+            const canvas = document.getElementById('particles-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+
+            function initParticles() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                particles = [];
+                for (let i = 0; i < 80; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        size: Math.random() * 3 + 1,
+                        color: `hsl(${Math.random() * 60 + 200}, 100%, 60%)`
+                    });
+                }
+            }
+
+            function drawParticles() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.shadowColor = p.color;
+                    ctx.shadowBlur = 15;
+                    ctx.fill();
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < 0 || p.x > width) p.vx *= -1;
+                    if (p.y < 0 || p.y > height) p.vy *= -1;
+                });
+                requestAnimationFrame(drawParticles);
+            }
+
+            window.addEventListener('resize', initParticles);
+            initParticles();
+            drawParticles();
+
+            // Si ya hay cuenta conectada al cargar (por ejemplo si recarga)
+            if (window.ethereum) {
+                const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+                web3Provider.listAccounts().then(accounts => {
+                    if (accounts.length > 0) {
+                        connectWallet(); // reconectar automáticamente
+                    }
+                });
+            }
+        })();
     </script>
 </body>
 </html>
