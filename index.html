@@ -423,18 +423,14 @@
         <div id="seccionV5" class="main-content">
             <!-- Subpestañas de V5 -->
             <div class="sub-tabs">
-                <div class="sub-tab active" data-sub="v5Dashboard">📊 Dashboard</div>
-                <div class="sub-tab" data-sub="v5Red">📈 Mi Red</div>
-                <div class="sub-tab" data-sub="v5Ganancias">💰 Mis Ganancias</div>
-                <div class="sub-tab" data-sub="v5Referidos">👥 Referidos</div>
+                <div class="sub-tab active" data-sub="v5User">👤 Usuario</div>
                 <div class="sub-tab" data-sub="v5Admin" id="v5AdminTab" style="display:none;">🔱 Admin</div>
-                <div class="sub-tab" data-sub="v5Tutorial">📘 Tutoriales</div>
             </div>
 
-            <!-- Subsección Dashboard V5 -->
-            <div id="v5Dashboard" class="sub-content">
+            <!-- Subsección Usuario V5 -->
+            <div id="v5User" class="sub-content">
                 <div class="card">
-                    <span class="section-tag">DASHBOARD V5</span>
+                    <span class="section-tag">PROPIETARIO V5</span>
                     <div class="stats-grid">
                         <div class="stat-item">
                             <span class="stat-label">Saldo Pendiente</span>
@@ -454,6 +450,8 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Fondos y bonos -->
                 <div class="card">
                     <div class="stats-grid">
                         <div class="stat-item">
@@ -474,11 +472,11 @@
                         </div>
                     </div>
                 </div>
-                <button id="btnEmergencyWithdraw" class="hidden w-full btn btn-red">🚨 RETIRO DE EMERGENCIA</button>
-            </div>
 
-            <!-- Subsección Mi Red V5 -->
-            <div id="v5Red" class="sub-content hidden">
+                <!-- Botón emergencia -->
+                <button id="btnEmergencyWithdraw" class="hidden w-full btn btn-red">🚨 RETIRO DE EMERGENCIA</button>
+
+                <!-- Niveles de red -->
                 <div class="card">
                     <p class="text-center font-bold mb-4">📊 TUS 5 NIVELES</p>
                     <div class="flex flex-wrap justify-center gap-2">
@@ -489,6 +487,8 @@
                         <div id="n5" class="node node-empty">N5<br><span class="text-[10px]">0</span></div>
                     </div>
                 </div>
+
+                <!-- Detalles por nivel -->
                 <div class="grid grid-cols-2 gap-4">
                     <div class="card">
                         <div class="flex justify-between items-center mb-2">
@@ -505,20 +505,16 @@
                         <div id="gananciasNiveles" class="text-xs">Cargando...</div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Subsección Mis Ganancias V5 -->
-            <div id="v5Ganancias" class="sub-content hidden">
-                <div class="card">
-                    <span class="section-tag">SALDO DISPONIBLE</span>
-                    <div class="val-large" id="userSaldoDisplay">0.00 USDT</div>
+                <!-- Botones de acción -->
+                <div class="grid grid-cols-2 gap-3">
+                    <button id="btnApprove" class="btn btn-gold">1. AUTORIZAR USDT</button>
+                    <button id="btnJoin" class="btn btn-gold">2. ACTIVAR (10 USDT)</button>
+                    <button id="btnRenew" class="btn btn-outline">RENOVAR</button>
                     <button id="btnWithdraw" class="btn btn-outline">RETIRAR</button>
                 </div>
-                <!-- Podrías agregar historial de retiros aquí -->
-            </div>
 
-            <!-- Subsección Referidos V5 -->
-            <div id="v5Referidos" class="sub-content hidden">
+                <!-- Enlace de invitación -->
                 <div class="card text-center">
                     <p class="text-[10px] text-white/50 mb-1">TU ENLACE DE INVITACIÓN</p>
                     <div class="flex items-center gap-2">
@@ -527,11 +523,18 @@
                     </div>
                     <p id="copyMsg" class="text-[10px] text-green-300 mt-2 hidden">¡Link copiado!</p>
                 </div>
+
+                <!-- Tutoriales -->
                 <div class="card">
-                    <div class="stats-grid">
-                        <div class="stat-item"><span class="stat-label">Tus Directos</span><span class="stat-value" id="valDirRef">0</span></div>
-                        <div class="stat-item"><span class="stat-label">Ganancias por referidos</span><span class="stat-value" id="valGananciasRef">0.00</span></div>
-                    </div>
+                    <details>
+                        <summary class="cursor-pointer font-bold">📘 TUTORIALES</summary>
+                        <div class="mt-4 space-y-2 text-sm">
+                            <div class="bg-white/10 p-3 rounded">🔹 Autorizar USDT: asegúrate de tener USDT.</div>
+                            <div class="bg-white/10 p-3 rounded">🔹 Activar: después de autorizar, ingresa patrocinador.</div>
+                            <div class="bg-white/10 p-3 rounded">🔹 Renovar: paga 10 USDT por 30 días más.</div>
+                            <div class="bg-white/10 p-3 rounded">🔹 Retirar: mínimo 4 directos y saldo ≥10 USDT.</div>
+                        </div>
+                    </details>
                 </div>
             </div>
 
@@ -551,55 +554,20 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Subsección Tutoriales V5 -->
-            <div id="v5Tutorial" class="sub-content hidden">
-                <div class="card">
-                    <details>
-                        <summary class="cursor-pointer font-bold">📘 TUTORIALES</summary>
-                        <div class="mt-4 space-y-2 text-sm">
-                            <div class="bg-white/10 p-3 rounded">🔹 Autorizar USDT: asegúrate de tener USDT.</div>
-                            <div class="bg-white/10 p-3 rounded">🔹 Activar: después de autorizar, ingresa patrocinador.</div>
-                            <div class="bg-white/10 p-3 rounded">🔹 Renovar: paga 10 USDT por 30 días más.</div>
-                            <div class="bg-white/10 p-3 rounded">🔹 Retirar: mínimo 4 directos y saldo ≥10 USDT.</div>
-                            <div class="bg-white/10 p-3 rounded">🔹 Invitar: comparte tu link.</div>
-                        </div>
-                    </details>
-                </div>
-            </div>
         </div>
 
         <!-- ========== SECCIÓN TURBO ========== -->
         <div id="seccionTurbo" class="main-content hidden">
-            <!-- Subpestañas de Turbo -->
+            <!-- Subpestañas de Turbo (incluye Copy Trading) -->
             <div class="sub-tabs">
-                <div class="sub-tab active" data-sub="turboDashboard">📊 Dashboard</div>
-                <div class="sub-tab" data-sub="turboMisFondos">💰 Mis Fondos</div>
-                <div class="sub-tab" data-sub="turboReferidos">👥 Referidos</div>
-                <div class="sub-tab" data-sub="turboCopy">📈 Copy Trading</div>
+                <div class="sub-tab active" data-sub="turboUser">👤 Usuario</div>
                 <div class="sub-tab" data-sub="turboWalker" id="turboWalkerTab" style="display:none;">🤖 Walker</div>
                 <div class="sub-tab" data-sub="turboAdmin" id="turboAdminTab" style="display:none;">🔱 Admin</div>
+                <div class="sub-tab" data-sub="turboCopy">📈 Copy Trading</div>
             </div>
 
-            <!-- Subsección Dashboard Turbo -->
-            <div id="turboDashboard" class="sub-content">
-                <div class="card">
-                    <span class="section-tag">ESTADO DEL FONDO</span>
-                    <div class="stats-grid">
-                        <div class="stat-item"><span class="stat-label">Total Activos</span><span id="globalTotalAssets" class="stat-value">0.00</span></div>
-                        <div class="stat-item"><span class="stat-label">Total Shares</span><span id="globalTotalSupply" class="stat-value">0.0</span></div>
-                        <div class="stat-item"><span class="stat-label">Precio Share</span><span id="globalSharePrice" class="stat-value">0.00</span></div>
-                        <div class="stat-item"><span class="stat-label">Capital Trading</span><span id="globalCapitalTrading" class="stat-value">0.00</span></div>
-                        <div class="stat-item"><span class="stat-label">Reserva Eventos</span><span id="globalEventos" class="stat-value">0.00</span></div>
-                        <div class="stat-item"><span class="stat-label">Reserva Admin</span><span id="globalAdmin" class="stat-value">0.00</span></div>
-                        <div class="stat-item"><span class="stat-label">Reserva Referidos</span><span id="globalReferidos" class="stat-value">0.00</span></div>
-                        <div class="stat-item"><span class="stat-label">Bot Address</span><span id="globalBot" class="stat-value" style="font-size:0.9rem;">0x...</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Subsección Mis Fondos Turbo -->
-            <div id="turboMisFondos" class="sub-content hidden">
+            <!-- Subsección Usuario Turbo -->
+            <div id="turboUser" class="sub-content">
                 <div class="card">
                     <span class="section-tag">PROPIETARIO TURBO</span>
                     <div id="turboUserBal" class="val-large">0.00 USDT</div>
@@ -608,44 +576,19 @@
                         <div class="info-row">Próximo retiro gratis: <b id="turboStTimer">Cargando...</b></div>
                         <div class="info-row">Share Price actual: <b id="turboStPrice">0.00</b></div>
                     </div>
+
                     <input type="number" id="turboAmtOp" class="input-box" placeholder="Monto USDT (mín. 50)" step="0.01">
                     <div class="help-text">Ingresa un monto para ver opciones de retiro</div>
+
                     <div id="turboRetiroOpciones" style="margin-top: 10px;"></div>
                     <button id="turboBtnWithdraw" class="btn btn-outline" style="margin-top: 10px;" disabled>RETIRAR</button>
                     <button id="turboBtnDeposit" class="btn btn-gold" style="margin-top: 10px;">🏦 APORTAR CAPITAL</button>
-                </div>
-            </div>
 
-            <!-- Subsección Referidos Turbo -->
-            <div id="turboReferidos" class="sub-content hidden">
-                <div class="card">
-                    <span class="section-tag" style="background:#3291ff;">RECOMPENSAS LÍDER</span>
-                    <div id="turboLeaderBal" style="font-size:1.8rem; font-weight:bold; color:#3291ff;">0.00 USDT</div>
-                    <button id="turboBtnClaim" class="btn btn-blue">💰 COSECHAR</button>
-                </div>
-            </div>
-
-            <!-- Subsección Copy Trading Turbo -->
-            <div id="turboCopy" class="sub-content hidden">
-                <div class="card">
-                    <span class="section-tag" style="background:#00ffff;">COPY TRADING EN VIVO</span>
-                    <p class="text-sm text-white/80 mb-4">
-                        🤖 Nuestro bot sigue automáticamente a los <strong>traders más rentables de Binance</strong>, 
-                        seleccionados por su consistencia, bajo drawdown y alto ROI.
-                    </p>
-                    <div class="stats-grid">
-                        <div class="stat-item"><span class="stat-label">Trader destacado</span><span class="stat-value">CryptoWhale</span></div>
-                        <div class="stat-item"><span class="stat-label">ROI (30d)</span><span class="stat-value">+18.4%</span></div>
-                        <div class="stat-item"><span class="stat-label">Drawdown máx.</span><span class="stat-value">-5.2%</span></div>
-                        <div class="stat-item"><span class="stat-label">PNL (USD)</span><span class="stat-value">$124K</span></div>
+                    <div style="background: rgba(50, 100, 255, 0.1); margin-top:20px; padding:15px; border-radius:20px; border-left: 4px solid #3291ff;">
+                        <span style="color:#3291ff;">RECOMPENSAS LÍDER</span>
+                        <div id="turboLeaderBal" style="font-size:1.8rem; font-weight:bold; color:#3291ff;">0.00 USDT</div>
+                        <button id="turboBtnClaim" class="btn btn-blue">💰 COSECHAR</button>
                     </div>
-                    <div class="stats-grid">
-                        <div class="stat-item"><span class="stat-label">Trader #2</span><span class="stat-value">AlphaSeeker</span></div>
-                        <div class="stat-item"><span class="stat-label">ROI (30d)</span><span class="stat-value">+12.7%</span></div>
-                        <div class="stat-item"><span class="stat-label">Drawdown máx.</span><span class="stat-value">-3.8%</span></div>
-                        <div class="stat-item"><span class="stat-label">PNL (USD)</span><span class="stat-value">$89K</span></div>
-                    </div>
-                    <p class="text-[10px] text-white/50 mt-2">* Datos simulados.</p>
                 </div>
             </div>
 
@@ -719,6 +662,60 @@
                         <button id="turboBtnPause" class="btn btn-red">PAUSAR</button>
                         <button id="turboBtnUnpause" class="btn btn-green">REANUDAR</button>
                     </div>
+                </div>
+            </div>
+
+            <!-- Subsección Copy Trading (NUEVA) -->
+            <div id="turboCopy" class="sub-content hidden">
+                <div class="card">
+                    <span class="section-tag" style="background:#00ffff;">COPY TRADING EN VIVO</span>
+                    <p class="text-sm text-white/80 mb-4">
+                        🤖 Nuestro bot sigue automáticamente a los <strong>traders más rentables de Binance</strong>, 
+                        seleccionados por su consistencia, bajo drawdown y alto ROI. 
+                        Así tú no tienes que preocuparte por elegir: el sistema copia a los mejores.
+                    </p>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">Trader destacado</span>
+                            <span class="stat-value">CryptoWhale</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">ROI (30d)</span>
+                            <span class="stat-value">+18.4%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Drawdown máx.</span>
+                            <span class="stat-value">-5.2%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">PNL (USD)</span>
+                            <span class="stat-value">$124K</span>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">Trader #2</span>
+                            <span class="stat-value">AlphaSeeker</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">ROI (30d)</span>
+                            <span class="stat-value">+12.7%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Drawdown máx.</span>
+                            <span class="stat-value">-3.8%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">PNL (USD)</span>
+                            <span class="stat-value">$89K</span>
+                        </div>
+                    </div>
+
+                    <p class="text-[10px] text-white/50 mt-2">
+                        * Datos simulados. Próximamente: integración en vivo con API de Binance Leaderboard.
+                    </p>
                 </div>
             </div>
         </div>
@@ -816,24 +813,18 @@
         // Subpestañas V5
         const v5SubTabs = document.querySelectorAll('#seccionV5 .sub-tab');
         const v5SubContents = {
-            v5Dashboard: document.getElementById('v5Dashboard'),
-            v5Red: document.getElementById('v5Red'),
-            v5Ganancias: document.getElementById('v5Ganancias'),
-            v5Referidos: document.getElementById('v5Referidos'),
-            v5Admin: document.getElementById('v5Admin'),
-            v5Tutorial: document.getElementById('v5Tutorial')
+            v5User: document.getElementById('v5User'),
+            v5Admin: document.getElementById('v5Admin')
         };
         const v5AdminTab = document.getElementById('v5AdminTab');
 
-        // Subpestañas Turbo
+        // Subpestañas Turbo (incluye Copy)
         const turboSubTabs = document.querySelectorAll('#seccionTurbo .sub-tab');
         const turboSubContents = {
-            turboDashboard: document.getElementById('turboDashboard'),
-            turboMisFondos: document.getElementById('turboMisFondos'),
-            turboReferidos: document.getElementById('turboReferidos'),
-            turboCopy: document.getElementById('turboCopy'),
+            turboUser: document.getElementById('turboUser'),
             turboWalker: document.getElementById('turboWalker'),
-            turboAdmin: document.getElementById('turboAdmin')
+            turboAdmin: document.getElementById('turboAdmin'),
+            turboCopy: document.getElementById('turboCopy')
         };
         const turboWalkerTab = document.getElementById('turboWalkerTab');
         const turboAdminTab = document.getElementById('turboAdminTab');
@@ -899,12 +890,6 @@
                 document.getElementById('valDir').innerText = estado.directos.toString();
                 document.getElementById('valRed').innerText = estado.redTotal.toString();
                 document.getElementById('valDias').innerText = estado.diasRestantes.toString();
-
-                // Actualizar también en otras pestañas
-                document.getElementById('userSaldoDisplay').innerText = ethers.utils.formatUnits(estado.saldoPendiente, 18) + ' USDT';
-                document.getElementById('valDirRef').innerText = estado.directos.toString();
-                // Las ganancias por referidos se podrían calcular sumando ganancias de niveles? Por ahora dejamos 0
-                document.getElementById('valGananciasRef').innerText = '0.00';
 
                 await loadRedYGananciasV5();
 
@@ -1038,25 +1023,6 @@
 
                 actualizarOpcionesRetiroTurbo();
 
-                // Datos globales para dashboard
-                const totalAssets = await contractTurbo.totalAssets();
-                const totalSupply = await contractTurbo.totalSupply();
-                const sharePrice = totalSupply === 0n ? 1e18 : (totalAssets * 1_000_000_000_000_000_000n) / totalSupply;
-                const capitalTrading = await contractTurbo.capitalEnTrading();
-                const eventos = await contractTurbo.acumuladoEventos();
-                const adminReserve = await contractTurbo.acumuladoAdministracion();
-                const referidos = await contractTurbo.acumuladoParaReferidos();
-                const botAddr = await contractTurbo.botAddress();
-
-                document.getElementById('globalTotalAssets').innerText = formatTurboUSDT(totalAssets);
-                document.getElementById('globalTotalSupply').innerText = ethers.formatUnits(totalSupply, 18);
-                document.getElementById('globalSharePrice').innerText = formatTurboUSDT(sharePrice);
-                document.getElementById('globalCapitalTrading').innerText = formatTurboUSDT(capitalTrading);
-                document.getElementById('globalEventos').innerText = formatTurboUSDT(eventos);
-                document.getElementById('globalAdmin').innerText = formatTurboUSDT(adminReserve);
-                document.getElementById('globalReferidos').innerText = formatTurboUSDT(referidos);
-                document.getElementById('globalBot').innerText = botAddr ? botAddr.slice(0,8)+'...'+botAddr.slice(-6) : '0x...';
-
                 // Verificar roles
                 const isAdmin = await contractTurbo.hasRole('0x0000000000000000000000000000000000000000000000000000000000000000', userAddress);
                 const isWalker = await contractTurbo.hasRole('0x7cf3a903332501a3036a7e0d37e641772eb5d7422204a08573216896174a7a8e', userAddress);
@@ -1065,6 +1031,8 @@
                 turboWalkerTab.style.display = isWalker ? 'block' : 'none';
 
                 if (isAdmin) {
+                    const totalAssets = await contractTurbo.totalAssets();
+                    const capitalTrading = await contractTurbo.capitalEnTrading();
                     const tvlNum = parseFloat(ethers.utils.formatUnits(totalAssets, 18));
                     const mktNum = parseFloat(ethers.utils.formatUnits(capitalTrading, 18));
                     document.getElementById('turboAdminBoveda').innerText = (tvlNum - mktNum).toFixed(2);
@@ -1093,6 +1061,7 @@
                 }
 
                 if (isWalker) {
+                    const capitalTrading = await contractTurbo.capitalEnTrading();
                     const maxLoss = await contractTurbo.maxLossPerReport();
                     document.getElementById('turboWalkerCapitalTrading').innerText = formatTurboUSDT(capitalTrading);
                     document.getElementById('turboWalkerMaxLoss').innerText = formatTurboUSDT(maxLoss);
@@ -1415,7 +1384,8 @@
                 v5SubTabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 const target = tab.dataset.sub;
-                Object.values(v5SubContents).forEach(c => c.classList.add('hidden'));
+                v5SubContents.v5User.classList.add('hidden');
+                v5SubContents.v5Admin.classList.add('hidden');
                 v5SubContents[target].classList.remove('hidden');
             });
         });
@@ -1425,7 +1395,10 @@
                 turboSubTabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 const target = tab.dataset.sub;
-                Object.values(turboSubContents).forEach(c => c.classList.add('hidden'));
+                turboSubContents.turboUser.classList.add('hidden');
+                turboSubContents.turboWalker.classList.add('hidden');
+                turboSubContents.turboAdmin.classList.add('hidden');
+                turboSubContents.turboCopy.classList.add('hidden');
                 turboSubContents[target].classList.remove('hidden');
             });
         });
