@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <style>
-        /* ========== ESTILOS COMPLETOS (los mismos de siempre) ========== */
+        /* ========== ESTILOS COMPLETOS ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
@@ -496,6 +496,16 @@
             margin-top: 10px;
             font-size: 0.8rem;
         }
+        .ref-link-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ffff;
+            border-radius: 60px;
+            padding: 10px 15px;
+            color: white;
+            font-size: 0.8rem;
+            word-break: break-all;
+            flex: 1;
+        }
     </style>
 </head>
 <body>
@@ -717,7 +727,7 @@
                     </div>
                 </div>
 
-                <!-- Subsección Acciones V5 -->
+                <!-- Subsección Acciones V5 (incluye el link de referidos) -->
                 <div id="v5Acciones" class="sub-content hidden">
                     <div class="card">
                         <span class="section-tag">⚡ ACCIONES</span>
@@ -730,6 +740,17 @@
                         <div class="mt-4">
                             <p class="text-sm text-white/70">Invitados directos: <b id="valDir">0</b> | Comunidad total: <b id="valRed">0</b></p>
                         </div>
+                    </div>
+
+                    <!-- Tarjeta del link de referidos (NUEVO) -->
+                    <div class="card">
+                        <span class="section-tag">🔗 TU ENLACE DE INVITACIÓN</span>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="refLink" readonly class="ref-link-box" value="Esperando conexión...">
+                            <button id="copyLinkBtn" class="btn btn-gold py-2 px-4 text-sm" style="width: auto;">📋 Copiar</button>
+                        </div>
+                        <p id="copyMsg" class="text-[10px] text-green-300 mt-2 hidden">¡Enlace copiado al portapapeles!</p>
+                        <p class="text-[10px] text-white/50 mt-1">Comparte este enlace para que nuevos inversores se unan con tu referencia.</p>
                     </div>
                 </div>
 
@@ -1607,6 +1628,18 @@
             } catch (e) { showToast('Error: ' + e.message, true); }
         };
 
+        // ========== LINK DE REFERIDOS ==========
+        document.getElementById('copyLinkBtn').addEventListener('click', () => {
+            const refLink = document.getElementById('refLink');
+            refLink.select();
+            refLink.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(refLink.value).then(() => {
+                document.getElementById('copyMsg').classList.remove('hidden');
+                setTimeout(() => document.getElementById('copyMsg').classList.add('hidden'), 2000);
+                showToast('✅ Enlace copiado');
+            }).catch(() => showToast('❌ Error al copiar', true));
+        });
+
         // ========== CONEXIÓN PRINCIPAL ==========
         btnConnect.onclick = async () => {
             if (!window.ethereum) return showToast('Instala MetaMask/OKX Wallet', true);
@@ -1629,6 +1662,9 @@
                 const ownerAddr = await contractMembresia.owner();
                 isOwnerV5 = (ownerAddr.toLowerCase() === userAddress.toLowerCase());
                 document.getElementById('v5AdminTab').style.display = isOwnerV5 ? 'block' : 'none';
+
+                // Generar link de referidos
+                document.getElementById('refLink').value = window.location.origin + window.location.pathname + "?ref=" + userAddress;
 
                 await loadUserDataV5();
                 await loadTurboData();
