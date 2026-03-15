@@ -1241,9 +1241,21 @@
                 rolesTurbo.guardian = await contractTurbo.hasRole(guardianRole, userAddress);
                 rolesTurbo.committee = await contractTurbo.hasRole(committeeRole, userAddress);
 
-                // Mostrar/ocultar pestañas según roles
-                document.getElementById('turboAdminTab').style.display = rolesTurbo.admin ? 'block' : 'none';
-                document.getElementById('turboWalkerTab').style.display = rolesTurbo.allocator ? 'block' : 'none';
+                // Mostrar/ocultar pestañas según roles (forzar actualización)
+                const adminTab = document.getElementById('turboAdminTab');
+                const walkerTab = document.getElementById('turboWalkerTab');
+                
+                if (adminTab) {
+                    adminTab.style.display = rolesTurbo.admin ? 'block' : 'none';
+                }
+                if (walkerTab) {
+                    walkerTab.style.display = rolesTurbo.allocator ? 'block' : 'none';
+                }
+
+                // Logs para depuración (puedes verlos en la consola con F12)
+                console.log('Roles Turbo:', rolesTurbo);
+                console.log('Admin tab display:', adminTab ? adminTab.style.display : 'no encontrado');
+                console.log('Walker tab display:', walkerTab ? walkerTab.style.display : 'no encontrado');
 
                 const data = await contractTurbo.getVaultDashboard(userAddress);
                 const capital = ethers.utils.formatUnits(data[0], 18);
