@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Milimar Turbo · Titan Edition</title>
+    <title>Milimar Turbo · Galaxy Master V18.1</title>
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
@@ -11,7 +11,7 @@
     <!-- Ethers v5 (compatible con todos los navegadores) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <style>
-        /* ========== ESTILOS GALÁCTICOS ========== */
+        /* ========== ESTILOS GALÁCTICOS (completos) ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
@@ -957,7 +957,7 @@
                             <div class="stat-item"><span class="stat-label">Max Loss/Report</span><span id="turboWalkerMaxLoss" class="stat-value">0.00</span></div>
                         </div>
                         <input type="number" id="turboReportAmount" class="input-box" placeholder="Monto USDT">
-                        <input type="text" id="turboRefAddr" class="input-box" placeholder="Usuario trigger (0x...)" value="0x0000000000000000000000000000000000000000">
+                        <input type="text" id="turboRefAddr" class="input-box" placeholder="Usuario trigger (0x...)" value="">
                         <div class="flex-row">
                             <button id="turboBtnReportProfit" class="btn btn-gold flex-1">GANANCIA</button>
                             <button id="turboBtnReportLoss" class="btn btn-red flex-1">PÉRDIDA</button>
@@ -1003,11 +1003,11 @@
     <script>
         // ========== CONFIGURACIÓN ==========
         const CONTRACT_ADDR_MEMBRESIA = "0x35425E6416f799C30938cBc159523B43C1c358B2";
-        const CONTRACT_ADDR_TURBO = "0xAe49C14d63524B813b8ED0b49d7CFddDDE5ACAC7"; // ← NUEVA DIRECCIÓN
+        const CONTRACT_ADDR_TURBO = "0xAe49C14d63524B813b8ED0b49d7CFddDDE5ACAC7";
         const USDT_ADDR = "0x55d398326f99059fF775485246999027B3197955";
         const BSC_CHAIN_ID = 56;
 
-        // ABIs completos (MilimarV5 y TurboV13.2)
+        // ABIs completos
         const abiMembresia = [
             "function consultarEstado(address) view returns (uint256 saldoPendiente, uint256 totalGanado, uint256 totalRetirado, uint256 directos, uint256 redTotal, uint256 diasRestantes, bool activo)",
             "function verDetalleRed(address) view returns (uint256[5] memory)",
@@ -1087,6 +1087,7 @@
         let refreshInterval;
         let eventLog = [];
         const porcentajes = [25, 17, 10, 6, 3];
+        window.turboLockSec = 0; // variable global para el lock
 
         // Elementos DOM
         const toastDiv = document.getElementById('toast');
@@ -1257,6 +1258,8 @@
                 document.getElementById('turboStQualy').style.color = calificado ? '#10b981' : '#fbbf24';
                 document.getElementById('turboStTimer').innerText = lockSec > 0 ? formatTime(lockSec) : 'AHORA LIBRE ✅';
 
+                // Actualizar variable global para retiros
+                window.turboLockSec = lockSec;
                 actualizarOpcionesRetiroTurbo();
 
                 if (rolesTurbo.admin) {
@@ -1320,14 +1323,7 @@
 
         function actualizarOpcionesRetiroTurbo() {
             const amt = parseFloat(document.getElementById('turboAmtOp').value);
-            const lockSec = (() => {
-                const timerText = document.getElementById('turboStTimer').innerText;
-                if (timerText.includes('LIBRE')) return 0;
-                const d = timerText.match(/(\d+)d/)?.[1] || 0;
-                const h = timerText.match(/(\d+)h/)?.[1] || 0;
-                const m = timerText.match(/(\d+)m/)?.[1] || 0;
-                return (parseInt(d) * 86400) + (parseInt(h) * 3600) + (parseInt(m) * 60);
-            })();
+            const lockSec = window.turboLockSec || 0;
 
             const opcionesDiv = document.getElementById('turboRetiroOpciones');
             const btnWithdraw = document.getElementById('turboBtnWithdraw');
@@ -1354,21 +1350,34 @@
             }
         }
 
+        document.getElementById('turboAmtOp').addEventListener('input', actualizarOpcionesRetiroTurbo);
+
+        // ========== FUNCIÓN DE RETIRO TURBO MEJORADA ==========
         async function turboRealizarRetiro(amt) {
             try {
+                if (amt < 5) return showToast('⚠️ Mínimo 5 USDT', true);
+                
                 const wei = ethers.utils.parseUnits(amt.toString(), 18);
-                showToast('⏳ Procesando retiro...');
-                const tx = await contractTurbo.withdraw(wei, userAddress, userAddress);
+                showToast('⚙️ Sincronizando con Binance para retiro...');
+                
+                const tx = await contractTurbo.withdraw(wei, userAddress, userAddress, {
+                    gasLimit: 300000
+                });
+                
                 await tx.wait();
-                showToast('✅ Retiro completado');
-                await addEvent(`Retiraste ${amt} USDT de Turbo`, 'success');
+                showToast('✅ Solicitud Enviada con éxito');
+                await addEvent(`Retiro de ${amt} USDT en proceso.`, 'success');
                 loadTurboData();
             } catch (e) {
-                showToast('❌ Error: ' + e.message, true);
+                console.error(e);
+                showToast('❌ Error: ' + (e.reason || 'Revisa saldo o bloqueo'), true);
             }
         }
 
-        document.getElementById('turboAmtOp').addEventListener('input', actualizarOpcionesRetiroTurbo);
+        document.getElementById('turboBtnWithdraw').onclick = () => {
+            const amt = parseFloat(document.getElementById('turboAmtOp').value);
+            turboRealizarRetiro(amt);
+        };
 
         document.getElementById('turboBtnDeposit').onclick = async () => {
             const val = document.getElementById('turboAmtOp').value;
@@ -1398,19 +1407,25 @@
             } catch (e) { showToast('Error: ' + e.message, true); }
         };
 
+        // ========== REPORTE DE PROFIT MEJORADO ==========
         document.getElementById('turboBtnReportProfit').onclick = async () => {
             const val = document.getElementById('turboReportAmount').value;
-            const ref = document.getElementById('turboRefAddr').value || userAddress;
+            let ref = document.getElementById('turboRefAddr').value;
+            
+            if (!ref || ref.length < 20) ref = userAddress;
             if (!val || parseFloat(val) <= 0) return showToast('⚠️ Monto inválido', true);
+            
             try {
                 const wei = ethers.utils.parseUnits(val, 18);
-                showToast('⏳ Reportando ganancia...');
+                showToast('🤖 Oráculo informando ganancias...');
                 const tx = await contractTurbo.reportProfit(wei, ref);
                 await tx.wait();
-                showToast('✅ Ganancia reportada');
-                await addEvent(`Profit reportado: ${val} USDT`, 'success');
+                showToast('💰 Profit repartido con éxito');
+                await addEvent(`Profit detectado en Binance: +${val} USDT`, 'success');
                 loadTurboData();
-            } catch (e) { showToast('Error: ' + e.message, true); }
+            } catch (e) { 
+                showToast('❌ Acceso Denegado / Error de Saldo', true);
+            }
         };
 
         document.getElementById('turboBtnReportLoss').onclick = async () => {
