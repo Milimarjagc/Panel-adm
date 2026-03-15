@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Milimar Turbo · Galaxy Master V18.1</title>
+    <title>Milimar Turbo · Titan Edition</title>
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Ethers v5 (compatible con todos los navegadores) -->
+    <!-- Ethers v5 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <style>
-        /* ========== ESTILOS GALÁCTICOS (completos) ========== */
+        /* ========== ESTILOS GALÁCTICOS ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
@@ -545,6 +545,7 @@
             background: rgba(0,0,0,0.2);
             border-radius: 20px;
             padding: 10px;
+            overflow-y: auto;
         }
     </style>
 </head>
@@ -1087,7 +1088,7 @@
         let refreshInterval;
         let eventLog = [];
         const porcentajes = [25, 17, 10, 6, 3];
-        window.turboLockSec = 0; // variable global para el lock
+        window.turboLockSec = 0;
 
         // Elementos DOM
         const toastDiv = document.getElementById('toast');
@@ -1229,17 +1230,18 @@
         async function loadTurboData() {
             if (!contractTurbo || !userAddress) return;
             try {
-                if (!rolesTurbo.admin && !rolesTurbo.allocator && !rolesTurbo.guardian && !rolesTurbo.committee) {
-                    const defaultAdminRole = await contractTurbo.DEFAULT_ADMIN_ROLE();
-                    const allocatorRole = await contractTurbo.ALLOCATOR_ROLE();
-                    const guardianRole = await contractTurbo.GUARDIAN_ROLE();
-                    const committeeRole = await contractTurbo.EMERGENCY_COMMITTEE_ROLE();
-                    rolesTurbo.admin = await contractTurbo.hasRole(defaultAdminRole, userAddress);
-                    rolesTurbo.allocator = await contractTurbo.hasRole(allocatorRole, userAddress);
-                    rolesTurbo.guardian = await contractTurbo.hasRole(guardianRole, userAddress);
-                    rolesTurbo.committee = await contractTurbo.hasRole(committeeRole, userAddress);
-                }
+                // Obtener roles dinámicamente
+                const defaultAdminRole = await contractTurbo.DEFAULT_ADMIN_ROLE();
+                const allocatorRole = await contractTurbo.ALLOCATOR_ROLE();
+                const guardianRole = await contractTurbo.GUARDIAN_ROLE();
+                const committeeRole = await contractTurbo.EMERGENCY_COMMITTEE_ROLE();
 
+                rolesTurbo.admin = await contractTurbo.hasRole(defaultAdminRole, userAddress);
+                rolesTurbo.allocator = await contractTurbo.hasRole(allocatorRole, userAddress);
+                rolesTurbo.guardian = await contractTurbo.hasRole(guardianRole, userAddress);
+                rolesTurbo.committee = await contractTurbo.hasRole(committeeRole, userAddress);
+
+                // Mostrar/ocultar pestañas según roles
                 document.getElementById('turboAdminTab').style.display = rolesTurbo.admin ? 'block' : 'none';
                 document.getElementById('turboWalkerTab').style.display = rolesTurbo.allocator ? 'block' : 'none';
 
@@ -1258,7 +1260,6 @@
                 document.getElementById('turboStQualy').style.color = calificado ? '#10b981' : '#fbbf24';
                 document.getElementById('turboStTimer').innerText = lockSec > 0 ? formatTime(lockSec) : 'AHORA LIBRE ✅';
 
-                // Actualizar variable global para retiros
                 window.turboLockSec = lockSec;
                 actualizarOpcionesRetiroTurbo();
 
@@ -1352,32 +1353,26 @@
 
         document.getElementById('turboAmtOp').addEventListener('input', actualizarOpcionesRetiroTurbo);
 
-        // ========== FUNCIÓN DE RETIRO TURBO MEJORADA ==========
         async function turboRealizarRetiro(amt) {
             try {
                 if (amt < 5) return showToast('⚠️ Mínimo 5 USDT', true);
                 
                 const wei = ethers.utils.parseUnits(amt.toString(), 18);
-                showToast('⚙️ Sincronizando con Binance para retiro...');
+                showToast('⚙️ Procesando retiro...');
                 
                 const tx = await contractTurbo.withdraw(wei, userAddress, userAddress, {
                     gasLimit: 300000
                 });
                 
                 await tx.wait();
-                showToast('✅ Solicitud Enviada con éxito');
-                await addEvent(`Retiro de ${amt} USDT en proceso.`, 'success');
+                showToast('✅ Retiro completado');
+                await addEvent(`Retiraste ${amt} USDT de Turbo`, 'success');
                 loadTurboData();
             } catch (e) {
                 console.error(e);
                 showToast('❌ Error: ' + (e.reason || 'Revisa saldo o bloqueo'), true);
             }
         }
-
-        document.getElementById('turboBtnWithdraw').onclick = () => {
-            const amt = parseFloat(document.getElementById('turboAmtOp').value);
-            turboRealizarRetiro(amt);
-        };
 
         document.getElementById('turboBtnDeposit').onclick = async () => {
             const val = document.getElementById('turboAmtOp').value;
@@ -1407,7 +1402,6 @@
             } catch (e) { showToast('Error: ' + e.message, true); }
         };
 
-        // ========== REPORTE DE PROFIT MEJORADO ==========
         document.getElementById('turboBtnReportProfit').onclick = async () => {
             const val = document.getElementById('turboReportAmount').value;
             let ref = document.getElementById('turboRefAddr').value;
@@ -1417,14 +1411,14 @@
             
             try {
                 const wei = ethers.utils.parseUnits(val, 18);
-                showToast('🤖 Oráculo informando ganancias...');
+                showToast('🤖 Reportando ganancia...');
                 const tx = await contractTurbo.reportProfit(wei, ref);
                 await tx.wait();
-                showToast('💰 Profit repartido con éxito');
-                await addEvent(`Profit detectado en Binance: +${val} USDT`, 'success');
+                showToast('💰 Ganancia reportada');
+                await addEvent(`Profit reportado: +${val} USDT`, 'success');
                 loadTurboData();
             } catch (e) { 
-                showToast('❌ Acceso Denegado / Error de Saldo', true);
+                showToast('❌ Error: ' + (e.reason || 'Acceso denegado'), true);
             }
         };
 
@@ -1437,7 +1431,7 @@
                 const tx = await contractTurbo.reportLoss(wei);
                 await tx.wait();
                 showToast('✅ Pérdida reportada');
-                await addEvent(`⚠️ Pérdida reportada: ${val} USDT`, 'error');
+                await addEvent(`⚠️ Pérdida reportada: -${val} USDT`, 'error');
                 loadTurboData();
             } catch (e) { showToast('Error: ' + e.message, true); }
         };
