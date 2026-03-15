@@ -2,294 +2,357 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>Milimar Turbo · Enterprise Console</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Milimar Ecosystem · Executive Cyber-Hub</title>
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --primary: #00ffff; --secondary: #aa80ff; --bg: #0a0a0f; --border: rgba(0, 255, 255, 0.3); }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #e0e0ff; min-height: 100vh; overflow-x: hidden; padding: 10px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root { --primary: #00ffff; --secondary: #aa80ff; --accent: #ff80ff; --gold: #f0b90b; --bg: #0a0a0f; --card-bg: rgba(10, 10, 30, 0.9); --border: rgba(0, 255, 255, 0.3); --red: #ff4d4d; --green: #238636; --blue: #3291ff; }
         
-        .galaxy-bg { position: fixed; top:0; left:0; width:100%; height:100%; background: radial-gradient(ellipse at center, #1a0033, #000 85%); z-index: -2; }
-        .stars { position: fixed; width:100%; height:100%; z-index:-1; pointer-events:none; }
-        .star { position: absolute; background: white; border-radius: 50%; opacity: 0.6; }
-
-        .container { max-width: 600px; margin: 0 auto; position: relative; z-index: 2; }
-        .header h1 { font-family: 'Orbitron'; background: linear-gradient(135deg, var(--primary), #ff80ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; font-size: 2rem; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #e0e0ff; min-height: 100vh; overflow-x: hidden; }
         
-        /* Dashboard Central */
-        .card { background: rgba(10, 15, 30, 0.85); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 30px; padding: 25px; margin-bottom: 20px; box-shadow: 0 0 30px rgba(0, 255, 255, 0.15); }
-        .section-tag { background: var(--primary); color: #000; padding: 4px 15px; border-radius: 50px; font-size: 0.6rem; font-weight: 900; display: inline-block; margin-bottom: 15px; }
+        /* Ambientación Galáctica */
+        .galaxy-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at center, #1a0033 0%, #000 80%); z-index: -2; }
+        .stars { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; pointer-events:none; }
+        .star { position: absolute; background: #fff; border-radius: 50%; opacity: 0.8; }
 
-        /* Tabs System */
-        .tab-menu { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .tab { background: rgba(0,255,255,0.05); border: 1px solid var(--primary); color: var(--primary); border-radius: 50px; padding: 8px 18px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; font-weight: 800; transition: 0.3s; }
-        .tab.active { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px; position: relative; z-index: 10; }
+        
+        .header { text-align: center; padding: 25px 0; }
+        .header h1 { font-family: 'Orbitron'; font-weight: 900; font-size: 2rem; background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 20px rgba(0,255,255,0.4); letter-spacing: 2px; }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .stat-box { background: rgba(0,0,0,0.4); border: 0.5px solid var(--border); border-radius: 20px; padding: 12px; text-align: center; }
-        .stat-label { font-size: 9px; color: #848e9c; text-transform: uppercase; }
-        .stat-val { font-size: 1.1rem; color: #0ff; font-weight: 800; }
+        /* Navegación por Pestañas */
+        .hub-tabs { display: flex; justify-content: space-around; background: rgba(0,0,0,0.6); border-radius: 50px; padding: 6px; margin: 20px 0; border: 1px solid var(--border); backdrop-filter: blur(10px); }
+        .tab-btn { color: #848e9c; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; cursor: pointer; padding: 10px 15px; border-radius: 50px; transition: 0.3s; font-family: 'Orbitron'; border: none; background: none; flex: 1; }
+        .tab-btn.active { color: var(--primary); background: rgba(0,255,255,0.1); text-shadow: 0 0 10px var(--primary); box-shadow: inset 0 0 10px rgba(0,255,255,0.1); }
 
-        .btn { border: none; padding: 16px; border-radius: 60px; cursor: pointer; font-weight: 900; font-family: 'Orbitron'; text-transform: uppercase; font-size: 13px; margin: 5px 0; transition: 0.3s; }
-        .btn-gold { background: linear-gradient(90deg, #00ffff, var(--secondary)); color: #000; box-shadow: 0 0 15px var(--primary); }
-        .btn-red { background: linear-gradient(90deg, #ff4d4d, #f85149); color: white; }
+        .card { background: var(--card-bg); border-radius: 28px; padding: 25px; border: 1px solid var(--border); margin-bottom: 20px; backdrop-filter: blur(20px); position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+        .section-tag { position: absolute; top: -12px; left: 30px; background: var(--primary); color: #000; padding: 3px 15px; border-radius: 40px; font-size: 0.6rem; font-weight: 900; text-transform: uppercase; }
+
+        /* Elementos de Acción */
+        .btn { border: none; padding: 16px; border-radius: 60px; font-weight: 800; cursor: pointer; font-family: 'Orbitron'; text-transform: uppercase; width: 100%; margin: 6px 0; font-size: 11px; transition: 0.3s; }
+        .btn-gold { background: linear-gradient(90deg, var(--primary), var(--secondary)); color: #000; box-shadow: 0 0 20px rgba(0,255,255,0.3); }
         .btn-outline { background: transparent; border: 2.5px solid var(--primary); color: var(--primary); }
-        .input-p { background: rgba(0,0,0,0.6); border: 1.5px solid var(--primary); border-radius: 50px; color: #fff; width: 100%; padding: 15px; text-align: center; margin: 10px 0; outline: none; }
+        .btn-blue { background: var(--blue); color: #fff; box-shadow: 0 0 15px var(--blue); }
+        .btn-green { background: var(--green); color: #fff; }
+        .btn-red { background: var(--red); color: #fff; }
 
-        #toast { position: fixed; top: 15px; left: 15px; right: 15px; background: #00ffff22; backdrop-filter: blur(15px); border-left: 5px solid var(--primary); color: white; padding: 20px; border-radius: 20px; display: none; z-index: 10000; font-size: 13px; }
+        .input-pro { background: rgba(0,0,0,0.6); border: 1.5px solid var(--border); border-radius: 50px; color: #fff; padding: 15px; text-align: center; width: 100%; font-size: 1rem; margin: 10px 0; outline: none; }
+        .val-hero { font-size: 2.8rem; font-weight: 900; color: var(--primary); text-align: center; text-shadow: 0 0 25px rgba(0,255,255,0.5); margin: 5px 0; }
+        
+        .label { font-size: 10px; color: #848e9c; text-transform: uppercase; text-align: center; display: block; margin-bottom: 5px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+        .stat-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 12px; text-align: center; }
+
+        #toast { position: fixed; top: 15px; left: 15px; right: 15px; background: rgba(0,0,0,0.9); border: 1px solid var(--primary); color: #fff; padding: 20px; border-radius: 20px; font-size: 14px; text-align: center; z-index: 10000; display: none; }
+        
         .hidden { display: none; }
-        .express-card { background: rgba(255, 0, 100, 0.1); border: 1px solid #ff00ff; border-radius: 20px; padding: 15px; margin-top: 15px; text-align: center; }
+        .express-card { background: rgba(255, 0, 150, 0.15); border: 1.5px solid var(--accent); padding: 18px; border-radius: 22px; text-align: center; margin: 10px 0; animation: blink 2s infinite; }
+        @keyframes blink { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+
+        /* Auditoría Scroll */
+        .ledger-box { background: rgba(0,0,0,0.5); border: 1px solid rgba(0,255,255,0.1); border-radius: 15px; height: 100px; overflow-y: auto; font-size: 10px; padding: 10px; color: var(--primary); }
     </style>
 </head>
 <body>
 
-<div class="galaxy-bg"></div>
-<div class="stars" id="star-field"></div>
-<div id="toast"></div>
+    <div class="galaxy-bg"></div>
+    <div class="stars" id="galaxy-field"></div>
+    <div id="toast"></div>
 
-<div class="container">
-    <div class="header">
-        <h1>MILIMAR TURBO</h1>
-        <p id="userAddress">NÚCLEO DESCONECTADO</p>
-        <button id="btnConn" class="btn btn-gold" style="max-width:320px; margin-inline:auto; display:block; margin-top:20px;">🔋 INICIAR SECUENCIA (DAPP)</button>
+    <div class="container">
+        <header class="header">
+            <h1>MILIMAR TURBO</h1>
+            <p id="userNode">SISTEMA OFF-LINE</p>
+            <button id="btnConnect" class="btn btn-gold" style="max-width: 320px; margin: 20px auto;">🔋 SINCRONIZAR BILLETERA</button>
+        </header>
+
+        <main id="ecosystemApp" class="hidden">
+            
+            <!-- HUB MENU -->
+            <div class="hub-tabs">
+                <button class="tab-btn active" id="tab1" onclick="hub('network')">🌐 RED V5</button>
+                <button class="tab-btn" id="tab2" onclick="hub('vault')">⚡ BÓVEDA</button>
+                <button class="tab-btn hidden" id="bossTab" onclick="hub('master')">🔱 MASTER</button>
+            </div>
+
+            <!-- ========== SECTION: MILIMAR V5 ========== -->
+            <section id="page-network">
+                <div class="card">
+                    <span class="section-tag" style="background:var(--secondary); color:#fff;">Plan Crecimiento V5</span>
+                    <label class="label">Profit Acumulado por Comunidad</label>
+                    <div id="v5Profit" class="val-hero">0.00</div>
+                    <div class="stats-grid">
+                        <div class="stat-item"><span class="label">Socio Nivel</span><b id="v5Type">USUARIO</b></div>
+                        <div class="stat-item"><span class="label">Días restantes</span><b id="v5Time">0 d</b></div>
+                    </div>
+                    <button id="btnJoinV5" class="btn btn-gold">PAGAR SUSCRIPCIÓN (10 USDT)</button>
+                    <button id="btnCollectV5" class="btn btn-outline" style="font-size:10px;">RECLAMAR SALDO V5</button>
+                </div>
+            </section>
+
+            <!-- ========== SECTION: TURBO VAULT ========== -->
+            <section id="page-vault" class="hidden">
+                <div class="card">
+                    <span class="section-tag">Cyber-Investing Portafolio</span>
+                    <label class="label">Balance Principal + Ganancia Bot</label>
+                    <div id="tAssets" class="val-hero">0.00</div>
+                    <div id="tQualyText" style="text-align:center; font-size:11px; color:var(--gold); font-weight:800; margin-bottom:15px;">Calculando calificación...</div>
+                    
+                    <input type="number" id="amtTrade" class="input-pro" placeholder="Monto USDT (Min 50)">
+                    
+                    <!-- CALCULADORA PENALIDAD ANDREW -->
+                    <div id="noticeExpress" class="hidden express-card">
+                        <strong style="color:var(--accent)">MODO LIQUIDACIÓN EXPRESS</strong><br>
+                        <small>Multa detectada del 10% por bloqueo de 7 días activo.</small><br>
+                        <span style="font-size: 20px;">Neto a recibir: <b id="valExpress" style="color:var(--primary)">0.00</b> USDT</span>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <button id="btnTIn" class="btn btn-gold">INVERTIR</button>
+                        <button id="btnTOut" class="btn btn-outline">RETIRAR</button>
+                    </div>
+                    <div style="text-align:center;"><small id="lockRemain" style="font-size:10px; color:#848e9c;"></small></div>
+                </div>
+
+                <!-- SUB: RECOMPENSA RED TURBO -->
+                <div class="card" style="border-left: 5px solid var(--blue);">
+                    <span class="section-tag" style="background:var(--blue); color:white">Bono Liderazgo (8%)</span>
+                    <div id="tLeadBonus" style="font-size:24px; color:var(--blue); font-weight:bold;">0.00 USDT</div>
+                    <button id="btnCollectL" class="btn btn-blue" style="margin-top:10px; font-size:10px;">Cosechar bono a Wallet</button>
+                </div>
+
+                <!-- SUB: WALKER ORACLE SECTION (OPERATIVO) -->
+                <div id="walkerControl" class="card hidden" style="border-color:var(--gold); background:rgba(30,20,0,0.5)">
+                    <span class="section-tag" style="background:var(--gold); color:black">Oracle Console (Walker)</span>
+                    <input type="number" id="profitIn" class="input-pro" placeholder="Net Profit USD">
+                    <input type="text" id="profitRef" class="input-pro" placeholder="Reference Wallet (optional)" style="font-size:11px;">
+                    <div style="display:flex; gap:10px;">
+                        <button id="btnPostProfit" class="btn btn-gold" style="font-size:10px;">PROFIT (+)</button>
+                        <button id="btnPostLoss" class="btn btn-red" style="font-size:10px;">LOSS (-)</button>
+                    </div>
+                    <hr style="opacity:0.2; margin:15px 0;">
+                    <input type="number" id="liquidAmt" class="input-pro" placeholder="Retorno USDT a contrato">
+                    <button id="btnBackToPool" class="btn btn-outline" style="border-color:var(--gold); color:var(--gold);">Registrar Regreso Binance</button>
+                </div>
+            </section>
+
+            <!-- ========== SECTION: MASTER GOVERNANCE ========== -->
+            <section id="page-master" class="hidden">
+                <div class="card" style="border-color: var(--green); background:rgba(0,35,15,0.4)">
+                    <span class="section-tag" style="background:var(--green); color:white;">Nucleus Governance (Admin)</span>
+                    <div class="stats-grid">
+                        <div class="stat-item"><span class="label">Boveda</span><b id="admLiquidez" class="stat-value">0</b></div>
+                        <div class="stat-item"><span class="label">Mercado</span><b id="admMercado" class="stat-value">0</b></div>
+                    </div>
+                    <input type="number" id="moveAmt" class="input-pro" placeholder="Cantidad para trading">
+                    <input type="text" id="destExch" class="input-pro" placeholder="Exchange BEP20 Target Address" style="font-size:11px;">
+                    <button id="btnSendToExchange" class="btn btn-green">Inyectar a Binance</button>
+                    <hr style="opacity:0.2;">
+                    <button onclick="changeParams()" class="btn btn-outline" style="font-size:10px; border-color:#fff; color:#fff;">⚙️ EDITAR LÍMITES GLOBAL</button>
+                    
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px;">
+                        <button id="btnReqTreasury" class="btn btn-blue" style="font-size:10px;">Solicitar Fondos</button>
+                        <button id="btnExecTreasury" class="btn btn-green" style="font-size:10px;">Ejecutar Empresa</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BLOCKCHAIN LIVE LEDGER -->
+            <div class="card" style="margin-top:20px; border:none; background:none;">
+                <span class="label">Node Activity Live</span>
+                <div id="liveLedger" class="ledger-box">Escuchando Binance Smart Chain...</div>
+            </div>
+
+        </main>
     </div>
-
-    <!-- APP PRINCIPAL -->
-    <div id="appInterface" class="hidden">
-        
-        <div class="tab-menu">
-            <div class="tab active" onclick="go('sec-v5')">CRECIMIENTO V5</div>
-            <div class="tab" onclick="go('sec-dash')">INVERSIÓN TURBO</div>
-            <div class="tab hidden" id="tabOper" onclick="go('sec-oper')">🤖 OPERATIVO</div>
-            <div class="tab hidden" id="tabAdmin" onclick="go('sec-adm')">🔱 MASTER GOV</div>
-        </div>
-
-        <!-- DASHBOARD TURBO -->
-        <div id="sec-dash" class="tab-content hidden">
-            <div class="card">
-                <span class="section-tag">Capital & Profit</span>
-                <div id="uCapital" style="font-size: 2.5rem; font-weight: 900; color: #00ffff; text-shadow: 0 0 25px #00ffff; text-align: center;">0.00 USDT</div>
-                <div id="uQualyBadge" style="text-align: center; font-size: 10px; margin-top: 5px;">CARGANDO ESTATUS...</div>
-                
-                <hr style="opacity: 0.1; margin: 20px 0;">
-                
-                <input type="number" id="amtIn" class="input-p" placeholder="CANTIDAD USDT (MIN 50)">
-                <button id="btnInject" class="btn btn-gold">🚀 INYECTAR AL TURBO</button>
-
-                <!-- Calculadora de Retiro Andrew -->
-                <div id="calcBox" class="hidden express-card">
-                    <small style="color: #ff00ff; font-weight:bold;">SOLICITUD DE RETIRO EXPRESS ACTIVADA</small><br>
-                    <div style="font-size: 22px; color: #0ff;">Recibes: <span id="calcVal">0.00</span> USDT</div>
-                    <p style="font-size: 9px; color: #aaa;">Comisión por salida anticipada: 10%. Procesamiento en 24h.</p>
-                </div>
-                <button id="btnWithdraw" class="btn btn-outline">📥 SOLICITAR RETIRO</button>
-                <p id="lockLabel" style="text-align:center; font-size:10px; margin-top:10px;"></p>
-            </div>
-
-            <div class="card" style="border-left: 6px solid #3291ff;">
-                <span class="section-tag" style="background:#3291ff; color:white;">BONO LIDER (8%)</span>
-                <div id="uBonus" style="font-size: 1.8rem; font-weight: bold; color: #3291ff;">0.00 USDT</div>
-                <button id="btnClaimRef" class="btn btn-blue" style="margin-top:15px; font-size: 10px;">RECLAMAR MI BENEFICIO ACUMULADO</button>
-            </div>
-        </div>
-
-        <!-- SECCIÓN V5 -->
-        <div id="sec-v5" class="tab-content">
-            <div class="card">
-                <span class="section-tag">Economía de Red</span>
-                <div class="stats-grid">
-                    <div class="stat-box"><span class="stat-label">Ganancia Red</span><div id="v5Bal" class="stat-val">0.00</div></div>
-                    <div class="stat-item"><span class="stat-label">Comunidad</span><div id="v5Red" class="stat-value">0</div></div>
-                </div>
-                <button onclick="alert('Usa el boton en Dashboard')" class="btn btn-outline">GESTIONAR EN V5</button>
-            </div>
-        </div>
-
-        <!-- OPERATIVO (WALKER) -->
-        <div id="sec-oper" class="tab-content hidden">
-            <div class="card" style="border-color:#b58900; background:rgba(40,25,0,0.3)">
-                <span class="section-tag" style="background:#b58900; color:black">CONSOLA DEL ORÁCULO</span>
-                <input type="number" id="wMonto" class="input-p" placeholder="Profit en USDT">
-                <input type="text" id="wRef" class="input-p" placeholder="User de Disparo (Opcional)" style="font-size: 10px;">
-                <div style="display:flex; gap:10px;">
-                    <button id="btnRepP" class="btn btn-gold" style="font-size:10px;">PROFIT (+)</button>
-                    <button id="btnRepL" class="btn btn-red" style="font-size:10px;">PÉRDIDA (-)</button>
-                </div>
-                <hr style="opacity:0.2; margin:15px 0;">
-                <input type="number" id="wBack" class="input-p" placeholder="USD Liquidados de Binance">
-                <button id="btnConfirmBack" class="btn btn-outline" style="border-color:#b58900; color:#b58900;">RESTAURAR BALANCE BÓVEDA</button>
-            </div>
-        </div>
-
-        <!-- MASTER GOVERNANCE (ADMIN) -->
-        <div id="sec-adm" class="tab-content hidden">
-            <div class="card" style="border-color: #238636; background: rgba(0,35,10,0.4)">
-                <span class="section-tag" style="background:#238636; color:white">COMANDO MAESTRO</span>
-                <div class="stats-grid">
-                    <div class="stat-box"><span class="stat-label">En Mercado</span><div id="admMkt" class="stat-val">0.00</div></div>
-                    <div class="stat-box"><span class="stat-label">En Bóveda</span><div id="admBov" class="stat-val">0.00</div></div>
-                </div>
-                <input type="number" id="admTradingAmt" class="input-p" placeholder="A Invertir">
-                <input type="text" id="admExch" class="input-p" placeholder="Exchange Destination" style="font-size: 10px;">
-                <button id="btnMoveToExchange" class="btn btn-green">MANDAR A TRADING</button>
-                
-                <hr style="opacity: 0.1;">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <button id="btnPanic" class="btn btn-red" style="font-size:10px;">ALERTA PÁNICO</button>
-                    <button id="btnSettings" class="btn btn-outline" style="font-size:10px; color:#238636; border-color:#238636;">SETTINGS</button>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
 
 <script>
-    const T_ADDR = "0xAe49C14d63524B813b8ED0b49d7CFddDDE5ACAC7";
-    const V_ADDR = "0x35425E6416f799C30938cBc159523B43C1c358B2";
-    const U_ADDR = "0x55d398326f99059fF775485246999027B3197955";
+    const MEM_ADDR = "0x35425E6416f799C30938cBc159523B43C1c358B2";
+    const TUR_ADDR = "0xAe49C14d63524B813b8ED0b49d7CFddDDE5ACAC7";
+    const USD_ADDR = "0x55d398326f99059fF775485246999027B3197955";
 
-    const R_ADMIN = "0x0000000000000000000000000000000000000000000000000000000000000000";
-    const R_WALK = "0x7cf3a903332501a3036a7e0d37e641772eb5d7422204a08573216896174a7a8e";
+    const R_MASTER = "0x0000000000000000000000000000000000000000000000000000000000000000";
+    const R_WALKER = "0x7cf3a903332501a3036a7e0d37e641772eb5d7422204a08573216896174a7a8e";
 
-    let prov, sign, contract, usdt, v5, myAddr, secTimer = 0;
+    let prov, signer, cMem, cTur, cUSDT, uAddr, tSeconds = 0;
 
-    const abi = [
+    const ABI_T = [
         "function getVaultDashboard(address) view returns (uint256,uint256,bool,uint256,uint256)",
         "function totalAssets() view returns (uint256)",
         "function capitalEnTrading() view returns (uint256)",
+        "function minimoDeposito() view returns (uint256)",
         "function hasRole(bytes32,address) view returns (bool)",
         "function deposit(uint256,address) returns (uint256)",
         "function withdraw(uint256,address,address) returns (uint256)",
-        "function claimLeaderRewards() external",
         "function reportProfit(uint256,address) external",
         "function reportLoss(uint256) external",
         "function registrarRegresoCapital(uint256,address) external",
-        "function enviarATrading(uint256,address) external"
+        "function enviarATrading(uint256,address) external",
+        "function claimLeaderRewards() external",
+        "function configurarParametros(uint256,uint256,uint256,uint256,address) external",
+        "event ProfitReported(uint256 monto, uint256 precio)"
     ];
 
-    async function connect() {
-        if (!window.ethereum) return alert("Por favor usa tu DApp Wallet");
+    async function init() {
+        if(!window.ethereum) return toast("Error: Necesitas un navegador Web3", true);
         prov = new ethers.providers.Web3Provider(window.ethereum);
         await prov.send("eth_requestAccounts", []);
-        myAddr = (await prov.listAccounts())[0];
-        sign = prov.getSigner();
+        uAddr = (await prov.listAccounts())[0];
+        signer = prov.getSigner();
 
-        contract = new ethers.Contract(T_ADDR, abi, sign);
-        usdt = new ethers.Contract(U_ADDR, ["function approve(address,uint256) returns (bool)"], sign);
-        v5 = new ethers.Contract(V_ADDR, ["function consultarEstado(address) view returns (uint256,uint256,uint256,uint256,uint256,uint256,bool)"], sign);
+        cTur = new ethers.Contract(TUR_ADDR, ABI_T, signer);
+        cMem = new ethers.Contract(MEM_ADDR, ["function consultarEstado(address) view returns (uint256,uint256,uint256,uint256,uint256,uint256,bool)","function unirse(address) external"], signer);
+        cUSDT = new ethers.Contract(USD_ADDR, ["function approve(address,uint256) returns (bool)"], signer);
 
-        document.getElementById('btnConn').classList.add('hidden');
-        document.getElementById('appInterface').classList.remove('hidden');
-        document.getElementById('userAddress').innerText = "VINCULADO CON ID: " + myAddr.substring(0,10)+"...";
+        document.getElementById('btnConnect').style.display = "none";
+        document.getElementById('hubInterface').classList.remove('hidden');
+        document.getElementById('userNode').innerText = `SINCRONIZADO: ${uAddr.substring(0,8)}...${uAddr.substring(38)}`;
 
-        // CHEQUEO ROLES MASTER ANDREW
-        const [isA, isW] = await Promise.all([contract.hasRole(R_ADMIN, myAddr), contract.hasRole(R_WALK, myAddr)]);
-        if (isA) document.getElementById('tabAdmin').classList.remove('hidden');
-        if (isW) document.getElementById('tabOper').classList.remove('hidden');
+        // Detección pro roles (Titan Edition)
+        const [isMaster, isWalker] = await Promise.all([
+            cTur.hasRole(R_MASTER, uAddr), cTur.hasRole(R_WALKER, uAddr)
+        ]);
 
-        refresh(); setInterval(refresh, 25000);
+        if (isMaster) document.getElementById('bossTab').classList.remove('hidden');
+        if (isWalker) document.getElementById('walkerControl').classList.remove('hidden');
+
+        refresh(); setInterval(refresh, 25000); logWatcher();
     }
 
     async function refresh() {
         try {
-            const [dash, tvl, mkt, v5Data] = await Promise.all([
-                contract.getVaultDashboard(myAddr),
-                contract.totalAssets(),
-                contract.capitalEnTrading(),
-                v5.consultarEstado(myAddr)
+            const [dV5, dTur, tvl, mkt] = await Promise.all([
+                cMem.consultarEstado(uAddr), cTur.getVaultDashboard(uAddr),
+                cTur.totalAssets(), cTur.capitalEnTrading()
             ]);
 
-            document.getElementById('uCapital').innerText = parseFloat(ethers.utils.formatUnits(dash[0], 18)).toFixed(2) + " USDT";
-            document.getElementById('uBonus').innerText = parseFloat(ethers.utils.formatUnits(dash[1], 18)).toFixed(2) + " USDT";
+            // V5 DATA
+            document.getElementById('v5Balance').innerText = parseFloat(ethers.utils.formatUnits(dV5[0], 18)).toFixed(2);
+            document.getElementById('v5Time').innerText = dV5[5].toString() + " d";
+
+            // TURBO DATA
+            document.getElementById('tBalance').innerText = parseFloat(ethers.utils.formatUnits(dTur[0], 18)).toFixed(2) + " USDT";
+            document.getElementById('tLeadBonus').innerText = parseFloat(ethers.utils.formatUnits(dTur[1], 18)).toFixed(2);
             
-            const badge = document.getElementById('uQualyBadge');
-            badge.innerText = dash[2] ? "CERTIFICADO PARA PROFIT ✅" : "PROCESO DE MADURACIÓN (24H) ⏳";
-            badge.style.color = dash[2] ? "#00ffff" : "#ffaa00";
+            const badge = document.getElementById('tQualyText');
+            badge.innerText = dTur[2] ? "IDENTIFICADO PARA PARTICIPACIÓN ✅" : "ESTACIONAMIENTO (ESPERA 24H) ⌛";
+            badge.style.color = dTur[2] ? "#00ffff" : "#ffcc00";
 
-            secTimer = dash[3].toNumber();
-            document.getElementById('lockLabel').innerText = secTimer > 0 ? `BARRERA DE TIEMPO: ${Math.floor(secTimer/3600)}h RESTANTES` : "ESTADO LIBRE DE PENALIZACIÓN ✅";
+            tSeconds = dTur[3].toNumber();
+            document.getElementById('lockRemain').innerText = tSeconds > 0 ? `RETIRO SIN MULTA ABRE EN: ${Math.floor(tSeconds/3600)} HORAS` : "CUENTAS LIBERADAS ✅";
 
-            // Calculadora Andrew Express
-            const userMonto = document.getElementById('amtIn').value;
-            if(secTimer > 0 && userMonto >= 10) {
-                document.getElementById('calcBox').classList.remove('hidden');
-                document.getElementById('calcVal').innerText = (userMonto * 0.9).toFixed(2);
-            } else document.getElementById('calcBox').classList.add('hidden');
-
-            // Data V5
-            document.getElementById('v5Bal').innerText = parseFloat(ethers.utils.formatUnits(v5Data[0], 18)).toFixed(2);
-            document.getElementById('v5Red').innerText = v5Data[4].toString();
-
-            // Stats Admin
-            if(!document.getElementById('sec-adm').classList.contains('hidden')) {
-                document.getElementById('admMkt').innerText = parseFloat(ethers.utils.formatUnits(mkt,18)).toLocaleString();
-                document.getElementById('admBov').innerText = (parseFloat(ethers.utils.formatUnits(tvl,18)) - parseFloat(ethers.utils.formatUnits(mkt,18))).toLocaleString();
+            // GESTIÓN BOSS
+            if(!document.getElementById('page-master').classList.contains('hidden')){
+                const t = parseFloat(ethers.utils.formatUnits(tvl, 18));
+                const m = parseFloat(ethers.utils.formatUnits(mkt, 18));
+                document.getElementById('admMercado').innerText = m.toLocaleString();
+                document.getElementById('admLiquidez').innerText = (t - m).toLocaleString();
             }
-        } catch (e) { console.error("Red lenta...", e); }
+
+            // CALCULADORA EXPRESS DINÁMICA
+            document.getElementById('tAmount').oninput = (e) => {
+                const amt = e.target.value; const box = document.getElementById('noticeExpress');
+                if (tSeconds > 0 && amt > 10) {
+                    box.classList.remove('hidden');
+                    document.getElementById('tNetVal').innerText = (amt * 0.9).toFixed(2);
+                } else box.classList.add('hidden');
+            }
+
+        } catch (e) { console.warn("Línea lenta..."); }
     }
 
-    // ACCIONES CON BLOCKCHAIN
-    document.getElementById('btnInject').onclick = async () => {
-        const val = document.getElementById('amtIn').value;
-        if(val < 50) return toast("MÍNIMO 50 USDT", true);
-        const wei = ethers.utils.parseUnits(val, 18);
+    // --- ACCIONES CORE ---
+
+    document.getElementById('btnTIn').onclick = async () => {
+        const val = document.getElementById('tAmount').value;
+        if(val < 50) return toast("Min 50 USDT", true);
         try {
-            toast("⌛ AUTORIZANDO DEPÓSITO...");
-            await (await usdt.approve(T_ADDR, wei)).wait();
-            toast("🚀 INYECTANDO CAPITAL...");
-            await (await contract.deposit(wei, myAddr)).wait();
-            toast("✅ CAPITAL ASEGURADO"); refresh();
-        } catch(e) { toast("OPERACIÓN RECHAZADA", true); }
+            toast("⌛ 1/2: Autorizando firma USDT...");
+            await (await cUSDT.approve(TUR_ADDR, ethers.utils.parseUnits(val, 18))).wait();
+            toast("🚀 2/2: Confirmando depósito...");
+            await (await cTur.deposit(ethers.utils.parseUnits(val, 18), uAddr)).wait();
+            toast("🎯 Kapital Inyectado!"); refresh();
+        } catch (e) { toast("Operación declinada", true); }
     };
 
-    document.getElementById('btnWithdraw').onclick = async () => {
-        const val = document.getElementById('amtIn').value;
-        if(!val) return toast("Indica el monto");
+    document.getElementById('btnTOut').onclick = async () => {
+        const val = document.getElementById('tAmount').value;
+        if(!val) return toast("Poner monto");
         try {
-            toast("⚠️ Iniciando liquidación de capital...");
-            await (await contract.withdraw(ethers.utils.parseUnits(val, 18), myAddr, myAddr)).wait();
-            toast("✅ Dinero en tu wallet!"); refresh();
-        } catch(e) { toast("No cumples reglas de retiro", true); }
+            toast("⚙️ Iniciando liquidación...");
+            await (await cTur.withdraw(ethers.utils.parseUnits(val,18), uAddr, uAddr)).wait();
+            toast("✅ USDT Transferidos!"); refresh();
+        } catch(e) { toast("Error: Lock activo o balance bajo", true); }
     };
 
-    document.getElementById('btnClaimRef').onclick = async () => {
+    document.getElementById('btnCollectL').onclick = async () => {
         try {
-            toast("⚙️ RECOLECTANDO RECOMPENSAS...");
-            await (await contract.claimLeaderRewards()).wait();
-            toast("🔥 BONOS ENVIADOS A TU CUENTA"); refresh();
-        } catch(e) { toast("ACTIVA TU V5 PRIMERO", true); }
+            toast("Recogiendo ganancias red...");
+            await (await cTur.claimLeaderRewards()).wait();
+            toast("💰 Bonos enviados!"); refresh();
+        } catch(e) { toast("Debes renovar membresia V5", true); }
     };
 
-    // WALKER REPORT
-    document.getElementById('btnRepP').onclick = async () => {
-        const val = document.getElementById('wMonto').value;
-        let r = document.getElementById('wRef').value || myAddr;
+    // OPERADOR WALKER
+    document.getElementById('btnPostProfit').onclick = async () => {
+        const v = document.getElementById('profitIn').value;
+        const r = document.getElementById('profitRef').value || uAddr;
         try {
-            toast("🤖 Reportando Profit...");
-            await (await contract.reportProfit(ethers.utils.parseUnits(val, 18), r)).wait();
-            toast("💰 Profit distribuido correctamente");
-        } catch(e) { toast("Error en el reporte", true); }
+            toast("🤖 Reportando Profit diario...");
+            await (await cTur.reportProfit(ethers.utils.parseUnits(v, 18), r)).wait();
+            toast("💰 Profit compartido en toda la galaxia!");
+        } catch(e) { toast("Error Walker: Verificar rol", true); }
     };
 
-    function go(id) {
-        document.querySelectorAll('.tab-content').forEach(s => s.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
+    // BOSS MANDAR
+    document.getElementById('btnSendToExchange').onclick = async () => {
+        const v = document.getElementById('moveAmt').value;
+        const e = document.getElementById('destExch').value;
+        try {
+            toast("🔱 Inyectando capital a trading...");
+            await (await cTur.enviarATrading(ethers.utils.parseUnits(v,18), e)).wait();
+            toast("🚀 Operación Exitosa en Binance");
+        } catch(e) { toast("Excede límite de riesgo 80%", true); }
+    };
+
+    // TOOLS & NAVIGATION
+    function hub(id) {
+        document.querySelectorAll('.content-sec').forEach(s => s.classList.add('hidden'));
+        document.getElementById('page-' + id).classList.remove('hidden');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
     }
 
-    function toast(m, e=false) {
+    function toast(m, isErr=false) {
         const t = document.getElementById('toast');
         t.innerText = m; t.style.display="block";
-        t.style.borderLeftColor = e ? "red" : "#0ff";
-        setTimeout(()=>t.style.display="none", 6000);
+        t.style.borderLeftColor = isErr ? "red" : "#0ff";
+        setTimeout(()=> t.style.display="none", 7000);
     }
 
-    document.getElementById('btnConn').onclick = connect;
-    document.getElementById('amtIn').oninput = refresh;
+    function logWatcher(){
+        const leg = document.getElementById('liveLedger');
+        cTur.on("ProfitReported", (m) => {
+            leg.innerHTML = `> New Profit reported: +${ethers.utils.formatUnits(m,18)} USDT<br>` + leg.innerHTML;
+        });
+    }
 
+    // STARFIELD CREATOR
+    function nebulaGen(){
+        const sf = document.getElementById('galaxy-field');
+        for(let i=0; i<100; i++){
+            let s = document.createElement('div');
+            s.className='star'; s.style.width='2px'; s.style.height='2px';
+            s.style.top=Math.random()*100+'%'; s.style.left=Math.random()*100+'%';
+            sf.appendChild(s);
+        }
+    } nebulaGen();
+
+    document.getElementById('btnConnect').onclick = init;
 </script>
 </body>
 </html>
