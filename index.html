@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Milimar Turbo · Titan Edition</title>
+    <title>Milimar Turbo · Titan Edition (Corregido)</title>
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
@@ -1012,7 +1012,7 @@
         const DEFAULT_ADMIN_ROLE = "0x0000000000000000000000000000000000000000000000000000000000000000";
         const ALLOCATOR_ROLE = "0x7cf3a903332501a3036a7e0d37e641772eb5d7422204a08573216896174a7a8e";
 
-        // ABIs
+        // ABIs (simplificados pero completos)
         const abiMembresia = [
             "function consultarEstado(address) view returns (uint256 saldoPendiente, uint256 totalGanado, uint256 totalRetirado, uint256 directos, uint256 redTotal, uint256 diasRestantes, bool activo)",
             "function owner() view returns (address)",
@@ -1084,6 +1084,7 @@
         // Variables globales
         let provider, signer, userAddress;
         let contractMembresia, contractTurbo, usdtContract;
+        let isOwnerV5 = false; // Definir variable para permisos de admin
         let refreshInterval;
         let eventLog = [];
         window.turboLockSec = 0;
@@ -1091,6 +1092,7 @@
         // ========== FUNCIONES AUXILIARES ==========
         function showToast(msg, isError = false) {
             const toast = document.getElementById('toast');
+            if (!toast) return alert(msg);
             toast.innerText = msg;
             toast.style.display = 'block';
             toast.style.backgroundColor = isError ? '#7f1d1d' : '#065f46';
@@ -1109,31 +1111,41 @@
             eventLog.unshift({ time: new Date().toLocaleTimeString(), msg: message, type });
             if (eventLog.length > 5) eventLog.pop();
             const feed = document.getElementById('eventFeed');
-            feed.innerHTML = eventLog.map(e => 
-                `<div class="text-${e.type === 'error' ? 'red' : 'cyan'}-300">[${e.time}] ${e.msg}</div>`
-            ).join('') || '<p class="text-center text-white/30">Esperando eventos...</p>';
+            if (feed) {
+                feed.innerHTML = eventLog.map(e => 
+                    `<div class="text-${e.type === 'error' ? 'red' : 'cyan'}-300">[${e.time}] ${e.msg}</div>`
+                ).join('') || '<p class="text-center text-white/30">Esperando eventos...</p>';
+            }
         }
 
         // ========== FUNCIÓN PRINCIPAL DE CONEXIÓN ==========
         async function initConnection() {
-            if (!window.ethereum) return showToast('Instala MetaMask/OKX Wallet', true);
+            console.log("Iniciando conexión...");
+            if (!window.ethereum) {
+                alert("Instala MetaMask o una wallet compatible.");
+                return;
+            }
 
             try {
                 provider = new ethers.providers.Web3Provider(window.ethereum);
+                console.log("Proveedor obtenido");
                 await provider.send("eth_requestAccounts", []);
                 signer = provider.getSigner();
                 userAddress = await signer.getAddress();
+                console.log("Dirección del usuario:", userAddress);
 
                 // Verificar red
                 const network = await provider.getNetwork();
                 if (network.chainId !== BSC_CHAIN_ID) {
+                    console.log("Red incorrecta, intentando cambiar...");
                     try {
                         await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x38' }] });
                         provider = new ethers.providers.Web3Provider(window.ethereum);
                         signer = provider.getSigner();
                         userAddress = await signer.getAddress();
                     } catch {
-                        return showToast('Cambia a BSC Mainnet en tu wallet', true);
+                        showToast('Cambia a BSC Mainnet en tu wallet', true);
+                        return;
                     }
                 }
 
@@ -1141,16 +1153,19 @@
                 contractMembresia = new ethers.Contract(CONTRACT_ADDR_MEMBRESIA, abiMembresia, signer);
                 contractTurbo = new ethers.Contract(CONTRACT_ADDR_TURBO, abiTurbo, signer);
                 usdtContract = new ethers.Contract(USDT_ADDR, usdtAbi, signer);
+                console.log("Contratos instanciados");
 
-                document.getElementById('myAddress').innerText = userAddress.slice(0,8) + '...' + userAddress.slice(-6);
+                // Actualizar interfaz
+                const addrSpan = document.getElementById('myAddress');
+                if (addrSpan) addrSpan.innerText = userAddress.slice(0,8) + '...' + userAddress.slice(-6);
                 document.getElementById('infoSection').classList.add('hidden');
                 document.getElementById('appContent').classList.remove('hidden');
 
-                // ========== DETECCIÓN DE ROLES CRÍTICA ==========
-                console.log("Verificando permisos para:", userAddress);
+                // Detectar roles (usando hashes fijos)
+                console.log("Verificando roles...");
                 const isWalker = await contractTurbo.hasRole(ALLOCATOR_ROLE, userAddress);
                 const isAdmin = await contractTurbo.hasRole(DEFAULT_ADMIN_ROLE, userAddress);
-                console.log("Status: Admin?", isAdmin, " | Walker?", isWalker);
+                console.log("Admin:", isAdmin, " | Walker:", isWalker);
 
                 const walkerTab = document.getElementById('turboWalkerTab');
                 const adminTab = document.getElementById('turboAdminTab');
@@ -1160,8 +1175,19 @@
                 if (isWalker) showToast('🤖 Modo OPERADOR activado');
                 if (isAdmin) showToast('🔱 Modo MASTER activado');
 
+                // Detectar owner de Milimar para admin V5
+                try {
+                    const ownerAddr = await contractMembresia.owner();
+                    isOwnerV5 = (ownerAddr.toLowerCase() === userAddress.toLowerCase());
+                    const v5AdminTab = document.getElementById('v5AdminTab');
+                    if (v5AdminTab) v5AdminTab.style.display = isOwnerV5 ? 'block' : 'none';
+                } catch (e) {
+                    console.warn("Error obteniendo owner de V5:", e);
+                }
+
                 // Generar link de referidos
-                document.getElementById('refLink').value = window.location.origin + window.location.pathname + "?ref=" + userAddress;
+                const refInput = document.getElementById('refLink');
+                if (refInput) refInput.value = window.location.origin + window.location.pathname + "?ref=" + userAddress;
 
                 // Cargar datos iniciales
                 await loadUserDataV5();
@@ -1178,7 +1204,7 @@
                 }, 20000);
 
             } catch (e) {
-                console.error(e);
+                console.error("Error en conexión:", e);
                 showToast('Error conectando: ' + e.message, true);
             }
         }
@@ -1272,10 +1298,12 @@
 
         // ========== FUNCIONES DE RETIRO TURBO ==========
         function actualizarOpcionesRetiroTurbo() {
-            const amt = parseFloat(document.getElementById('turboAmtOp').value);
+            const amt = parseFloat(document.getElementById('turboAmtOp')?.value || 0);
             const lockSec = window.turboLockSec || 0;
             const opcionesDiv = document.getElementById('turboRetiroOpciones');
             const btnWithdraw = document.getElementById('turboBtnWithdraw');
+
+            if (!opcionesDiv || !btnWithdraw) return;
 
             if (isNaN(amt) || amt < 5) {
                 opcionesDiv.innerHTML = '';
@@ -1314,11 +1342,11 @@
             }
         }
 
-        document.getElementById('turboAmtOp').addEventListener('input', actualizarOpcionesRetiroTurbo);
+        document.getElementById('turboAmtOp')?.addEventListener('input', actualizarOpcionesRetiroTurbo);
 
         // ========== BOTONES TURBO ==========
-        document.getElementById('turboBtnDeposit').onclick = async () => {
-            const val = document.getElementById('turboAmtOp').value;
+        document.getElementById('turboBtnDeposit')?.addEventListener('click', async () => {
+            const val = document.getElementById('turboAmtOp')?.value;
             if (!val || parseFloat(val) < 50) return showToast('⚠️ Mínimo 50 USDT', true);
             try {
                 const wei = ethers.utils.parseUnits(val, 18);
@@ -1332,9 +1360,9 @@
                 await addEvent(`Depositaste ${val} USDT en Turbo`, 'success');
                 loadTurboData();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('turboBtnClaim').onclick = async () => {
+        document.getElementById('turboBtnClaim')?.addEventListener('click', async () => {
             try {
                 showToast('⏳ Reclamando recompensas...');
                 const tx = await contractTurbo.claimLeaderRewards();
@@ -1343,11 +1371,11 @@
                 await addEvent('Reclamaste recompensas de líder', 'success');
                 loadTurboData();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('turboBtnReportProfit').onclick = async () => {
-            const val = document.getElementById('turboReportAmount').value;
-            let ref = document.getElementById('turboRefAddr').value;
+        document.getElementById('turboBtnReportProfit')?.addEventListener('click', async () => {
+            const val = document.getElementById('turboReportAmount')?.value;
+            let ref = document.getElementById('turboRefAddr')?.value;
             if (!ref || ref.length < 20) ref = userAddress;
             if (!val || parseFloat(val) <= 0) return showToast('⚠️ Monto inválido', true);
             try {
@@ -1359,10 +1387,10 @@
                 await addEvent(`Profit reportado: +${val} USDT`, 'success');
                 loadTurboData();
             } catch (e) { showToast('❌ Error: ' + (e.reason || 'Acceso denegado'), true); }
-        };
+        });
 
-        document.getElementById('turboBtnReportLoss').onclick = async () => {
-            const val = document.getElementById('turboReportAmount').value;
+        document.getElementById('turboBtnReportLoss')?.addEventListener('click', async () => {
+            const val = document.getElementById('turboReportAmount')?.value;
             if (!val || parseFloat(val) <= 0) return showToast('⚠️ Monto inválido', true);
             try {
                 const wei = ethers.utils.parseUnits(val, 18);
@@ -1373,11 +1401,11 @@
                 await addEvent(`⚠️ Pérdida reportada: -${val} USDT`, 'error');
                 loadTurboData();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('turboBtnReturnCapital').onclick = async () => {
-            const val = document.getElementById('turboReturnAmount').value;
-            const exch = document.getElementById('turboReturnExchange').value;
+        document.getElementById('turboBtnReturnCapital')?.addEventListener('click', async () => {
+            const val = document.getElementById('turboReturnAmount')?.value;
+            const exch = document.getElementById('turboReturnExchange')?.value;
             if (!val || parseFloat(val) <= 0 || !exch) return showToast('⚠️ Monto y exchange requeridos', true);
             try {
                 const wei = ethers.utils.parseUnits(val, 18);
@@ -1387,11 +1415,11 @@
                 showToast('✅ Capital registrado');
                 loadTurboData();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('turboBtnSendToMarket').onclick = async () => {
-            const val = document.getElementById('turboTradeAmount').value;
-            const exch = document.getElementById('turboExchangeAddr').value;
+        document.getElementById('turboBtnSendToMarket')?.addEventListener('click', async () => {
+            const val = document.getElementById('turboTradeAmount')?.value;
+            const exch = document.getElementById('turboExchangeAddr')?.value;
             if (!val || parseFloat(val) <= 0 || !exch) return showToast('⚠️ Cantidad y exchange requeridos', true);
             try {
                 const wei = ethers.utils.parseUnits(val, 18);
@@ -1401,13 +1429,13 @@
                 showToast('✅ Fondos enviados');
                 loadTurboData();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('turboBtnUpdateParams').onclick = async () => {
-            const min = document.getElementById('turboNewMinDep').value;
-            const multa = document.getElementById('turboNewEarlyFee').value;
-            const risk = document.getElementById('turboNewMaxRisk').value;
-            const maxSend = document.getElementById('turboNewMaxSend').value;
+        document.getElementById('turboBtnUpdateParams')?.addEventListener('click', async () => {
+            const min = document.getElementById('turboNewMinDep')?.value;
+            const multa = document.getElementById('turboNewEarlyFee')?.value;
+            const risk = document.getElementById('turboNewMaxRisk')?.value;
+            const maxSend = document.getElementById('turboNewMaxSend')?.value;
             if (!min || !multa || !risk || !maxSend) return showToast('⚠️ Completa todos los campos', true);
             try {
                 const minWei = ethers.utils.parseUnits(min, 18);
@@ -1420,10 +1448,10 @@
                 showToast('✅ Parámetros actualizados');
                 loadTurboData();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('turboBtnSetBot').onclick = async () => {
-            const newBot = document.getElementById('turboNewBotAddress').value;
+        document.getElementById('turboBtnSetBot')?.addEventListener('click', async () => {
+            const newBot = document.getElementById('turboNewBotAddress')?.value;
             if (!ethers.utils.isAddress(newBot)) return showToast('⚠️ Dirección inválida', true);
             try {
                 showToast('⏳ Cambiando bot...');
@@ -1432,11 +1460,11 @@
                 showToast('✅ Bot actualizado');
                 loadTurboData();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('turboBtnAuthorizeExchange').onclick = async () => {
-            const exchange = document.getElementById('turboNewExchange').value;
-            const maxAmt = document.getElementById('turboExchangeMax').value;
+        document.getElementById('turboBtnAuthorizeExchange')?.addEventListener('click', async () => {
+            const exchange = document.getElementById('turboNewExchange')?.value;
+            const maxAmt = document.getElementById('turboExchangeMax')?.value;
             if (!ethers.utils.isAddress(exchange) || !maxAmt) return showToast('⚠️ Datos inválidos', true);
             try {
                 const wei = ethers.utils.parseUnits(maxAmt, 18);
@@ -1446,10 +1474,10 @@
                 showToast('✅ Exchange autorizado');
                 loadTurboData();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('turboBtnRequestEvent').onclick = async () => {
-            const val = document.getElementById('turboTreasuryAmount').value;
+        document.getElementById('turboBtnRequestEvent')?.addEventListener('click', async () => {
+            const val = document.getElementById('turboTreasuryAmount')?.value;
             if (!val || parseFloat(val) <= 0) return showToast('⚠️ Cantidad inválida', true);
             try {
                 const wei = ethers.utils.parseUnits(val, 18);
@@ -1459,10 +1487,10 @@
                 showToast('✅ Solicitud creada (24h)');
                 loadTurboData();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('turboBtnRequestAdmin').onclick = async () => {
-            const val = document.getElementById('turboTreasuryAmount').value;
+        document.getElementById('turboBtnRequestAdmin')?.addEventListener('click', async () => {
+            const val = document.getElementById('turboTreasuryAmount')?.value;
             if (!val || parseFloat(val) <= 0) return showToast('⚠️ Cantidad inválida', true);
             try {
                 const wei = ethers.utils.parseUnits(val, 18);
@@ -1472,9 +1500,9 @@
                 showToast('✅ Solicitud creada (24h)');
                 loadTurboData();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('turboBtnExecuteTreasury').onclick = async () => {
+        document.getElementById('turboBtnExecuteTreasury')?.addEventListener('click', async () => {
             try {
                 showToast('⏳ Ejecutando retiro...');
                 const tx = await contractTurbo.ejecutarRetiroTesoreria();
@@ -1482,27 +1510,27 @@
                 showToast('✅ Retiro ejecutado');
                 loadTurboData();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('turboBtnPause').onclick = async () => {
+        document.getElementById('turboBtnPause')?.addEventListener('click', async () => {
             try {
                 showToast('⏳ Pausando...');
                 const tx = await contractTurbo.pause();
                 await tx.wait();
                 showToast('✅ Contrato pausado');
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('turboBtnUnpause').onclick = async () => {
+        document.getElementById('turboBtnUnpause')?.addEventListener('click', async () => {
             try {
                 showToast('⏳ Reanudando...');
                 const tx = await contractTurbo.unpause();
                 await tx.wait();
                 showToast('✅ Contrato reanudado');
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('turboBtnPanicOn').onclick = async () => {
+        document.getElementById('turboBtnPanicOn')?.addEventListener('click', async () => {
             try {
                 showToast('⏳ Activando modo pánico...');
                 const tx = await contractTurbo.setPanicMode(true);
@@ -1510,9 +1538,9 @@
                 showToast('✅ Modo pánico activado');
                 loadTurboData();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('turboBtnPanicOff').onclick = async () => {
+        document.getElementById('turboBtnPanicOff')?.addEventListener('click', async () => {
             try {
                 showToast('⏳ Desactivando modo pánico...');
                 const tx = await contractTurbo.setPanicMode(false);
@@ -1520,10 +1548,10 @@
                 showToast('✅ Modo pánico desactivado');
                 loadTurboData();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
         // ========== BOTONES MILIMAR ==========
-        document.getElementById('btnApprove').onclick = async () => {
+        document.getElementById('btnApprove')?.addEventListener('click', async () => {
             if (!usdtContract) return;
             try {
                 const tx = await usdtContract.approve(CONTRACT_ADDR_MEMBRESIA, ethers.utils.parseUnits("1000", 18));
@@ -1532,9 +1560,9 @@
                 showToast('✅ USDT autorizado');
                 await addEvent('Autorizaste USDT para el Plan de Crecimiento', 'success');
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('btnJoin').onclick = async () => {
+        document.getElementById('btnJoin')?.addEventListener('click', async () => {
             if (!contractMembresia) return;
             try {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -1550,9 +1578,9 @@
                 await addEvent(`Te uniste al Plan de Crecimiento con el inversor ${sponsor.slice(0,6)}...`, 'success');
                 loadUserDataV5();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('btnRenew').onclick = async () => {
+        document.getElementById('btnRenew')?.addEventListener('click', async () => {
             if (!contractMembresia) return;
             try {
                 const tx = await contractMembresia.renovarSuscripcion();
@@ -1562,9 +1590,9 @@
                 await addEvent('Renovaste tu membresía', 'success');
                 loadUserDataV5();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('btnWithdraw').onclick = async () => {
+        document.getElementById('btnWithdraw')?.addEventListener('click', async () => {
             if (!contractMembresia) return;
             try {
                 const tx = await contractMembresia.retirarGanancias();
@@ -1574,11 +1602,9 @@
                 await addEvent('Retiraste ganancias', 'success');
                 loadUserDataV5();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        document.getElementById('btnReloadDetails').onclick = loadUserDataV5;
-
-        document.getElementById('btnEmergencyWithdraw').onclick = async () => {
+        document.getElementById('btnEmergencyWithdraw')?.addEventListener('click', async () => {
             if (!contractMembresia) return;
             if (!confirm('¿Estás seguro de retirar todos tus fondos en modo de emergencia?')) return;
             try {
@@ -1589,25 +1615,28 @@
                 await addEvent('⚠️ Retiro de emergencia ejecutado', 'error');
                 loadUserDataV5();
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
-        // Admin V5 (funciones básicas, puedes agregar más si las necesitas)
-        document.getElementById('btnPausa').onclick = async () => {
+        document.getElementById('btnReloadDetails')?.addEventListener('click', loadUserDataV5);
+
+        // Admin V5 (solo algunos botones de ejemplo, puedes agregar más)
+        document.getElementById('btnPausa')?.addEventListener('click', async () => {
             if (!isOwnerV5) { showToast('No tienes permisos', true); return; }
             if (!confirm('¿Cambiar estado de pausa?')) return;
             try {
                 await (await contractMembresia.togglePausa()).wait();
                 showToast('✅ Pausa cambiada');
             } catch (e) { showToast('Error: ' + e.message, true); }
-        };
+        });
 
         // ========== LINK DE REFERIDOS ==========
-        document.getElementById('copyLinkBtn').addEventListener('click', () => {
+        document.getElementById('copyLinkBtn')?.addEventListener('click', () => {
             const refLink = document.getElementById('refLink');
+            if (!refLink) return;
             refLink.select();
             navigator.clipboard.writeText(refLink.value).then(() => {
-                document.getElementById('copyMsg').classList.remove('hidden');
-                setTimeout(() => document.getElementById('copyMsg').classList.add('hidden'), 2000);
+                document.getElementById('copyMsg')?.classList.remove('hidden');
+                setTimeout(() => document.getElementById('copyMsg')?.classList.add('hidden'), 2000);
                 showToast('✅ Enlace copiado');
             }).catch(() => showToast('❌ Error al copiar', true));
         });
@@ -1663,7 +1692,7 @@
                 tab.classList.add('active');
                 const target = tab.dataset.sub;
                 Object.values(v5SubContents).forEach(c => c.classList.add('hidden'));
-                v5SubContents[target].classList.remove('hidden');
+                v5SubContents[target]?.classList.remove('hidden');
             });
         });
 
@@ -1682,7 +1711,7 @@
                 tab.classList.add('active');
                 const target = tab.dataset.sub;
                 Object.values(turboSubContents).forEach(c => c.classList.add('hidden'));
-                turboSubContents[target].classList.remove('hidden');
+                turboSubContents[target]?.classList.remove('hidden');
             });
         });
     </script>
