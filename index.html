@@ -3,116 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Milimar Turbo · Móvil</title>
+    <title>Milimar Turbo · VERSIÓN CORREGIDA</title>
     <!-- Fuentes -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Ethers v5 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* ========== ESTILOS GALÁCTICOS ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             background: #0a0a0f;
-            color: #fff;
+            color: #e0e0ff;
             min-height: 100vh;
-            padding: 10px;
+            padding: 15px;
             position: relative;
+            overflow-x: hidden;
         }
         .galaxy-bg {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: radial-gradient(ellipse at 40% 40%, #1a0033, #000000 80%);
             z-index: -2;
         }
         .stars {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -1;
+            animation: rotateStars 200s linear infinite;
         }
         .star {
             position: absolute;
             background: white;
             border-radius: 50%;
-            width: 2px; height: 2px;
-            opacity: 0.5;
+            box-shadow: 0 0 10px white;
+            opacity: 0.8;
+            animation: twinkle 4s ease-in-out infinite;
+        }
+        @keyframes rotateStars {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
         .nebula {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 70% 30%, rgba(128,0,255,0.2) 0%, transparent 50%);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 70% 30%, rgba(128, 0, 255, 0.2) 0%, transparent 40%),
+                        radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.15) 0%, transparent 50%);
             z-index: -1;
+            animation: pulseNebula 15s ease-in-out infinite;
         }
-        .container { max-width: 100%; margin: 0 auto; position: relative; z-index: 2; }
-        
-        /* Header */
-        .header { text-align: center; padding: 15px 0; margin-bottom: 15px; }
+        @keyframes pulseNebula {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+        }
         .header h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #00ffff, #aa80ff);
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00ffff, #aa80ff, #ff80ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(0,255,255,0.5);
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+            letter-spacing: 2px;
         }
         .slogan {
-            font-size: 0.8rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
             color: #ff80ff;
+            text-shadow: 0 0 15px #ff80ff;
             margin-top: 5px;
+            font-style: italic;
         }
-        #myAddress {
-            font-size: 0.7rem;
-            background: rgba(0,0,0,0.5);
-            padding: 8px;
-            border-radius: 40px;
-            margin: 10px 0;
-            word-break: break-all;
-            border: 1px solid #00ffff33;
-        }
-        
-        /* Cards */
-        .card {
-            background: rgba(10,10,20,0.7);
+        .header p {
+            font-size: 0.8rem;
+            color: #ccc;
+            background: rgba(0,0,0,0.6);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 60px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(0,255,255,0.3);
-            border-radius: 24px;
-            padding: 16px;
-            margin-bottom: 16px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            margin-top: 10px;
+            word-break: break-all;
+        }
+        .floating-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+        .floating-btn {
+            background: rgba(0, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid #00ffff;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+            font-weight: 600;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+        .floating-btn:hover {
+            background: #00ffff;
+            color: black;
+            box-shadow: 0 0 40px #00ffff;
+            transform: scale(1.05);
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid #00ffff;
+            padding: 12px 24px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 0 20px #00ffff;
+            display: none;
+            z-index: 1000;
+        }
+        .card {
+            background: rgba(10, 10, 20, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 32px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.8), 0 0 30px rgba(0, 255, 255, 0.3);
         }
         .section-tag {
             background: #00ffff;
             color: #0a0a0a;
-            padding: 4px 12px;
+            padding: 4px 15px;
             border-radius: 40px;
             font-size: 0.7rem;
             font-weight: 800;
+            text-transform: uppercase;
             display: inline-block;
-            margin-bottom: 12px;
-        }
-        
-        /* Badge membresía */
-        .membresia-badge {
-            padding: 10px;
-            border-radius: 20px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 0.8rem;
             margin-bottom: 15px;
+            box-shadow: 0 0 20px #00ffff;
         }
-        .membresia-activa {
-            background: rgba(0,255,0,0.15);
-            border: 2px solid #00ff00;
-            color: #00ff00;
-        }
-        .membresia-inactiva {
-            background: rgba(255,0,0,0.15);
-            border: 2px solid #ff0000;
-            color: #ff0000;
-        }
-        
-        /* Botones */
         .btn {
             border: none;
             padding: 14px;
@@ -123,49 +189,54 @@
             width: 100%;
             margin: 5px 0;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.2s;
             font-family: 'Orbitron', sans-serif;
         }
-        .btn-primary {
+        .btn-gold {
             background: linear-gradient(145deg, #00ffff, #aa80ff);
             color: #0a0a0a;
-            box-shadow: 0 0 15px rgba(0,255,255,0.5);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
         }
-        .btn-primary:disabled {
+        .btn-gold:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 40px #00ffff;
+            background: linear-gradient(145deg, #80ffff, #c080ff);
+        }
+        .btn-gold:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
         .btn-outline {
             background: transparent;
             border: 2px solid #00ffff;
             color: #00ffff;
+            box-shadow: 0 0 15px #00ffff;
         }
-        
-        /* Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin: 12px 0;
+        .btn-outline:hover {
+            background: rgba(0, 255, 255, 0.2);
+            color: white;
         }
-        .stat-item {
-            background: rgba(0,255,255,0.1);
-            border: 1px solid rgba(0,255,255,0.3);
-            border-radius: 20px;
-            padding: 10px;
-            text-align: center;
+        .btn-outline:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
-        .stat-label {
-            color: #aaa;
-            font-size: 0.6rem;
-            text-transform: uppercase;
+        .btn-blue {
+            background: linear-gradient(145deg, #3291ff, #0055ff);
+            color: white;
+            box-shadow: 0 0 20px #3291ff;
         }
-        .stat-value {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #00ffff;
+        .btn-red {
+            background: linear-gradient(145deg, #f85149, #d03535);
+            color: white;
+            box-shadow: 0 0 20px #f85149;
         }
-        
-        /* Input */
+        .btn-green {
+            background: linear-gradient(145deg, #238636, #1e7a2f);
+            color: white;
+            box-shadow: 0 0 20px #238636;
+        }
         .input-box {
             background: rgba(0,0,0,0.6);
             border: 1px solid #00ffff;
@@ -176,25 +247,78 @@
             text-align: center;
             font-size: 1rem;
             margin: 10px 0;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
         }
-        
-        /* Pestañas */
+        .input-box:focus {
+            outline: none;
+            border-color: #ff80ff;
+            box-shadow: 0 0 25px #ff80ff;
+        }
+        .val-large {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #00ffff;
+            text-shadow: 0 0 30px #00ffff;
+            text-align: center;
+            line-height: 1.2;
+            margin: 10px 0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .stat-item {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            border-radius: 24px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+        .stat-label {
+            color: #aaa;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+        }
+        .stat-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+        }
+        .notification-tray {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            border: 1px solid #00ffff;
+            border-radius: 24px;
+            padding: 10px;
+            max-height: 120px;
+            overflow-y: auto;
+            font-size: 0.7rem;
+            color: #80ffff;
+            margin-top: 10px;
+        }
         .main-tabs {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             overflow-x: auto;
             padding-bottom: 10px;
             margin-bottom: 10px;
         }
         .main-tab {
-            background: rgba(0,255,255,0.1);
+            background: rgba(0, 255, 255, 0.1);
             border: 1px solid #00ffff;
             border-radius: 60px;
             padding: 10px 20px;
-            font-size: 0.9rem;
+            font-size: 1rem;
             white-space: nowrap;
             color: #00ffff;
             cursor: pointer;
+            box-shadow: 0 0 15px #00ffff;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
         }
         .main-tab.active {
             background: #00ffff;
@@ -204,10 +328,11 @@
             display: flex;
             gap: 8px;
             overflow-x: auto;
+            padding-bottom: 10px;
             margin-bottom: 15px;
         }
         .sub-tab {
-            background: rgba(0,255,255,0.1);
+            background: rgba(0, 255, 255, 0.1);
             border: 1px solid #00ffff;
             border-radius: 60px;
             padding: 5px 15px;
@@ -215,130 +340,184 @@
             white-space: nowrap;
             color: #00ffff;
             cursor: pointer;
+            box-shadow: 0 0 10px #00ffff;
         }
         .sub-tab.active {
             background: #00ffff;
             color: #0a0a0a;
         }
         .hidden { display: none; }
-        
-        /* Círculos de red */
-        .circles-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
+        .flex-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        hr { border: none; border-top: 1px solid rgba(0, 255, 255, 0.3); margin: 15px 0; }
+        .express-notice {
+            background: rgba(255, 0, 128, 0.2);
+            border: 2px solid #ff00ff;
+            border-radius: 24px;
+            padding: 15px;
             margin: 15px 0;
+            text-align: center;
+        }
+        .free-notice {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            border-radius: 24px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .membresia-badge {
+            display: block;
+            padding: 12px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .membresia-activa {
+            background: rgba(0, 255, 0, 0.15);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        .membresia-inactiva {
+            background: rgba(255, 0, 0, 0.15);
+            border: 2px solid #ff0000;
+            color: #ff0000;
+            box-shadow: 0 0 20px #ff0000;
         }
         .node {
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: bold;
+            transition: 0.3s;
+            margin: 4px;
             border: 2px solid;
             background: rgba(0,0,0,0.4);
+            cursor: pointer;
         }
         .node-filled {
             border-color: #00ffff;
             color: #00ffff;
-            box-shadow: 0 0 15px #00ffff;
+            box-shadow: 0 0 20px #00ffff;
+            background: rgba(0,255,255,0.1);
         }
         .node-empty {
             border-color: rgba(255,0,255,0.3);
             color: rgba(255,0,255,0.5);
         }
-        
-        /* Tabla */
         .dynamic-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.7rem;
+            margin: 15px 0;
+            font-size: 0.8rem;
         }
         .dynamic-table th {
-            background: rgba(0,255,255,0.2);
-            padding: 6px;
+            background: rgba(0, 255, 255, 0.2);
+            padding: 8px;
+            text-align: center;
             border-bottom: 2px solid #00ffff;
         }
         .dynamic-table td {
             padding: 6px;
             text-align: center;
-            border-bottom: 1px solid rgba(0,255,255,0.2);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
         }
-        
-        /* Gráfico de barras */
         .bar-chart {
             display: flex;
             justify-content: space-around;
             align-items: flex-end;
-            height: 80px;
-            margin: 15px 0;
-            background: rgba(0,0,0,0.3);
-            border-radius: 15px;
+            height: 100px;
+            margin: 20px 0;
             padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .bar-chart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(0,255,255,0.1) 50%, transparent 70%);
+            animation: scan 4s linear infinite;
         }
         .bar-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 30px;
+            width: 40px;
+            z-index: 2;
         }
         .bar {
-            width: 15px;
+            width: 20px;
             background: linear-gradient(to top, #00ffff, #aa80ff);
-            border-radius: 8px 8px 0 0;
+            border-radius: 10px 10px 0 0;
             transition: height 0.3s;
+            box-shadow: 0 0 15px #00ffff;
         }
         .bar-label {
             margin-top: 5px;
-            font-size: 0.5rem;
+            font-size: 0.6rem;
             color: #aaa;
         }
-        
-        /* Link de referido */
         .ref-link-box {
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             border: 1px solid #00ffff;
             border-radius: 60px;
-            padding: 10px;
+            padding: 10px 15px;
             color: white;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             word-break: break-all;
             flex: 1;
         }
-        
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.9);
-            border-left: 4px solid #00ffff;
-            padding: 12px 20px;
-            border-radius: 40px;
-            color: white;
-            display: none;
-            z-index: 1000;
-            font-size: 0.8rem;
-        }
-        
-        /* Feed eventos */
-        .notification-tray {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid #00ffff;
+        .chart-container {
+            height: 150px;
+            margin: 15px 0;
+            background: rgba(0,0,0,0.2);
             border-radius: 20px;
             padding: 10px;
-            max-height: 100px;
             overflow-y: auto;
-            font-size: 0.7rem;
-            margin-top: 10px;
         }
-        
-        .flex-row { display: flex; gap: 10px; }
+        .admin-section {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid gold;
+            border-radius: 16px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .walker-section {
+            background: rgba(255, 165, 0, 0.1);
+            border: 1px solid orange;
+            border-radius: 16px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .role-admin {
+            background: gold;
+            color: black;
+        }
+        .role-walker {
+            background: orange;
+            color: black;
+        }
     </style>
 </head>
 <body>
@@ -346,46 +525,52 @@
     <div class="nebula"></div>
     <div class="stars" id="stars"></div>
 
+    <div class="floating-buttons">
+        <a href="#" target="_blank" class="floating-btn"><i class="fab fa-telegram-plane"></i> Telegram</a>
+        <a href="#" target="_blank" class="floating-btn"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+    </div>
+
     <div id="toast" class="toast"></div>
 
     <div class="container">
         <div class="header">
             <h1>MILIMAR TURBO</h1>
-            <div class="slogan">⚡ Contratos auditados ⚡</div>
+            <div class="slogan">⚡ CONTRATOS AUDITADOS · VERSIÓN CORREGIDA ⚡</div>
             <p id="myAddress">No Conectado</p>
-            <button id="btnConnect" class="btn btn-primary">🔌 CONECTAR WALLET</button>
+            <button id="btnConnect" class="btn btn-gold w-full max-w-md mx-auto">🔌 CONECTAR WALLET</button>
         </div>
 
-        <!-- Contenido principal -->
+        <!-- CONTENIDO PRINCIPAL -->
         <div id="appContent" class="hidden">
             <!-- Pestañas principales -->
             <div class="main-tabs">
-                <div class="main-tab active" data-main="v5">🌱 CRECIMIENTO</div>
-                <div class="main-tab" data-main="turbo">⚡ TURBO</div>
+                <div class="main-tab active" data-main="v5">🌱 PLAN CRECIMIENTO</div>
+                <div class="main-tab" data-main="turbo">⚡ BÓVEDA TURBO</div>
             </div>
 
-            <!-- ===== SECCIÓN MILIMAR ===== -->
-            <div id="seccionV5">
-                <!-- Subpestañas -->
+            <!-- ========== SECCIÓN MILIMAR V5 ========== -->
+            <div id="seccionV5" class="main-content">
+                <!-- Subpestañas de V5 -->
                 <div class="sub-tabs">
                     <div class="sub-tab active" data-sub="v5Dashboard">📊 Dashboard</div>
-                    <div class="sub-tab" data-sub="v5Red">🌐 Mi Red</div>
+                    <div class="sub-tab" data-sub="v5Red">🌐 Mi Comunidad</div>
                     <div class="sub-tab" data-sub="v5Acciones">⚡ Acciones</div>
+                    <div class="sub-tab" data-sub="v5Admin" id="v5AdminTab" style="display:none;">🔱 Admin</div>
                 </div>
 
-                <!-- Dashboard -->
+                <!-- Subsección Dashboard V5 -->
                 <div id="v5Dashboard" class="sub-content">
                     <div class="card">
                         <span class="section-tag">📊 DASHBOARD</span>
                         
-                        <!-- BADGE MEMBRESÍA -->
+                        <!-- BADGE DE MEMBRESÍA -->
                         <div id="membresiaBadge" class="membresia-badge membresia-inactiva">
-                            🔍 Verificando...
+                            🔍 Verificando membresía...
                         </div>
 
                         <div class="stats-grid">
                             <div class="stat-item">
-                                <span class="stat-label">Ganancias</span>
+                                <span class="stat-label">Ganancias disponibles</span>
                                 <span id="valSaldo" class="stat-value">0.00</span>
                             </div>
                             <div class="stat-item">
@@ -393,345 +578,692 @@
                                 <span id="valDias" class="stat-value">0</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Directos</span>
+                                <span class="stat-label">Invitados directos</span>
                                 <span id="valDirectos" class="stat-value">0</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Comunidad</span>
+                                <span class="stat-label">Comunidad total</span>
                                 <span id="valRedTotal" class="stat-value">0</span>
+                            </div>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">Total ganado</span>
+                                <span id="valTotalGanado" class="stat-value">0.00</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Total retirado</span>
+                                <span id="valTotalRetirado" class="stat-value">0.00</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Pool Liderazgo</span>
+                                <span id="poolLiderazgo" class="stat-value">0.00</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Fondo Solidaridad</span>
+                                <span id="fondoSolidaridad" class="stat-value">0.00</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Mi Red -->
+                <!-- Subsección Mi Comunidad V5 -->
                 <div id="v5Red" class="sub-content hidden">
                     <div class="card">
-                        <span class="section-tag">🌐 MI RED</span>
+                        <span class="section-tag">🌐 MI COMUNIDAD</span>
                         
-                        <!-- Gráfico simple -->
+                        <!-- Gráfico de barras -->
                         <div class="bar-chart" id="barChart"></div>
 
-                        <!-- Círculos -->
-                        <div class="circles-container">
-                            <div id="n1" class="node node-empty">N1<br><span>0</span></div>
-                            <div id="n2" class="node node-empty">N2<br><span>0</span></div>
-                            <div id="n3" class="node node-empty">N3<br><span>0</span></div>
-                            <div id="n4" class="node node-empty">N4<br><span>0</span></div>
-                            <div id="n5" class="node node-empty">N5<br><span>0</span></div>
+                        <!-- Círculos de nivel -->
+                        <div class="flex flex-wrap justify-center gap-2 mb-4">
+                            <div id="n1" class="node node-empty" data-level="1">N1<br><span class="text-[10px]">0</span></div>
+                            <div id="n2" class="node node-empty" data-level="2">N2<br><span class="text-[10px]">0</span></div>
+                            <div id="n3" class="node node-empty" data-level="3">N3<br><span class="text-[10px]">0</span></div>
+                            <div id="n4" class="node node-empty" data-level="4">N4<br><span class="text-[10px]">0</span></div>
+                            <div id="n5" class="node node-empty" data-level="5">N5<br><span class="text-[10px]">0</span></div>
                         </div>
 
-                        <!-- Tabla -->
+                        <!-- Tabla de niveles -->
                         <table class="dynamic-table">
                             <thead>
                                 <tr>
                                     <th>Nivel</th>
                                     <th>Personas</th>
-                                    <th>%</th>
-                                    <th>Ganancias</th>
+                                    <th>% Comisión</th>
+                                    <th>Ganancias (USDT)</th>
                                 </tr>
                             </thead>
                             <tbody id="levelTableBody">
-                                <tr><td colspan="4">Cargando...</td></tr>
+                                <tr><td colspan="4" class="text-center">Cargando...</td></tr>
                             </tbody>
                         </table>
 
-                        <button id="btnReloadDetails" class="btn btn-outline" style="margin-top:10px;">⟳ Actualizar</button>
+                        <div class="flex justify-end mt-4">
+                            <button id="btnReloadDetails" class="btn btn-outline text-xs py-1 px-3">⟳ Actualizar</button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Acciones -->
+                <!-- Subsección Acciones V5 -->
                 <div id="v5Acciones" class="sub-content hidden">
                     <div class="card">
                         <span class="section-tag">⚡ ACCIONES</span>
-                        <button id="btnApprove" class="btn btn-primary">AUTORIZAR USDT</button>
-                        <button id="btnJoin" class="btn btn-primary">ACTIVAR (10 USDT)</button>
-                        <button id="btnRenew" class="btn btn-outline">RENOVAR</button>
-                        <button id="btnWithdraw" class="btn btn-outline">RETIRAR</button>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button id="btnApprove" class="btn btn-gold">AUTORIZAR USDT</button>
+                            <button id="btnJoin" class="btn btn-gold">ACTIVAR (10 USDT)</button>
+                            <button id="btnRenew" class="btn btn-outline">RENOVAR</button>
+                            <button id="btnWithdraw" class="btn btn-outline">RETIRAR</button>
+                        </div>
                     </div>
 
-                    <!-- Link referido -->
+                    <!-- Link de referidos -->
                     <div class="card">
-                        <span class="section-tag">🔗 INVITA</span>
-                        <div class="flex-row">
-                            <input type="text" id="refLink" readonly class="ref-link-box" value="Esperando...">
-                            <button id="copyLinkBtn" class="btn btn-primary" style="width:auto; padding:10px 15px;">📋</button>
+                        <span class="section-tag">🔗 TU ENLACE DE INVITACIÓN</span>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="refLink" readonly class="ref-link-box" value="Esperando conexión...">
+                            <button id="copyLinkBtn" class="btn btn-gold py-2 px-4 text-sm" style="width: auto;">📋 Copiar</button>
+                        </div>
+                        <p id="copyMsg" class="text-[10px] text-green-300 mt-2 hidden">¡Enlace copiado!</p>
+                    </div>
+                </div>
+
+                <!-- Subsección Admin V5 -->
+                <div id="v5Admin" class="sub-content hidden">
+                    <div class="card">
+                        <span class="section-tag">🔱 ADMIN MILIMAR</span>
+                        <div class="admin-section">
+                            <p class="text-yellow-300 text-sm mb-4">🔑 Funciones exclusivas de administrador</p>
+                            
+                            <h4 class="text-cyan-300 mb-2">⚙️ Parámetros</h4>
+                            <input id="adminPrecio" type="text" class="input-box" placeholder="Nuevo precio suscripción (USDT)">
+                            <button id="btnActualizarPrecio" class="btn btn-outline w-full mb-3">ACTUALIZAR PRECIO</button>
+                            
+                            <input id="adminBonoN3" type="text" class="input-box" placeholder="Nuevo bono nivel 3 (USDT)">
+                            <button id="btnActualizarBonoN3" class="btn btn-outline w-full mb-3">ACTUALIZAR BONO N3</button>
+                            
+                            <h4 class="text-cyan-300 mb-2">👥 Gestión de usuarios</h4>
+                            <input id="adminLider" type="text" class="input-box" placeholder="Dirección líder">
+                            <input id="adminMonto" type="text" class="input-box" placeholder="Monto (USDT)">
+                            <button id="btnPremiarLider" class="btn btn-outline w-full mb-3">PREMIAR LÍDER</button>
+                            
+                            <input id="adminCuposLider" type="text" class="input-box" placeholder="Dirección líder">
+                            <input id="adminCantCupos" type="text" class="input-box" placeholder="Cantidad cupos">
+                            <button id="btnOtorgarCupos" class="btn btn-outline w-full mb-3">OTORGAR CUPOS</button>
+                            
+                            <h4 class="text-cyan-300 mb-2">🔄 Bonos recurrentes</h4>
+                            <button id="btnToggleBonosRec" class="btn btn-outline w-full mb-3">ACTIVAR/DESACTIVAR BONOS REC</button>
+                            
+                            <h4 class="text-cyan-300 mb-2">🔒 Seguridad</h4>
+                            <button id="btnPausa" class="btn btn-outline w-full mb-2">PAUSAR/REANUDAR</button>
+                            <button id="btnEmergencyMode" class="btn btn-red w-full">🚨 ACTIVAR MODO EMERGENCIA</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ===== SECCIÓN TURBO ===== -->
-            <div id="seccionTurbo" class="hidden">
-                <!-- Subpestañas Turbo -->
+            <!-- ========== SECCIÓN TURBO ========== -->
+            <div id="seccionTurbo" class="main-content hidden">
+                <!-- Subpestañas de Turbo -->
                 <div class="sub-tabs">
                     <div class="sub-tab active" data-sub="turboDashboard">📈 Dashboard</div>
                     <div class="sub-tab" data-sub="turboOperaciones">⚡ Operaciones</div>
+                    <div class="sub-tab" data-sub="turboRecompensas">💰 Recompensas</div>
+                    <div class="sub-tab" data-sub="turboAdmin" id="turboAdminTab" style="display:none;">🔱 Admin</div>
+                    <div class="sub-tab" data-sub="turboWalker" id="turboWalkerTab" style="display:none;">🤖 Walker</div>
                 </div>
 
-                <!-- Dashboard Turbo -->
+                <!-- Subsección Dashboard Turbo -->
                 <div id="turboDashboard" class="sub-content">
                     <div class="card">
-                        <span class="section-tag">📈 DASHBOARD</span>
+                        <span class="section-tag">📈 DASHBOARD TURBO</span>
                         
-                        <!-- Badge membresía -->
+                        <!-- Badge de membresía -->
                         <div id="turboMembresiaBadge" class="membresia-badge membresia-inactiva">
-                            🔍 Verificando...
+                            🔍 Verificando membresía...
                         </div>
 
+                        <div class="val-large" id="turboUserBal">0.00 USDT</div>
                         <div class="stats-grid">
                             <div class="stat-item">
-                                <span class="stat-label">Capital</span>
-                                <span id="turboCapital" class="stat-value">0.00</span>
+                                <span class="stat-label">Recompensas líder</span>
+                                <span id="turboLeaderBal" class="stat-value">0.00</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Recompensas</span>
-                                <span id="turboRecompensas" class="stat-value">0.00</span>
+                                <span class="stat-label">Valor participación</span>
+                                <span id="turboSharePrice" class="stat-value">1.0000</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Bloqueo</span>
-                                <span id="turboBloqueo" class="stat-value">0s</span>
+                                <span class="stat-label">Calificado</span>
+                                <span id="turboCalificado" class="stat-value">⏳</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Precio</span>
-                                <span id="turboPrecio" class="stat-value">1.00</span>
+                                <span class="stat-label">Bloqueo restante</span>
+                                <span id="turboLockTime" class="stat-value">0s</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Operaciones Turbo -->
+                <!-- Subsección Operaciones Turbo -->
                 <div id="turboOperaciones" class="sub-content hidden">
                     <div class="card">
                         <span class="section-tag">⚡ OPERACIONES</span>
-                        <input type="number" id="turboAmount" class="input-box" placeholder="Monto USDT">
-                        <div id="turboOpciones" class="my-2"></div>
-                        <button id="turboBtnDeposit" class="btn btn-primary turbo-required">DEPOSITAR</button>
+                        <input type="number" id="turboAmount" class="input-box" placeholder="Monto USDT (mín. 50)" step="0.01">
+                        <div id="turboWithdrawOptions" class="my-4"></div>
+                        <button id="turboBtnDeposit" class="btn btn-gold turbo-required">🏦 DEPOSITAR</button>
                         <button id="turboBtnWithdraw" class="btn btn-outline mt-2 turbo-required" disabled>RETIRAR</button>
-                        <button id="turboBtnClaim" class="btn btn-primary mt-2 turbo-required">RECLAMAR</button>
+                    </div>
+                </div>
+
+                <!-- Subsección Recompensas Turbo -->
+                <div id="turboRecompensas" class="sub-content hidden">
+                    <div class="card">
+                        <span class="section-tag">💰 RECOMPENSAS</span>
+                        <div class="val-large" style="color:#3291ff;" id="turboLeaderBal2">0.00 USDT</div>
+                        <button id="turboBtnClaim" class="btn btn-blue turbo-required">💰 COSECHAR RECOMPENSAS</button>
+                    </div>
+                </div>
+
+                <!-- Subsección Admin Turbo -->
+                <div id="turboAdmin" class="sub-content hidden">
+                    <div class="card">
+                        <span class="section-tag">🔱 ADMIN TURBO</span>
+                        <div class="admin-section">
+                            <p class="text-yellow-300 text-sm mb-4">🔑 Funciones exclusivas de administrador</p>
+                            
+                            <div class="stats-grid">
+                                <div class="stat-item"><span class="stat-label">En Bóveda</span><span id="turboAdminBoveda" class="stat-value">0.00</span></div>
+                                <div class="stat-item"><span class="stat-label">En Trading</span><span id="turboAdminTrading" class="stat-value">0.00</span></div>
+                            </div>
+                            
+                            <h4 class="text-cyan-300 mb-2">🚀 Trading</h4>
+                            <input type="number" id="turboTradeAmount" class="input-box" placeholder="Cantidad a enviar">
+                            <input type="text" id="turboExchangeAddr" class="input-box" placeholder="Dirección del exchange">
+                            <button id="turboBtnSendToMarket" class="btn btn-green mb-3">🚀 ENVIAR A TRADING</button>
+                            
+                            <h4 class="text-cyan-300 mb-2">⚙️ Configuración</h4>
+                            <input type="number" id="turboNewMinDep" class="input-box" placeholder="Nuevo mínimo">
+                            <input type="number" id="turboNewEarlyFee" class="input-box" placeholder="Nueva multa %">
+                            <input type="number" id="turboNewMaxRisk" class="input-box" placeholder="Nuevo riesgo %">
+                            <input type="number" id="turboNewMaxSend" class="input-box" placeholder="Nuevo límite por envío">
+                            <button id="turboBtnUpdateParams" class="btn btn-outline w-full mb-3">ACTUALIZAR PARÁMETROS</button>
+                            
+                            <h4 class="text-cyan-300 mb-2">🤖 Bot</h4>
+                            <input type="text" id="turboNewBotAddress" class="input-box" placeholder="0x...">
+                            <button id="turboBtnSetBot" class="btn btn-outline w-full mb-3">CAMBIAR BOT</button>
+                            
+                            <h4 class="text-cyan-300 mb-2">⏸️ Pausa</h4>
+                            <div class="flex-row">
+                                <button id="turboBtnPause" class="btn btn-red flex-1">PAUSAR</button>
+                                <button id="turboBtnUnpause" class="btn btn-green flex-1">REANUDAR</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subsección Walker Turbo -->
+                <div id="turboWalker" class="sub-content hidden">
+                    <div class="card">
+                        <span class="section-tag" style="background:#f59e0b;">🤖 WALKER</span>
+                        <div class="walker-section">
+                            <p class="text-orange-300 text-sm mb-4">🤖 Funciones exclusivas del bot</p>
+                            
+                            <div class="stats-grid">
+                                <div class="stat-item"><span class="stat-label">Capital Trading</span><span id="turboWalkerCapitalTrading" class="stat-value">0.00</span></div>
+                                <div class="stat-item"><span class="stat-label">Max Loss/Report</span><span id="turboWalkerMaxLoss" class="stat-value">0.00</span></div>
+                            </div>
+                            
+                            <h4 class="text-cyan-300 mb-2">📊 Reportar Profit</h4>
+                            <input type="number" id="turboReportAmount" class="input-box" placeholder="Monto USDT">
+                            <input type="text" id="turboRefAddr" class="input-box" placeholder="Usuario trigger (0x...)" value="">
+                            <p class="text-xs text-gray-400 mb-2">* Si se deja vacío, se usará tu dirección</p>
+                            <button id="turboBtnReportProfit" class="btn btn-gold mb-3">💰 REPORTAR GANANCIA</button>
+                            
+                            <h4 class="text-cyan-300 mb-2">📉 Reportar Pérdida</h4>
+                            <input type="number" id="turboLossAmount" class="input-box" placeholder="Monto USDT">
+                            <button id="turboBtnReportLoss" class="btn btn-red mb-3">⚠️ REPORTAR PÉRDIDA</button>
+                            
+                            <h4 class="text-cyan-300 mb-2">↩️ Regreso de Capital</h4>
+                            <input type="number" id="turboReturnAmount" class="input-box" placeholder="Monto devuelto">
+                            <input type="text" id="turboReturnExchange" class="input-box" placeholder="Exchange (0x...)">
+                            <button id="turboBtnReturnCapital" class="btn btn-outline">↩️ REGISTRAR REGRESO</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Eventos -->
+        <!-- Feed de eventos -->
         <div class="card">
-            <span class="section-tag">📡 EVENTOS</span>
+            <span class="section-tag">📡 EVENTOS RECIENTES</span>
             <div id="eventFeed" class="notification-tray">
-                <p>Conecta wallet</p>
+                <p class="text-center text-white/30">Conecta wallet para ver eventos</p>
             </div>
         </div>
     </div>
+
+    <footer class="text-center text-[10px] text-gray-500 mt-4">Milimar Protocol · Versión Corregida con Controles de Admin y Walker</footer>
 
     <script>
         // ========== CONFIGURACIÓN ==========
         const DIR_MILIMAR = "0x35425E6416f799C30938cBc159523B43C1c358B2";
         const DIR_TURBO = "0xAe49C14d63524B813b8ED0b49d7CFddDDE5ACAC7";
         const DIR_USDT = "0x55d398326f99059fF775485246999027B3197955";
+        const BSC_CHAIN_ID = 56;
 
-        // ABIs simplificados
+        // Hashes de roles del contrato Turbo
+        const DEFAULT_ADMIN_ROLE = "0x0000000000000000000000000000000000000000000000000000000000000000";
+        const ALLOCATOR_ROLE = "0x7cf3a903332501a3036a7e0d37e641772eb5d7422204a08573216896174a7a8e";
+
+        // ========== ABIs COMPLETOS ==========
         const abiMilimar = [
-            "function usuarios(address) view returns (bool registrado, address, uint256, uint256, uint256, uint256, uint256, uint256[5], uint256, uint256, uint256[5], bool, uint256, uint256, bool)",
-            "function consultarEstado(address) view returns (uint256,uint256,uint256,uint256,uint256,uint256,bool)",
-            "function verDetalleRed(address) view returns (uint256[5])",
-            "function verDetalleGanancias(address) view returns (uint256[5])",
+            "function usuarios(address) view returns (bool registrado, address patrocinador, uint256 saldoPendiente, uint256 totalGanado, uint256 totalRetirado, uint256 contadorDirectos, uint256 redTotal, uint256[5] conteoNiveles, uint256 cuposExtraAdmin, uint256 vencimiento, uint256[5] gananciasNiveles, bool bonoN3Reclamado, uint256 fechaRegistro, uint256 ultimaActividad, bool activo)",
+            "function consultarEstado(address) view returns (uint256 saldoPendiente, uint256 totalGanado, uint256 totalRetirado, uint256 directos, uint256 redTotal, uint256 diasRestantes, bool activo)",
+            "function verDetalleRed(address) view returns (uint256[5] memory)",
+            "function verDetalleGanancias(address) view returns (uint256[5] memory)",
+            "function poolLiderazgo() view returns (uint256)",
+            "function fondoSolidaridad() view returns (uint256)",
+            "function precioSuscripcion() view returns (uint256)",
+            "function porcentajes(uint256) view returns (uint256)",
+            "function bonoNivel3() view returns (uint256)",
+            "function bonosRecurrentesActivados() view returns (bool)",
             "function unirse(address) external",
             "function renovarSuscripcion() external",
-            "function retirarGanancias() external"
+            "function retirarGanancias() external",
+            "function owner() view returns (address)",
+            "function togglePausa() external",
+            "function activateEmergencyMode() external",
+            "function actualizarPrecio(uint256) external",
+            "function actualizarBonoNivel3(uint256) external",
+            "function premiarLider(address,uint256) external",
+            "function otorgarCuposExtra(address,uint256) external",
+            "function setBonosRecurrentesActivados(bool) external"
         ];
 
         const abiTurbo = [
-            "function getVaultDashboard(address) view returns (uint256,uint256,bool,uint256,uint256)",
+            "function DEFAULT_ADMIN_ROLE() view returns (bytes32)",
+            "function ALLOCATOR_ROLE() view returns (bytes32)",
+            "function hasRole(bytes32 role, address account) view returns (bool)",
+            "function getVaultDashboard(address) view returns (uint256 capitalUsdt, uint256 residualLider, bool calificado, uint256 cronometroLock, uint256 sharePrice)",
             "function saldoRecompensasLider(address) view returns (uint256)",
-            "function deposit(uint256,address) external returns (uint256)",
-            "function withdraw(uint256,address,address) external returns (uint256)",
-            "function claimLeaderRewards() external"
+            "function balanceOf(address) view returns (uint256)",
+            "function deposit(uint256 assets, address receiver) returns (uint256)",
+            "function withdraw(uint256 assets, address receiver, address owner) returns (uint256)",
+            "function claimLeaderRewards() external",
+            "function minimoDeposito() view returns (uint256)",
+            "function earlyExitFee() view returns (uint256)",
+            "function totalAssets() view returns (uint256)",
+            "function capitalEnTrading() view returns (uint256)",
+            "function maxLossPerReport() view returns (uint256)",
+            "function totalSupply() view returns (uint256)",
+            "function reportProfit(uint256 _amount, address _userTrigger) external",
+            "function reportLoss(uint256 _amount) external",
+            "function registrarRegresoCapital(uint256 _amt, address exchange) external",
+            "function enviarATrading(uint256 _amt, address exchange) external",
+            "function configurarParametros(uint256 _min, uint256 _multa, uint256 _risk, uint256 _maxSend) external",
+            "function setBotAddress(address _bot) external",
+            "function pause() external",
+            "function unpause() external"
         ];
 
         const usdtAbi = [
-            "function approve(address,uint256) returns (bool)",
+            "function approve(address spender, uint256 amount) returns (bool)",
             "function balanceOf(address) view returns (uint256)",
-            "function allowance(address,address) view returns (uint256)"
+            "function allowance(address owner, address spender) view returns (uint256)"
         ];
 
-        // ========== VARIABLES ==========
+        // ========== VARIABLES GLOBALES ==========
         let provider, signer, userAddress;
         let contratoMilimar, contratoTurbo, contratoUSDT;
         let tieneMembresia = false;
-        let porcentajes = [25,17,10,6,3];
-        let turboLockSec = 0;
+        let isOwnerV5 = false;
+        let isAdminTurbo = false;
+        let isWalkerTurbo = false;
+        let refreshInterval;
         let eventLog = [];
+        let porcentajesNiveles = [25, 17, 10, 6, 3];
+        let turboLockSec = 0;
 
-        // ========== FUNCIONES ==========
+        // ========== ELEMENTOS DOM ==========
+        const toastDiv = document.getElementById('toast');
+        const btnConnect = document.getElementById('btnConnect');
+        const myAddressSpan = document.getElementById('myAddress');
+        const appContent = document.getElementById('appContent');
+        const badgeMembresia = document.getElementById('membresiaBadge');
+        const turboBadge = document.getElementById('turboMembresiaBadge');
+        const eventFeed = document.getElementById('eventFeed');
+
+        // ========== FUNCIONES AUXILIARES ==========
         function showToast(msg, isError = false) {
             const toast = document.getElementById('toast');
             toast.innerText = msg;
             toast.style.display = 'block';
-            toast.style.background = isError ? '#7f1d1d' : '#065f46';
-            setTimeout(() => toast.style.display = 'none', 3000);
+            toast.style.backgroundColor = isError ? '#7f1d1d' : '#065f46';
+            setTimeout(() => toast.style.display = 'none', 4000);
         }
 
-        function addEvent(msg, type = 'info') {
-            eventLog.unshift({ time: new Date().toLocaleTimeString(), msg });
+        function formatTime(seconds) {
+            if (seconds <= 0) return '0s';
+            const d = Math.floor(seconds / 86400);
+            const h = Math.floor((seconds % 86400) / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            return `${d}d ${h}h ${m}m`;
+        }
+
+        async function addEvent(message, type = 'info') {
+            eventLog.unshift({ time: new Date().toLocaleTimeString(), msg: message, type });
             if (eventLog.length > 5) eventLog.pop();
-            const feed = document.getElementById('eventFeed');
-            feed.innerHTML = eventLog.map(e => 
-                `<div style="color:#80ffff;">[${e.time}] ${e.msg}</div>`
-            ).join('');
+            eventFeed.innerHTML = eventLog.map(e => 
+                `<div class="text-${e.type === 'error' ? 'red' : 'cyan'}-300">[${e.time}] ${e.msg}</div>`
+            ).join('') || '<p class="text-center text-white/30">Esperando eventos...</p>';
         }
 
-        function formatTime(sec) {
-            if (sec <= 0) return '0s';
-            const h = Math.floor(sec / 3600);
-            const m = Math.floor((sec % 3600) / 60);
-            return h > 0 ? `${h}h ${m}m` : `${m}m`;
+        function enableTurboButtons(enable) {
+            const turboButtons = document.querySelectorAll('.turbo-required');
+            turboButtons.forEach(button => {
+                button.disabled = !enable;
+                if (enable) {
+                    button.classList.remove('opacity-50', 'cursor-not-allowed');
+                } else {
+                    button.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            });
         }
 
-        // ========== VERIFICAR MEMBRESÍA ==========
-        async function checkMembresia() {
+        // ========== VERIFICAR RED ==========
+        async function checkNetwork() {
+            if (!provider) {
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+            }
+            const network = await provider.getNetwork();
+            if (network.chainId !== BSC_CHAIN_ID) {
+                try {
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: '0x38' }]
+                    });
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    signer = provider.getSigner();
+                    userAddress = await signer.getAddress();
+                    return true;
+                } catch (switchError) {
+                    showToast('⚠️ Cambia a BSC Mainnet manualmente', true);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // ========== VERIFICAR MEMBRESÍA (CORREGIDA) ==========
+        async function checkMembresiaActiva() {
             if (!contratoMilimar || !userAddress) return false;
+            
             try {
-                const user = await contratoMilimar.usuarios(userAddress);
-                console.log('Usuario:', user);
+                console.log('🔍 Verificando membresía V5...');
                 
-                const registrado = user[0] === true;
-                const vencimiento = Number(user[9]);
-                const activo = user[14] === true;
-                const ahora = Math.floor(Date.now() / 1000);
+                // Usar consultarEstado que es más confiable y por índices
+                const estado = await contratoMilimar.consultarEstado(userAddress);
+                console.log('📦 Datos consultarEstado:', estado);
                 
-                tieneMembresia = registrado && vencimiento > ahora && activo;
+                // ÍNDICES CORRECTOS:
+                // [0] = saldoPendiente
+                // [1] = totalGanado
+                // [2] = totalRetirado
+                // [3] = directos
+                // [4] = redTotal
+                // [5] = diasRestantes
+                // [6] = activo (bool) - ¡ESTE ES EL IMPORTANTE!
+                
+                const activo = estado[6] === true;
+                
+                console.log('✅ Membresía activa (índice 6):', activo);
+                
+                // Guardar en variable global
+                tieneMembresia = activo;
                 
                 // Actualizar badges
-                const badge1 = document.getElementById('membresiaBadge');
-                const badge2 = document.getElementById('turboMembresiaBadge');
+                if (badgeMembresia) {
+                    if (activo) {
+                        badgeMembresia.innerHTML = '<i class="fas fa-check-circle mr-2"></i>✅ MEMBRESÍA ACTIVA';
+                        badgeMembresia.className = 'membresia-badge membresia-activa';
+                    } else {
+                        badgeMembresia.innerHTML = '<i class="fas fa-times-circle mr-2"></i>❌ MEMBRESÍA INACTIVA';
+                        badgeMembresia.className = 'membresia-badge membresia-inactiva';
+                    }
+                }
                 
-                if (tieneMembresia) {
-                    badge1.innerHTML = '✅ MEMBRESÍA ACTIVA';
-                    badge1.className = 'membresia-badge membresia-activa';
-                    badge2.innerHTML = '✅ ACCESO A TURBO';
-                    badge2.className = 'membresia-badge membresia-activa';
-                } else {
-                    badge1.innerHTML = '❌ INACTIVA - ACTIVA PRIMERO';
-                    badge1.className = 'membresia-badge membresia-inactiva';
-                    badge2.innerHTML = '❌ MEMBRESÍA REQUERIDA';
-                    badge2.className = 'membresia-badge membresia-inactiva';
+                if (turboBadge) {
+                    if (activo) {
+                        turboBadge.innerHTML = '<i class="fas fa-check-circle mr-2"></i>✅ ACCESO A TURBO';
+                        turboBadge.className = 'membresia-badge membresia-activa';
+                    } else {
+                        turboBadge.innerHTML = '<i class="fas fa-times-circle mr-2"></i>❌ REQUIERE MEMBRESÍA';
+                        turboBadge.className = 'membresia-badge membresia-inactiva';
+                    }
                 }
                 
                 // Habilitar/deshabilitar botones Turbo
-                document.querySelectorAll('.turbo-required').forEach(btn => {
-                    btn.disabled = !tieneMembresia;
-                });
+                enableTurboButtons(activo);
                 
-                return tieneMembresia;
-            } catch (e) {
-                console.log('Error:', e);
+                return activo;
+                
+            } catch (error) {
+                console.error('❌ Error en checkMembresiaActiva:', error);
                 return false;
             }
         }
 
-        // ========== CARGAR DATOS MILIMAR ==========
-        async function loadMilimarData() {
+        // ========== CARGAR DATOS DE MILIMAR V5 (CORREGIDA) ==========
+        async function loadUserDataV5() {
             if (!contratoMilimar || !userAddress) return;
+            
             try {
+                console.log('📊 Cargando datos de Milimar V5...');
+                
+                // Usar consultarEstado() que devuelve un array por índices
                 const estado = await contratoMilimar.consultarEstado(userAddress);
-                console.log('Estado:', estado);
+                console.log('📦 Datos por índices:', estado);
                 
-                document.getElementById('valSaldo').innerText = (Number(estado[0]) / 1e18).toFixed(2);
-                document.getElementById('valDias').innerText = estado[5].toString();
-                document.getElementById('valDirectos').innerText = estado[3].toString();
-                document.getElementById('valRedTotal').innerText = estado[4].toString();
+                // ÍNDICES CORRECTOS:
+                // [0] = saldoPendiente
+                // [1] = totalGanado
+                // [2] = totalRetirado
+                // [3] = directos
+                // [4] = redTotal
+                // [5] = diasRestantes
+                // [6] = activo
                 
-                // Cargar red
-                const red = await contratoMilimar.verDetalleRed(userAddress);
-                const ganancias = await contratoMilimar.verDetalleGanancias(userAddress);
+                // Actualizar UI con los valores correctos (SIEMPRE con 18 decimales)
+                document.getElementById('valSaldo').innerText = 
+                    ethers.utils.formatUnits(estado[0] || 0, 18);
+                document.getElementById('valTotalGanado').innerText = 
+                    ethers.utils.formatUnits(estado[1] || 0, 18);
+                document.getElementById('valTotalRetirado').innerText = 
+                    ethers.utils.formatUnits(estado[2] || 0, 18);
+                document.getElementById('valDirectos').innerText = 
+                    (estado[3] || 0).toString();
+                document.getElementById('valRedTotal').innerText = 
+                    (estado[4] || 0).toString();
+                document.getElementById('valDias').innerText = 
+                    (estado[5] || 0).toString();
                 
-                // Actualizar círculos
-                for (let i = 0; i < 5; i++) {
-                    const node = document.getElementById('n' + (i+1));
-                    const cant = Number(red[i]);
-                    node.innerHTML = `N${i+1}<br><span>${cant}</span>`;
-                    node.classList.toggle('node-filled', cant > 0);
-                    node.classList.toggle('node-empty', cant === 0);
+                // Guardar membresía
+                tieneMembresia = estado[6] === true;
+                
+                // Cargar pools globales
+                try {
+                    const poolLiderazgo = await contratoMilimar.poolLiderazgo();
+                    const fondoSolidaridad = await contratoMilimar.fondoSolidaridad();
+                    
+                    document.getElementById('poolLiderazgo').innerText = 
+                        ethers.utils.formatUnits(poolLiderazgo || 0, 18);
+                    document.getElementById('fondoSolidaridad').innerText = 
+                        ethers.utils.formatUnits(fondoSolidaridad || 0, 18);
+                } catch (e) {
+                    console.log('No se pudieron cargar los pools');
                 }
                 
-                // Tabla
-                let html = '';
-                for (let i = 0; i < 5; i++) {
-                    html += `<tr>
-                        <td>${i+1}</td>
-                        <td>${Number(red[i])}</td>
-                        <td>${porcentajes[i]}%</td>
-                        <td>${(Number(ganancias[i]) / 1e18).toFixed(2)}</td>
-                    </tr>`;
+                // Cargar detalle de red
+                try {
+                    const red = await contratoMilimar.verDetalleRed(userAddress);
+                    const ganancias = await contratoMilimar.verDetalleGanancias(userAddress);
+                    
+                    console.log('📊 Red por niveles:', red);
+                    console.log('📊 Ganancias por niveles:', ganancias);
+                    
+                    // Actualizar círculos
+                    for (let j = 0; j < 5; j++) {
+                        const node = document.getElementById('n' + (j+1));
+                        if (node) {
+                            const cantidad = red[j] ? Number(red[j]) : 0;
+                            node.innerHTML = `N${j+1}<br><span class="text-[10px]">${cantidad}</span>`;
+                            node.classList.toggle('node-filled', cantidad > 0);
+                            node.classList.toggle('node-empty', cantidad === 0);
+                        }
+                    }
+                    
+                    // Actualizar tabla
+                    let tableHtml = '';
+                    for (let j = 0; j < 5; j++) {
+                        const cant = red[j] ? Number(red[j]) : 0;
+                        const ganancia = ganancias[j] ? ethers.utils.formatUnits(ganancias[j], 18) : '0.00';
+                        tableHtml += `<tr>
+                            <td>${j+1}</td>
+                            <td>${cant}</td>
+                            <td>${porcentajesNiveles[j]}%</td>
+                            <td>${ganancia} USDT</td>
+                        </tr>`;
+                    }
+                    document.getElementById('levelTableBody').innerHTML = tableHtml;
+                    
+                    // Actualizar gráfico de barras
+                    const maxCant = Math.max(...Array.from(red).map(v => Number(v)), 1);
+                    const barChart = document.getElementById('barChart');
+                    if (barChart) {
+                        barChart.innerHTML = '';
+                        for (let j = 0; j < 5; j++) {
+                            const cant = Number(red[j]);
+                            const height = maxCant > 0 ? (cant / maxCant) * 60 : 0;
+                            barChart.innerHTML += `
+                                <div class="bar-container">
+                                    <div class="bar" style="height: ${height}px;"></div>
+                                    <div class="bar-label">N${j+1}</div>
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                } catch (e) {
+                    console.log('No se pudo cargar el detalle de red:', e);
+                    document.getElementById('levelTableBody').innerHTML = 
+                        '<tr><td colspan="4" class="text-center text-yellow-300">Funciones de red no disponibles</td></tr>';
                 }
-                document.getElementById('levelTableBody').innerHTML = html;
                 
-                // Gráfico simple
-                const max = Math.max(...Array.from(red).map(v => Number(v)), 1);
-                const chart = document.getElementById('barChart');
-                chart.innerHTML = '';
-                for (let i = 0; i < 5; i++) {
-                    const h = (Number(red[i]) / max) * 50;
-                    chart.innerHTML += `
-                        <div class="bar-container">
-                            <div class="bar" style="height:${h}px;"></div>
-                            <div class="bar-label">N${i+1}</div>
-                        </div>`;
-                }
-                
-            } catch (e) {
-                console.log('Error cargando Milimar:', e);
+            } catch (error) {
+                console.error('Error cargando datos de Milimar:', error);
             }
         }
 
-        // ========== CARGAR DATOS TURBO ==========
+        // ========== CARGAR DATOS DE TURBO ==========
         async function loadTurboData() {
             if (!contratoTurbo || !userAddress) return;
+            
             try {
-                const dash = await contratoTurbo.getVaultDashboard(userAddress);
-                console.log('Turbo:', dash);
+                console.log('📈 Cargando datos de Turbo...');
                 
-                document.getElementById('turboCapital').innerText = (Number(dash[0]) / 1e18).toFixed(2);
-                document.getElementById('turboRecompensas').innerText = (Number(dash[1]) / 1e18).toFixed(2);
-                document.getElementById('turboPrecio').innerText = (Number(dash[4]) / 1e18).toFixed(4);
+                const dashboard = await contratoTurbo.getVaultDashboard(userAddress);
+                console.log('📊 Dashboard Turbo:', dashboard);
                 
-                turboLockSec = Number(dash[3]);
-                document.getElementById('turboBloqueo').innerText = formatTime(turboLockSec);
+                // dashboard[0] = capitalUsdt
+                // dashboard[1] = residualLider
+                // dashboard[2] = calificado
+                // dashboard[3] = cronometroLock
+                // dashboard[4] = sharePrice
                 
+                const capital = ethers.utils.formatUnits(dashboard[0], 18);
+                const residual = ethers.utils.formatUnits(dashboard[1], 18);
+                const sharePrice = ethers.utils.formatUnits(dashboard[4], 18);
+                const lockSec = Number(dashboard[3]);
+                const calificado = dashboard[2];
+                
+                document.getElementById('turboUserBal').innerText = parseFloat(capital).toFixed(2) + ' USDT';
+                document.getElementById('turboLeaderBal').innerText = parseFloat(residual).toFixed(2);
+                document.getElementById('turboLeaderBal2').innerText = parseFloat(residual).toFixed(2) + ' USDT';
+                document.getElementById('turboSharePrice').innerText = parseFloat(sharePrice).toFixed(4);
+                document.getElementById('turboCalificado').innerText = calificado ? '✅ SÍ' : '⏳ MADURANDO';
+                document.getElementById('turboLockTime').innerText = lockSec > 0 ? formatTime(lockSec) : 'LIBRE ✅';
+                
+                turboLockSec = lockSec;
                 actualizarOpcionesRetiro();
                 
-            } catch (e) {
-                console.log('Error Turbo:', e);
+                // Verificar mínimo depósito
+                try {
+                    const minDep = await contratoTurbo.minimoDeposito();
+                    const minDepFormatted = ethers.utils.formatUnits(minDep, 18);
+                    document.getElementById('turboAmount').placeholder = `Monto USDT (mín. ${minDepFormatted})`;
+                } catch (e) {
+                    console.log('No se pudo obtener mínimo depósito');
+                }
+                
+                // Si es admin, cargar datos adicionales
+                if (isAdminTurbo) {
+                    try {
+                        const totalAssets = await contratoTurbo.totalAssets();
+                        const capitalTrading = await contratoTurbo.capitalEnTrading();
+                        document.getElementById('turboAdminBoveda').innerText = 
+                            (parseFloat(ethers.utils.formatUnits(totalAssets, 18)) - 
+                             parseFloat(ethers.utils.formatUnits(capitalTrading, 18))).toFixed(2);
+                        document.getElementById('turboAdminTrading').innerText = 
+                            ethers.utils.formatUnits(capitalTrading, 18);
+                    } catch (e) {}
+                }
+                
+                // Si es walker, cargar datos adicionales
+                if (isWalkerTurbo) {
+                    try {
+                        const capitalTrading = await contratoTurbo.capitalEnTrading();
+                        const maxLoss = await contratoTurbo.maxLossPerReport();
+                        document.getElementById('turboWalkerCapitalTrading').innerText = 
+                            ethers.utils.formatUnits(capitalTrading, 18);
+                        document.getElementById('turboWalkerMaxLoss').innerText = 
+                            ethers.utils.formatUnits(maxLoss, 18);
+                    } catch (e) {}
+                }
+                
+            } catch (error) {
+                console.error('Error cargando Turbo:', error);
             }
         }
 
-        // ========== OPCIONES RETIRO ==========
+        // ========== FUNCIONES DE RETIRO TURBO ==========
         function actualizarOpcionesRetiro() {
-            const monto = parseFloat(document.getElementById('turboAmount')?.value || 0);
-            const opciones = document.getElementById('turboOpciones');
-            const btn = document.getElementById('turboBtnWithdraw');
+            const amt = parseFloat(document.getElementById('turboAmount')?.value || 0);
+            const opcionesDiv = document.getElementById('turboWithdrawOptions');
+            const btnWithdraw = document.getElementById('turboBtnWithdraw');
             
-            if (!monto || monto < 5) {
-                opciones.innerHTML = '';
-                btn.disabled = true;
+            if (!opcionesDiv || !btnWithdraw) return;
+            
+            if (isNaN(amt) || amt < 5) {
+                opcionesDiv.innerHTML = '';
+                btnWithdraw.disabled = true;
                 return;
             }
             
             if (turboLockSec > 0) {
-                opciones.innerHTML = `<div style="background:#ff00ff22; border:2px solid #ff00ff; border-radius:15px; padding:10px; text-align:center; font-size:0.8rem;">
-                    ⚡ Recibirás ${(monto * 0.9).toFixed(2)} USDT (10% comisión)
-                </div>`;
-                btn.disabled = false;
+                const montoNeto = amt * 0.9; // 10% de penalización
+                opcionesDiv.innerHTML = `<div class="express-notice"><strong>⚡ RETIRO EXPRESS</strong><br>Recibirás: ${montoNeto.toFixed(2)} USDT (10% comisión)</div>`;
+                btnWithdraw.disabled = false;
+                btnWithdraw.innerText = 'RETIRAR EXPRESS';
             } else {
-                opciones.innerHTML = `<div style="background:#00ff0022; border:2px solid #00ff00; border-radius:15px; padding:10px; text-align:center; font-size:0.8rem;">
-                    ✅ Recibirás ${monto.toFixed(2)} USDT sin comisión
-                </div>`;
-                btn.disabled = false;
+                opcionesDiv.innerHTML = `<div class="free-notice"><strong>✅ RETIRO SIN COMISIÓN</strong><br>Recibirás: ${amt.toFixed(2)} USDT</div>`;
+                btnWithdraw.disabled = false;
+                btnWithdraw.innerText = 'RETIRAR SIN COMISIÓN';
             }
         }
 
-        // ========== CONECTAR ==========
-        async function connect() {
+        // ========== FUNCIÓN PRINCIPAL DE CONEXIÓN ==========
+        async function initConnection() {
             try {
                 if (!window.ethereum) {
                     alert('Instala MetaMask');
@@ -743,208 +1275,693 @@
                 signer = provider.getSigner();
                 userAddress = await signer.getAddress();
                 
-                document.getElementById('myAddress').innerText = userAddress.slice(0,6) + '...' + userAddress.slice(-4);
-                document.getElementById('appContent').classList.remove('hidden');
+                if (!await checkNetwork()) return;
                 
+                myAddressSpan.innerText = `${userAddress.slice(0,6)}...${userAddress.slice(-4)}`;
+                appContent.classList.remove('hidden');
+                
+                // Inicializar contratos
                 contratoMilimar = new ethers.Contract(DIR_MILIMAR, abiMilimar, signer);
                 contratoTurbo = new ethers.Contract(DIR_TURBO, abiTurbo, signer);
                 contratoUSDT = new ethers.Contract(DIR_USDT, usdtAbi, signer);
                 
-                document.getElementById('refLink').value = window.location.href.split('?')[0] + '?ref=' + userAddress;
+                // ===== VERIFICACIÓN DE ROLES (UNA SOLA VEZ CON AWAIT) =====
+                console.log('🔍 Verificando roles...');
                 
-                await checkMembresia();
-                await loadMilimarData();
+                try {
+                    // Verificar si es owner de Milimar V5
+                    const ownerAddr = await contratoMilimar.owner();
+                    isOwnerV5 = (ownerAddr.toLowerCase() === userAddress.toLowerCase());
+                    const v5AdminTab = document.getElementById('v5AdminTab');
+                    if (v5AdminTab) v5AdminTab.style.display = isOwnerV5 ? 'block' : 'none';
+                    if (isOwnerV5) console.log('👑 Es owner de Milimar V5');
+                } catch (e) {
+                    console.log('No se pudo verificar owner de Milimar');
+                }
+                
+                try {
+                    // Verificar roles en Turbo
+                    isAdminTurbo = await contratoTurbo.hasRole(DEFAULT_ADMIN_ROLE, userAddress);
+                    isWalkerTurbo = await contratoTurbo.hasRole(ALLOCATOR_ROLE, userAddress);
+                    
+                    const turboAdminTab = document.getElementById('turboAdminTab');
+                    const turboWalkerTab = document.getElementById('turboWalkerTab');
+                    
+                    if (turboAdminTab) turboAdminTab.style.display = isAdminTurbo ? 'block' : 'none';
+                    if (turboWalkerTab) turboWalkerTab.style.display = isWalkerTurbo ? 'block' : 'none';
+                    
+                    if (isAdminTurbo) {
+                        console.log('🔱 Es administrador de Turbo');
+                        addEvent('🔱 Modo administrador activado', 'info');
+                    }
+                    if (isWalkerTurbo) {
+                        console.log('🤖 Es walker/bot de Turbo');
+                        addEvent('🤖 Modo walker activado', 'info');
+                    }
+                } catch (e) {
+                    console.log('Error verificando roles de Turbo:', e);
+                }
+                
+                // Generar link de referido
+                const refInput = document.getElementById('refLink');
+                if (refInput) {
+                    refInput.value = window.location.origin + window.location.pathname + "?ref=" + userAddress;
+                }
+                
+                // ===== PRIMERO: Verificar membresía =====
+                await checkMembresiaActiva();
+                
+                // ===== SEGUNDO: Cargar datos =====
+                await loadUserDataV5();
                 await loadTurboData();
                 
-                addEvent('Wallet conectada');
+                await addEvent('Wallet conectada: ' + userAddress.slice(0,6) + '...', 'success');
                 
-                setInterval(() => {
+                // Auto-refresh cada 30 segundos
+                if (refreshInterval) clearInterval(refreshInterval);
+                refreshInterval = setInterval(() => {
                     if (userAddress) {
-                        checkMembresia();
-                        loadMilimarData();
+                        checkMembresiaActiva();
+                        loadUserDataV5();
                         loadTurboData();
                     }
                 }, 30000);
                 
-            } catch (e) {
-                alert('Error: ' + e.message);
+            } catch (error) {
+                console.error('Error en conexión:', error);
+                showToast('Error al conectar: ' + error.message, true);
             }
         }
 
-        // ========== EVENTOS ==========
-        document.getElementById('btnConnect').addEventListener('click', connect);
-        document.getElementById('turboAmount').addEventListener('input', actualizarOpcionesRetiro);
-        document.getElementById('btnReloadDetails').addEventListener('click', () => {
-            loadMilimarData();
-            showToast('Actualizado');
-        });
-        
-        document.getElementById('btnApprove').addEventListener('click', async () => {
-            try {
-                const tx = await contratoUSDT.approve(DIR_MILIMAR, ethers.utils.parseUnits("1000", 18));
-                showToast('Aprobando...');
-                await tx.wait();
-                showToast('✅ USDT autorizado');
-            } catch (e) {
-                showToast('Error', true);
-            }
-        });
-        
-        document.getElementById('btnJoin').addEventListener('click', async () => {
-            try {
-                let sponsor = new URLSearchParams(window.location.search).get('ref');
-                if (!sponsor || sponsor === userAddress) {
-                    sponsor = prompt('Dirección de quien te invitó:');
-                    if (!sponsor) return;
-                }
-                const tx = await contratoMilimar.unirse(sponsor);
-                showToast('Activando...');
-                await tx.wait();
-                showToast('✅ Membresía activada');
-                await checkMembresia();
-                await loadMilimarData();
-            } catch (e) {
-                showToast('Error', true);
-            }
-        });
-        
-        document.getElementById('btnRenew').addEventListener('click', async () => {
-            try {
-                const tx = await contratoMilimar.renovarSuscripcion();
-                showToast('Renovando...');
-                await tx.wait();
-                showToast('✅ Renovado');
-                await checkMembresia();
-                await loadMilimarData();
-            } catch (e) {
-                showToast('Error', true);
-            }
-        });
-        
-        document.getElementById('btnWithdraw').addEventListener('click', async () => {
-            try {
-                const tx = await contratoMilimar.retirarGanancias();
-                showToast('Retirando...');
-                await tx.wait();
-                showToast('✅ Retiro exitoso');
-                await loadMilimarData();
-            } catch (e) {
-                showToast('Error', true);
-            }
-        });
-        
-        document.getElementById('copyLinkBtn').addEventListener('click', () => {
-            document.getElementById('refLink').select();
-            navigator.clipboard.writeText(document.getElementById('refLink').value);
-            showToast('✅ Copiado');
-        });
-        
-        document.getElementById('turboBtnDeposit').addEventListener('click', async () => {
-            if (!tieneMembresia) {
-                showToast('❌ Necesitas membresía', true);
-                return;
-            }
-            const monto = parseFloat(document.getElementById('turboAmount').value);
-            if (monto < 50) {
-                showToast('Mínimo 50 USDT', true);
-                return;
-            }
-            try {
-                const montoWei = ethers.utils.parseUnits(monto.toString(), 18);
-                const allowance = await contratoUSDT.allowance(userAddress, DIR_TURBO);
-                if (allowance.lt(montoWei)) {
-                    const approveTx = await contratoUSDT.approve(DIR_TURBO, montoWei);
-                    await approveTx.wait();
-                }
-                const tx = await contratoTurbo.deposit(montoWei, userAddress);
-                showToast('Depositando...');
-                await tx.wait();
-                showToast('✅ Depósito exitoso');
-                await loadTurboData();
-            } catch (e) {
-                showToast('Error', true);
-            }
-        });
-        
-        document.getElementById('turboBtnWithdraw').addEventListener('click', async () => {
-            if (!tieneMembresia) {
-                showToast('❌ Necesitas membresía', true);
-                return;
-            }
-            const monto = parseFloat(document.getElementById('turboAmount').value);
-            try {
-                const tx = await contratoTurbo.withdraw(
-                    ethers.utils.parseUnits(monto.toString(), 18),
-                    userAddress,
-                    userAddress
-                );
-                showToast('Retirando...');
-                await tx.wait();
-                showToast('✅ Retiro exitoso');
-                await loadTurboData();
-            } catch (e) {
-                showToast('Error', true);
-            }
-        });
-        
-        document.getElementById('turboBtnClaim').addEventListener('click', async () => {
-            if (!tieneMembresia) {
-                showToast('❌ Necesitas membresía', true);
-                return;
-            }
-            try {
-                const tx = await contratoTurbo.claimLeaderRewards();
-                showToast('Reclamando...');
-                await tx.wait();
-                showToast('✅ Recompensas recibidas');
-                await loadTurboData();
-            } catch (e) {
-                showToast('Error', true);
-            }
-        });
+        // ========== EVENT LISTENERS ==========
+        btnConnect.addEventListener('click', initConnection);
 
-        // Pestañas
+        // Escuchar cambios de cuenta/red
+        if (window.ethereum) {
+            window.ethereum.on('accountsChanged', (accounts) => {
+                if (accounts.length > 0) {
+                    initConnection();
+                } else {
+                    myAddressSpan.innerText = 'No Conectado';
+                    appContent.classList.add('hidden');
+                    if (refreshInterval) clearInterval(refreshInterval);
+                }
+            });
+            
+            window.ethereum.on('chainChanged', () => {
+                window.location.reload();
+            });
+        }
+
+        // Pestañas principales
         document.querySelectorAll('.main-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                document.getElementById('seccionV5').classList.toggle('hidden', tab.dataset.main !== 'v5');
-                document.getElementById('seccionTurbo').classList.toggle('hidden', tab.dataset.main !== 'turbo');
+                const target = tab.dataset.main;
+                document.getElementById('seccionV5').classList.toggle('hidden', target !== 'v5');
+                document.getElementById('seccionTurbo').classList.toggle('hidden', target !== 'turbo');
             });
         });
 
-        document.querySelectorAll('#seccionV5 .sub-tab').forEach(tab => {
+        // Subpestañas de V5
+        const v5SubTabs = document.querySelectorAll('#seccionV5 .sub-tab');
+        const v5SubContents = {
+            v5Dashboard: document.getElementById('v5Dashboard'),
+            v5Red: document.getElementById('v5Red'),
+            v5Acciones: document.getElementById('v5Acciones'),
+            v5Admin: document.getElementById('v5Admin')
+        };
+        v5SubTabs.forEach(tab => {
             tab.addEventListener('click', () => {
-                document.querySelectorAll('#seccionV5 .sub-tab').forEach(t => t.classList.remove('active'));
+                v5SubTabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                document.getElementById('v5Dashboard').classList.add('hidden');
-                document.getElementById('v5Red').classList.add('hidden');
-                document.getElementById('v5Acciones').classList.add('hidden');
-                if (tab.dataset.sub === 'v5Dashboard') document.getElementById('v5Dashboard').classList.remove('hidden');
-                if (tab.dataset.sub === 'v5Red') document.getElementById('v5Red').classList.remove('hidden');
-                if (tab.dataset.sub === 'v5Acciones') document.getElementById('v5Acciones').classList.remove('hidden');
+                const target = tab.dataset.sub;
+                Object.values(v5SubContents).forEach(c => c?.classList.add('hidden'));
+                if (v5SubContents[target]) v5SubContents[target].classList.remove('hidden');
             });
         });
 
-        document.querySelectorAll('#seccionTurbo .sub-tab').forEach(tab => {
+        // Subpestañas de Turbo
+        const turboSubTabs = document.querySelectorAll('#seccionTurbo .sub-tab');
+        const turboSubContents = {
+            turboDashboard: document.getElementById('turboDashboard'),
+            turboOperaciones: document.getElementById('turboOperaciones'),
+            turboRecompensas: document.getElementById('turboRecompensas'),
+            turboAdmin: document.getElementById('turboAdmin'),
+            turboWalker: document.getElementById('turboWalker')
+        };
+        turboSubTabs.forEach(tab => {
             tab.addEventListener('click', () => {
-                document.querySelectorAll('#seccionTurbo .sub-tab').forEach(t => t.classList.remove('active'));
+                turboSubTabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                document.getElementById('turboDashboard').classList.add('hidden');
-                document.getElementById('turboOperaciones').classList.add('hidden');
-                if (tab.dataset.sub === 'turboDashboard') document.getElementById('turboDashboard').classList.remove('hidden');
-                if (tab.dataset.sub === 'turboOperaciones') document.getElementById('turboOperaciones').classList.remove('hidden');
+                const target = tab.dataset.sub;
+                Object.values(turboSubContents).forEach(c => c?.classList.add('hidden'));
+                if (turboSubContents[target]) turboSubContents[target].classList.remove('hidden');
             });
         });
 
-        // Estrellas
-        for (let i = 0; i < 100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            document.getElementById('stars').appendChild(star);
+        // ===== BOTONES MILIMAR V5 =====
+        document.getElementById('btnApprove')?.addEventListener('click', async () => {
+            try {
+                const monto = ethers.utils.parseUnits("1000", 18);
+                showToast('⏳ Autorizando USDT...');
+                const tx = await contratoUSDT.approve(DIR_MILIMAR, monto);
+                await tx.wait();
+                showToast('✅ USDT autorizado correctamente');
+                await addEvent('USDT autorizado para Milimar', 'success');
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('btnJoin')?.addEventListener('click', async () => {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                let sponsor = urlParams.get('ref');
+                
+                if (!sponsor || sponsor === userAddress) {
+                    sponsor = prompt('Dirección de quien te invitó:');
+                    if (!sponsor) return;
+                }
+                
+                showToast('⏳ Activando membresía...');
+                const tx = await contratoMilimar.unirse(sponsor);
+                await tx.wait();
+                showToast('✅ Membresía activada');
+                await addEvent('Membresía activada', 'success');
+                
+                await checkMembresiaActiva();
+                await loadUserDataV5();
+                
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('btnRenew')?.addEventListener('click', async () => {
+            try {
+                showToast('⏳ Renovando membresía...');
+                const tx = await contratoMilimar.renovarSuscripcion();
+                await tx.wait();
+                showToast('✅ Membresía renovada');
+                await addEvent('Membresía renovada', 'success');
+                
+                await checkMembresiaActiva();
+                await loadUserDataV5();
+                
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('btnWithdraw')?.addEventListener('click', async () => {
+            try {
+                showToast('⏳ Retirando ganancias...');
+                const tx = await contratoMilimar.retirarGanancias();
+                await tx.wait();
+                showToast('✅ Retiro exitoso');
+                await addEvent('Ganancias retiradas', 'success');
+                await loadUserDataV5();
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('btnReloadDetails')?.addEventListener('click', () => {
+            loadUserDataV5();
+            showToast('Datos actualizados');
+        });
+
+        document.getElementById('copyLinkBtn')?.addEventListener('click', () => {
+            const refLink = document.getElementById('refLink');
+            refLink.select();
+            navigator.clipboard.writeText(refLink.value).then(() => {
+                document.getElementById('copyMsg').classList.remove('hidden');
+                setTimeout(() => document.getElementById('copyMsg').classList.add('hidden'), 2000);
+                showToast('✅ Enlace copiado');
+            });
+        });
+
+        // ===== BOTONES ADMIN MILIMAR =====
+        document.getElementById('btnPausa')?.addEventListener('click', async () => {
+            if (!isOwnerV5) {
+                showToast('❌ Solo el owner puede pausar', true);
+                return;
+            }
+            try {
+                showToast('⏳ Cambiando estado de pausa...');
+                const tx = await contratoMilimar.togglePausa();
+                await tx.wait();
+                showToast('✅ Estado cambiado');
+                await addEvent('Estado de pausa cambiado', 'success');
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('btnEmergencyMode')?.addEventListener('click', async () => {
+            if (!isOwnerV5) {
+                showToast('❌ Solo el owner puede activar emergencia', true);
+                return;
+            }
+            if (!confirm('¿Activar modo emergencia? Los usuarios podrán retirar sin restricciones')) return;
+            try {
+                showToast('⏳ Activando modo emergencia...');
+                const tx = await contratoMilimar.activateEmergencyMode();
+                await tx.wait();
+                showToast('✅ Modo emergencia activado');
+                await addEvent('🚨 Modo emergencia activado', 'error');
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('btnActualizarPrecio')?.addEventListener('click', async () => {
+            if (!isOwnerV5) {
+                showToast('❌ Solo el owner puede actualizar precio', true);
+                return;
+            }
+            const precio = document.getElementById('adminPrecio')?.value;
+            if (!precio || parseFloat(precio) <= 0) {
+                showToast('⚠️ Ingresa un precio válido', true);
+                return;
+            }
+            try {
+                const precioWei = ethers.utils.parseUnits(precio, 18);
+                showToast('⏳ Actualizando precio...');
+                const tx = await contratoMilimar.actualizarPrecio(precioWei);
+                await tx.wait();
+                showToast('✅ Precio actualizado');
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('btnActualizarBonoN3')?.addEventListener('click', async () => {
+            if (!isOwnerV5) {
+                showToast('❌ Solo el owner puede actualizar bono', true);
+                return;
+            }
+            const bono = document.getElementById('adminBonoN3')?.value;
+            if (!bono || parseFloat(bono) <= 0) {
+                showToast('⚠️ Ingresa un bono válido', true);
+                return;
+            }
+            try {
+                const bonoWei = ethers.utils.parseUnits(bono, 18);
+                showToast('⏳ Actualizando bono...');
+                const tx = await contratoMilimar.actualizarBonoNivel3(bonoWei);
+                await tx.wait();
+                showToast('✅ Bono actualizado');
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('btnPremiarLider')?.addEventListener('click', async () => {
+            if (!isOwnerV5) {
+                showToast('❌ Solo el owner puede premiar líderes', true);
+                return;
+            }
+            const lider = document.getElementById('adminLider')?.value;
+            const monto = document.getElementById('adminMonto')?.value;
+            if (!lider || !monto) {
+                showToast('⚠️ Completa todos los campos', true);
+                return;
+            }
+            try {
+                const montoWei = ethers.utils.parseUnits(monto, 18);
+                showToast('⏳ Premiando líder...');
+                const tx = await contratoMilimar.premiarLider(lider, montoWei);
+                await tx.wait();
+                showToast('✅ Líder premiado');
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('btnOtorgarCupos')?.addEventListener('click', async () => {
+            if (!isOwnerV5) {
+                showToast('❌ Solo el owner puede otorgar cupos', true);
+                return;
+            }
+            const lider = document.getElementById('adminCuposLider')?.value;
+            const cantidad = document.getElementById('adminCantCupos')?.value;
+            if (!lider || !cantidad) {
+                showToast('⚠️ Completa todos los campos', true);
+                return;
+            }
+            try {
+                showToast('⏳ Otorgando cupos...');
+                const tx = await contratoMilimar.otorgarCuposExtra(lider, cantidad);
+                await tx.wait();
+                showToast('✅ Cupos otorgados');
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('btnToggleBonosRec')?.addEventListener('click', async () => {
+            if (!isOwnerV5) {
+                showToast('❌ Solo el owner puede cambiar bonos', true);
+                return;
+            }
+            try {
+                const estado = await contratoMilimar.bonosRecurrentesActivados();
+                showToast('⏳ Cambiando estado...');
+                const tx = await contratoMilimar.setBonosRecurrentesActivados(!estado);
+                await tx.wait();
+                showToast('✅ Estado cambiado');
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        // ===== BOTONES TURBO (USUARIO) =====
+        document.getElementById('turboAmount')?.addEventListener('input', actualizarOpcionesRetiro);
+
+        document.getElementById('turboBtnDeposit')?.addEventListener('click', async () => {
+            if (!tieneMembresia) {
+                showToast('❌ Necesitas membresía activa', true);
+                return;
+            }
+            
+            const monto = parseFloat(document.getElementById('turboAmount')?.value);
+            if (!monto || monto < 50) {
+                showToast('⚠️ Monto mínimo: 50 USDT', true);
+                return;
+            }
+            
+            try {
+                const montoWei = ethers.utils.parseUnits(monto.toString(), 18);
+                
+                // Verificar saldo USDT
+                const balance = await contratoUSDT.balanceOf(userAddress);
+                if (balance.lt(montoWei)) {
+                    showToast('❌ Saldo USDT insuficiente', true);
+                    return;
+                }
+                
+                // Verificar allowance
+                const allowance = await contratoUSDT.allowance(userAddress, DIR_TURBO);
+                if (allowance.lt(montoWei)) {
+                    showToast('⏳ Aprobando USDT para Turbo...');
+                    const approveTx = await contratoUSDT.approve(DIR_TURBO, montoWei);
+                    await approveTx.wait();
+                }
+                
+                showToast('⏳ Depositando en Turbo...');
+                const tx = await contratoTurbo.deposit(montoWei, userAddress);
+                await tx.wait();
+                showToast('✅ Depósito exitoso');
+                await addEvent(`Depósito de ${monto} USDT en Turbo`, 'success');
+                await loadTurboData();
+                
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('turboBtnWithdraw')?.addEventListener('click', async () => {
+            if (!tieneMembresia) {
+                showToast('❌ Necesitas membresía activa', true);
+                return;
+            }
+            
+            const monto = parseFloat(document.getElementById('turboAmount')?.value);
+            if (!monto || monto < 5) {
+                showToast('⚠️ Monto mínimo: 5 USDT', true);
+                return;
+            }
+            
+            try {
+                const montoWei = ethers.utils.parseUnits(monto.toString(), 18);
+                showToast('⏳ Retirando de Turbo...');
+                const tx = await contratoTurbo.withdraw(montoWei, userAddress, userAddress);
+                await tx.wait();
+                showToast('✅ Retiro exitoso');
+                await addEvent(`Retiro de ${monto} USDT de Turbo`, 'success');
+                await loadTurboData();
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('turboBtnClaim')?.addEventListener('click', async () => {
+            if (!tieneMembresia) {
+                showToast('❌ Necesitas membresía activa', true);
+                return;
+            }
+            
+            try {
+                showToast('⏳ Reclamando recompensas...');
+                const tx = await contratoTurbo.claimLeaderRewards();
+                await tx.wait();
+                showToast('✅ Recompensas reclamadas');
+                await addEvent('Recompensas de líder reclamadas', 'success');
+                await loadTurboData();
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        // ===== BOTONES WALKER TURBO =====
+        document.getElementById('turboBtnReportProfit')?.addEventListener('click', async () => {
+            if (!isWalkerTurbo) {
+                showToast('❌ Solo el walker puede reportar profit', true);
+                return;
+            }
+            
+            const monto = document.getElementById('turboReportAmount')?.value;
+            let refAddr = document.getElementById('turboRefAddr')?.value;
+            
+            // Si no hay dirección de referencia, usar la del usuario
+            if (!refAddr || refAddr === '' || refAddr === '0x') {
+                refAddr = userAddress;
+            }
+            
+            // Validar que sea una dirección válida
+            if (!ethers.utils.isAddress(refAddr)) {
+                showToast('❌ Dirección de referencia inválida', true);
+                return;
+            }
+            
+            if (!monto || parseFloat(monto) <= 0) {
+                showToast('⚠️ Monto inválido', true);
+                return;
+            }
+            
+            try {
+                const montoWei = ethers.utils.parseUnits(monto, 18);
+                showToast('🤖 Reportando ganancia...');
+                const tx = await contratoTurbo.reportProfit(montoWei, refAddr);
+                await tx.wait();
+                showToast('✅ Ganancia reportada');
+                await addEvent(`Profit reportado: +${monto} USDT`, 'success');
+                await loadTurboData();
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('turboBtnReportLoss')?.addEventListener('click', async () => {
+            if (!isWalkerTurbo) {
+                showToast('❌ Solo el walker puede reportar pérdidas', true);
+                return;
+            }
+            
+            const monto = document.getElementById('turboLossAmount')?.value;
+            if (!monto || parseFloat(monto) <= 0) {
+                showToast('⚠️ Monto inválido', true);
+                return;
+            }
+            
+            try {
+                const montoWei = ethers.utils.parseUnits(monto, 18);
+                showToast('⚠️ Reportando pérdida...');
+                const tx = await contratoTurbo.reportLoss(montoWei);
+                await tx.wait();
+                showToast('✅ Pérdida reportada');
+                await addEvent(`Pérdida reportada: -${monto} USDT`, 'error');
+                await loadTurboData();
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('turboBtnReturnCapital')?.addEventListener('click', async () => {
+            if (!isWalkerTurbo) {
+                showToast('❌ Solo el walker puede registrar regreso', true);
+                return;
+            }
+            
+            const monto = document.getElementById('turboReturnAmount')?.value;
+            const exchange = document.getElementById('turboReturnExchange')?.value;
+            
+            if (!monto || parseFloat(monto) <= 0 || !exchange) {
+                showToast('⚠️ Monto y exchange requeridos', true);
+                return;
+            }
+            
+            if (!ethers.utils.isAddress(exchange)) {
+                showToast('❌ Dirección de exchange inválida', true);
+                return;
+            }
+            
+            try {
+                const montoWei = ethers.utils.parseUnits(monto, 18);
+                showToast('⏳ Registrando regreso...');
+                const tx = await contratoTurbo.registrarRegresoCapital(montoWei, exchange);
+                await tx.wait();
+                showToast('✅ Capital registrado');
+                await loadTurboData();
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        // ===== BOTONES ADMIN TURBO =====
+        document.getElementById('turboBtnSendToMarket')?.addEventListener('click', async () => {
+            if (!isAdminTurbo) {
+                showToast('❌ Solo el admin puede enviar a trading', true);
+                return;
+            }
+            
+            const monto = document.getElementById('turboTradeAmount')?.value;
+            const exchange = document.getElementById('turboExchangeAddr')?.value;
+            
+            if (!monto || parseFloat(monto) <= 0 || !exchange) {
+                showToast('⚠️ Cantidad y exchange requeridos', true);
+                return;
+            }
+            
+            try {
+                const montoWei = ethers.utils.parseUnits(monto, 18);
+                showToast('⏳ Enviando a trading...');
+                const tx = await contratoTurbo.enviarATrading(montoWei, exchange);
+                await tx.wait();
+                showToast('✅ Fondos enviados');
+                await loadTurboData();
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('turboBtnUpdateParams')?.addEventListener('click', async () => {
+            if (!isAdminTurbo) {
+                showToast('❌ Solo el admin puede actualizar parámetros', true);
+                return;
+            }
+            
+            const min = document.getElementById('turboNewMinDep')?.value;
+            const multa = document.getElementById('turboNewEarlyFee')?.value;
+            const risk = document.getElementById('turboNewMaxRisk')?.value;
+            const maxSend = document.getElementById('turboNewMaxSend')?.value;
+            
+            if (!min || !multa || !risk || !maxSend) {
+                showToast('⚠️ Completa todos los campos', true);
+                return;
+            }
+            
+            try {
+                const minWei = ethers.utils.parseUnits(min, 18);
+                const multaNum = parseInt(multa);
+                const riskNum = parseInt(risk);
+                const maxSendWei = ethers.utils.parseUnits(maxSend, 18);
+                
+                showToast('⏳ Actualizando parámetros...');
+                const tx = await contratoTurbo.configurarParametros(minWei, multaNum, riskNum, maxSendWei);
+                await tx.wait();
+                showToast('✅ Parámetros actualizados');
+                await loadTurboData();
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('turboBtnSetBot')?.addEventListener('click', async () => {
+            if (!isAdminTurbo) {
+                showToast('❌ Solo el admin puede cambiar el bot', true);
+                return;
+            }
+            
+            const newBot = document.getElementById('turboNewBotAddress')?.value;
+            if (!ethers.utils.isAddress(newBot)) {
+                showToast('❌ Dirección inválida', true);
+                return;
+            }
+            
+            try {
+                showToast('⏳ Cambiando bot...');
+                const tx = await contratoTurbo.setBotAddress(newBot);
+                await tx.wait();
+                showToast('✅ Bot actualizado');
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('turboBtnPause')?.addEventListener('click', async () => {
+            if (!isAdminTurbo) {
+                showToast('❌ Solo el admin puede pausar', true);
+                return;
+            }
+            
+            try {
+                showToast('⏳ Pausando contrato...');
+                const tx = await contratoTurbo.pause();
+                await tx.wait();
+                showToast('✅ Contrato pausado');
+                await addEvent('⏸️ Contrato Turbo pausado', 'info');
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('turboBtnUnpause')?.addEventListener('click', async () => {
+            if (!isAdminTurbo) {
+                showToast('❌ Solo el admin puede reanudar', true);
+                return;
+            }
+            
+            try {
+                showToast('⏳ Reanudando contrato...');
+                const tx = await contratoTurbo.unpause();
+                await tx.wait();
+                showToast('✅ Contrato reanudado');
+                await addEvent('▶️ Contrato Turbo reanudado', 'success');
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        // ========== CREAR ESTRELLAS ==========
+        function createStars() {
+            const starsDiv = document.getElementById('stars');
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starsDiv.appendChild(star);
+            }
         }
+
+        // Inicializar
+        window.addEventListener('load', () => {
+            createStars();
+            
+            // Auto-conectar si hay wallet
+            if (window.ethereum && window.ethereum.selectedAddress) {
+                setTimeout(initConnection, 500);
+            }
+        });
     </script>
 </body>
 </html>
