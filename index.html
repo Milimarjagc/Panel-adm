@@ -1082,36 +1082,73 @@
 
         // ========== FUNCIÓN DE VERIFICACIÓN DE MEMBRESÍA ==========
         async function checkMembresiaActiva() {
-            if (!contractMembresia || !userAddress) return false;
-            try {
-                const user = await contractMembresia.usuarios(userAddress);
-                const ahora = Math.floor(Date.now() / 1000);
-                const activa = user.registrado && user.vencimiento > ahora;
-                console.log("Membresía activa:", activa);
-                return activa;
-            } catch (e) {
-                console.error("Error verificando membresía:", e);
-                return false;
-            }
+    if (!contractMembresia || !userAddress) return false;
+    try {
+        // Intentar con usuarios() primero
+        const user = await contractMembresia.usuarios(userAddress);
+        console.log("Usuario Milimar:", user);
+        
+        // Verificar estructura de retorno (puede variar)
+        const registrado = user && (user.registrado === true || user[0] === true);
+        if (registrado) {
+            const ahora = Math.floor(Date.now() / 1000);
+            // El vencimiento puede estar en diferentes posiciones
+            const vencimiento = user.vencimiento || user[2] || 0;
+            const activa = vencimiento > ahora;
+            console.log("Membresía activa:", activa, "Vence:", new Date(vencimiento*1000));
+            return activa;
+        }
+        return false;
+    } catch (e) {
+        console.log("Error en usuarios(), intentando con consultarEstado...");
+        try {
+            const estado = await contractMembresia.consultarEstado(userAddress);
+            console.log("Estado Milimar:", estado);
+            // consultarEstado suele devolver (saldo, totalGanado, totalRetirado, directos, redTotal, diasRestantes, activo)
+            const activo = estado && estado[6] === true;
+            return activo;
+        } catch (e2) {
+            console.error("Error también en consultarEstado:", e2);
+            return false;
+        }
+    }
         }
 
         // ========== ACTUALIZAR BADGE DE MEMBRESÍA ==========
         async function updateMembresiaBadge() {
-            const badge = document.getElementById('membresiaBadge');
-            if (!badge) return;
-            
-            const activa = await checkMembresiaActiva();
-            if (activa) {
-                badge.innerText = '✅ MEMBRESÍA ACTIVA EN MILIMAR';
-                badge.classList.remove('membresia-inactiva');
-                badge.classList.add('membresia-activa');
-            } else {
-                badge.innerText = '❌ MEMBRESÍA REQUERIDA (ACTÍVATE EN MILIMAR)';
-                badge.classList.remove('membresia-activa');
-                badge.classList.add('membresia-inactiva');
-            }
-            return activa;
+    const badge = document.getElementById('membresiaBadge');
+    if (!badge) return false;
+    
+    try {
+        const activa = await checkMembresiaActiva();
+        console.log("Membresía activa (badge):", activa);
+        
+        if (activa) {
+            badge.innerText = '✅ MEMBRESÍA ACTIVA EN MILIMAR';
+            badge.classList.remove('membresia-inactiva');
+            badge.classList.add('membresia-activa');
+        } else {
+            badge.innerText = '❌ MEMBRESÍA REQUERIDA (ACTÍVATE EN MILIMAR)';
+            badge.classList.remove('membresia-activa');
+            badge.classList.add('membresia-inactiva');
         }
+        
+        // Habilitar/deshabilitar botones de Turbo
+        const btns = ['turboBtnDeposit', 'turboBtnWithdraw', 'turboBtnClaim'];
+        btns.forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) btn.disabled = !activa;
+        });
+        
+        return activa;
+    } catch (e) {
+        console.error("Error en updateMembresiaBadge:", e);
+        badge.innerText = '❌ ERROR VERIFICANDO MEMBRESÍA';
+        badge.classList.remove('membresia-activa', 'membresia-inactiva');
+        badge.classList.add('membresia-inactiva');
+        return false;
+    }
+}
 
         // ========== LISTENERS DE WALLET ==========
         function setupWalletListeners() {
@@ -1212,85 +1249,109 @@
         }
 
         // ========== FUNCIÓN DE CARGA DE MILIMAR V5 ==========
-        async function loadUserDataV5() {
-            if (!contractMembresia || !userAddress) return;
+        
+async function loadUserDataV5() {
+    if (!contractMembresia || !userAddress) return;
+    try {
+        let registrado = false;
+        let estado = null;
+        
+        // Intentar con usuarios() primero
+        try {
+            const user = await contractMembresia.usuarios(userAddress);
+            registrado = user && (user.registrado === true || user[0] === true);
+        } catch (e) {
+            console.log("Función usuarios no disponible, intentando consultarEstado");
+        }
+        
+        // Si no, intentar con consultarEstado
+        if (!registrado) {
             try {
-                const user = await contractMembresia.usuarios(userAddress);
-                if (!user.registrado) {
-                    console.log("Usuario no registrado en Milimar V5");
-                    return;
-                }
-
-                const estado = await contractMembresia.consultarEstado(userAddress);
-                document.getElementById('valSaldo').innerText = ethers.utils.formatUnits(estado.saldoPendiente, 18);
-                document.getElementById('valDir').innerText = estado.directos.toString();
-                document.getElementById('valRed').innerText = estado.redTotal.toString();
-                document.getElementById('valDias').innerText = estado.diasRestantes.toString();
-
-                const fondo = await contractMembresia.fondoSolidaridad();
-                document.getElementById('fondoSolidaridad').innerText = ethers.utils.formatUnits(fondo, 18);
-                const pool = await contractMembresia.poolLiderazgo();
-                document.getElementById('poolLiderazgo').innerText = ethers.utils.formatUnits(pool, 18);
-                const emergency = await contractMembresia.emergencyMode();
-                document.getElementById('btnEmergencyWithdraw').style.display = emergency ? 'block' : 'none';
-
-                const bonoN3 = await contractMembresia.bonoNivel3();
-                document.getElementById('bonoNivel3').innerText = ethers.utils.formatUnits(bonoN3, 18);
-                const bonosRec = await contractMembresia.bonosRecurrentesActivados();
-                document.getElementById('bonosRecurrentes').innerText = bonosRec ? 'ACTIVO' : 'INACTIVO';
-
-                const red = await contractMembresia.verDetalleRed(userAddress);
-                const ganancias = await contractMembresia.verDetalleGanancias(userAddress);
-                
-                for (let j = 0; j < 5; j++) {
-                    const node = document.getElementById('n' + (j+1));
-                    if (!node) continue;
-                    const cantidad = red[j].toNumber();
-                    node.innerHTML = `N${j+1}<br><span class="text-[10px]">${cantidad}</span>`;
-                    if (cantidad > 0) {
-                        node.classList.add('node-filled');
-                        node.classList.remove('node-empty');
-                    } else {
-                        node.classList.add('node-empty');
-                        node.classList.remove('node-filled');
-                    }
-                }
-
-                let tableHtml = '';
-                for (let j = 0; j < 5; j++) {
-                    const cant = red[j].toNumber();
-                    const ganancia = ethers.utils.formatUnits(ganancias[j], 18);
-                    const proyeccion = (cant * 10 * porcentajes[j] / 100).toFixed(2);
-                    tableHtml += `<tr>
-                        <td>${j+1}</td>
-                        <td>${cant}</td>
-                        <td>${porcentajes[j]}%</td>
-                        <td>${ganancia} USDT</td>
-                        <td>${proyeccion} USDT</td>
-                    </tr>`;
-                }
-                document.getElementById('levelTableBody').innerHTML = tableHtml;
-
-                const maxCant = Math.max(...red.map(v => v.toNumber()), 1);
-                const barChart = document.getElementById('barChart');
-                if (barChart) {
-                    barChart.innerHTML = '';
-                    for (let j = 0; j < 5; j++) {
-                        const cant = red[j].toNumber();
-                        const height = (cant / maxCant) * 60;
-                        barChart.innerHTML += `
-                            <div class="bar-container">
-                                <div class="bar" style="height: ${height}px;"></div>
-                                <div class="bar-label">N${j+1}</div>
-                            </div>
-                        `;
-                    }
-                }
+                estado = await contractMembresia.consultarEstado(userAddress);
+                registrado = estado && estado[6] === true; // activo suele ser el 7mo campo
             } catch (e) {
-                console.error('Error cargando V5:', e);
+                console.log("Usuario no registrado o error en consulta");
             }
         }
+        
+        if (!registrado) {
+            console.log("Usuario no registrado en Milimar V5");
+            document.getElementById('levelTableBody').innerHTML = 
+                '<tr><td colspan="5" class="text-center text-yellow-300">No estás registrado en Milimar V5</td></tr>';
+            document.getElementById('valSaldo').innerText = '0.00';
+            document.getElementById('valDir').innerText = '0';
+            document.getElementById('valRed').innerText = '0';
+            document.getElementById('valDias').innerText = '0';
+            return;
+        }
 
+        // Si tenemos estado de consultarEstado, mostrar datos básicos
+        if (estado) {
+            document.getElementById('valSaldo').innerText = ethers.utils.formatUnits(estado[0] || 0, 18);
+            document.getElementById('valDir').innerText = (estado[3] || 0).toString();
+            document.getElementById('valRed').innerText = (estado[4] || 0).toString();
+            document.getElementById('valDias').innerText = (estado[5] || 0).toString();
+        }
+
+        // Intentar cargar red y ganancias (pueden no existir en tu contrato)
+        try {
+            const red = await contractMembresia.verDetalleRed(userAddress);
+            const ganancias = await contractMembresia.verDetalleGanancias(userAddress);
+            
+            // Actualizar círculos
+            for (let j = 0; j < 5; j++) {
+                const node = document.getElementById('n' + (j+1));
+                if (node) {
+                    const cantidad = red[j] ? red[j].toNumber() : 0;
+                    node.innerHTML = `N${j+1}<br><span class="text-[10px]">${cantidad}</span>`;
+                    node.classList.toggle('node-filled', cantidad > 0);
+                    node.classList.toggle('node-empty', cantidad === 0);
+                }
+            }
+
+            // Actualizar tabla
+            let tableHtml = '';
+            for (let j = 0; j < 5; j++) {
+                const cant = red[j] ? red[j].toNumber() : 0;
+                const ganancia = ganancias[j] ? ethers.utils.formatUnits(ganancias[j], 18) : '0.00';
+                const proyeccion = (cant * 10 * porcentajes[j] / 100).toFixed(2);
+                tableHtml += `<tr>
+                    <td>${j+1}</td>
+                    <td>${cant}</td>
+                    <td>${porcentajes[j]}%</td>
+                    <td>${ganancia} USDT</td>
+                    <td>${proyeccion} USDT</td>
+                </tr>`;
+            }
+            document.getElementById('levelTableBody').innerHTML = tableHtml;
+
+            // Actualizar gráfico de barras
+            const maxCant = Math.max(...red.map(v => v.toNumber()), 1);
+            const barChart = document.getElementById('barChart');
+            if (barChart) {
+                barChart.innerHTML = '';
+                for (let j = 0; j < 5; j++) {
+                    const cant = red[j].toNumber();
+                    const height = (cant / maxCant) * 60;
+                    barChart.innerHTML += `
+                        <div class="bar-container">
+                            <div class="bar" style="height: ${height}px;"></div>
+                            <div class="bar-label">N${j+1}</div>
+                        </div>
+                    `;
+                }
+            }
+        } catch (e) {
+            console.log("Funciones de red no disponibles, mostrando solo dashboard");
+            document.getElementById('levelTableBody').innerHTML = 
+                '<tr><td colspan="5" class="text-center">Datos de red no disponibles en este contrato</td></tr>';
+        }
+    } catch (e) {
+        console.error('Error cargando V5:', e);
+        document.getElementById('levelTableBody').innerHTML = 
+            '<tr><td colspan="5" class="text-center text-red-400">Error al cargar datos</td></tr>';
+    }
+}
         // ========== FUNCIÓN DE CARGA DE TURBO ==========
         async function loadTurboData() {
             if (!contractTurbo || !userAddress) return;
@@ -1347,47 +1408,51 @@
                 }
 
                 // Si es admin, actualizar datos de admin
-                if (document.getElementById('turboAdminTab').style.display === 'block') {
-                    const totalAssets = await contractTurbo.totalAssets();
-                    const capitalTrading = await contractTurbo.capitalEnTrading();
-                    const tvlNum = parseFloat(ethers.utils.formatUnits(totalAssets, 18));
-                    const mktNum = parseFloat(ethers.utils.formatUnits(capitalTrading, 18));
-                    document.getElementById('turboAdminBoveda').innerText = (tvlNum - mktNum).toFixed(2);
-                    document.getElementById('turboAdminTrading').innerText = mktNum.toFixed(2);
+if (document.getElementById('turboAdminTab').style.display === 'block') {
+    const totalAssets = await contractTurbo.totalAssets();
+    const capitalTrading = await contractTurbo.capitalEnTrading();
+    const tvlNum = parseFloat(ethers.utils.formatUnits(totalAssets, 18));
+    const mktNum = parseFloat(ethers.utils.formatUnits(capitalTrading, 18));
+    document.getElementById('turboAdminBoveda').innerText = (tvlNum - mktNum).toFixed(2);
+    document.getElementById('turboAdminTrading').innerText = mktNum.toFixed(2);
 
-                    const minDep = await contractTurbo.minimoDeposito();
-                    const earlyFee = await contractTurbo.earlyExitFee();
-                    const maxRisk = await contractTurbo.porcentajeMaximoTrading();
-                    const maxSend = await contractTurbo.maxEnvioTrading();
-                    document.getElementById('turboConfigMinDep').innerText = ethers.utils.formatUnits(minDep, 18);
-                    document.getElementById('turboConfigEarlyFee').innerText = earlyFee + '%';
-                    document.getElementById('turboConfigMaxRisk').innerText = maxRisk + '%';
-                    document.getElementById('turboConfigMaxSend').innerText = ethers.utils.formatUnits(maxSend, 18);
+    const minDep = await contractTurbo.minimoDeposito();
+    const earlyFee = await contractTurbo.earlyExitFee();
+    const maxRisk = await contractTurbo.porcentajeMaximoTrading();
+    const maxSend = await contractTurbo.maxEnvioTrading();
+    document.getElementById('turboConfigMinDep').innerText = ethers.utils.formatUnits(minDep, 18);
+    document.getElementById('turboConfigEarlyFee').innerText = earlyFee + '%';
+    document.getElementById('turboConfigMaxRisk').innerText = maxRisk + '%';
+    document.getElementById('turboConfigMaxSend').innerText = ethers.utils.formatUnits(maxSend, 18);
 
-                    const pending = await contractTurbo.pendingAdminWithdrawal();
-                    if (pending && pending.amount > 0) {
-                        document.getElementById('turboPendingAmount').innerText = ethers.utils.formatUnits(pending.amount, 18);
-                        const readyAt = Number(pending.readyAt);
-                        const now = Math.floor(Date.now() / 1000);
-                        const remaining = readyAt > now ? readyAt - now : 0;
-                        document.getElementById('turboPendingReadyAt').innerText = remaining > 0 ? formatTime(remaining) : 'Listo';
-                    } else {
-                        document.getElementById('turboPendingAmount').innerText = '0.00';
-                        document.getElementById('turboPendingReadyAt').innerText = '--';
-                    }
-                }
+    const pending = await contractTurbo.pendingAdminWithdrawal();
+    if (pending && pending.amount > 0) {
+        document.getElementById('turboPendingAmount').innerText = ethers.utils.formatUnits(pending.amount, 18);
+        const readyAt = Number(pending.readyAt);
+        const now = Math.floor(Date.now() / 1000);
+        const remaining = readyAt > now ? readyAt - now : 0;
+        document.getElementById('turboPendingReadyAt').innerText = remaining > 0 ? formatTime(remaining) : 'Listo';
+    } else {
+        document.getElementById('turboPendingAmount').innerText = '0.00';
+        document.getElementById('turboPendingReadyAt').innerText = '--';
+    }
+}
 
-                // Si es allocator, actualizar datos del walker
-                if (document.getElementById('turboWalkerTab').style.display === 'block') {
-                    const capitalTrading = await contractTurbo.capitalEnTrading();
-                    const maxLoss = await contractTurbo.maxLossPerReport();
-                    document.getElementById('turboWalkerCapitalTrading').innerText = ethers.utils.formatUnits(capitalTrading, 18);
-                    document.getElementById('turboWalkerMaxLoss').innerText = ethers.utils.formatUnits(maxLoss, 18);
-                }
-            } catch (e) {
-                console.error('Error cargando Turbo:', e);
-            }
-        }
+// Si es allocator, actualizar datos del walker
+if (document.getElementById('turboWalkerTab').style.display === 'block') {
+    const capitalTrading = await contractTurbo.capitalEnTrading();
+    const maxLoss = await contractTurbo.maxLossPerReport();
+    document.getElementById('turboWalkerCapitalTrading').innerText = ethers.utils.formatUnits(capitalTrading, 18);
+    document.getElementById('turboWalkerMaxLoss').innerText = ethers.utils.formatUnits(maxLoss, 18);
+}
+
+// Actualizar badge de membresía
+await updateMembresiaBadge();
+
+} catch (e) {
+    console.error('Error cargando Turbo:', e);
+    showToast('Error al cargar datos de Turbo', true);
+}
 
         // ========== FUNCIONES DE RETIRO TURBO ==========
         function actualizarOpcionesRetiroTurbo() {
