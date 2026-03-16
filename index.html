@@ -68,7 +68,7 @@
             animation: twinkle 4s ease-in-out infinite;
         }
         
-        /* NUEVO: Partículas de polvo estelar */
+        /* Partículas de polvo estelar */
         .stardust {
             position: fixed;
             top: 0;
@@ -88,7 +88,7 @@
             animation: float 15s linear infinite;
         }
         
-        /* NUEVO: Estrellas fugaces */
+        /* Estrellas fugaces */
         .shooting-star {
             position: fixed;
             top: -10px;
@@ -102,7 +102,7 @@
             z-index: -1;
         }
         
-        /* NUEVO: Brillo ambiental */
+        /* Brillo ambiental */
         .ambient-glow {
             position: fixed;
             top: 0;
@@ -164,7 +164,7 @@
             position: relative;
         }
         
-        /* NUEVO: Efecto de energía en el título */
+        /* Efecto de energía en el título */
         .header h1 {
             font-family: 'Orbitron', sans-serif;
             font-size: 2.2rem;
@@ -183,7 +183,7 @@
             50% { text-shadow: 0 0 50px rgba(0, 255, 255, 0.9), 0 0 90px rgba(170, 128, 255, 0.6); }
         }
         
-        /* NUEVO: Línea decorativa debajo del título */
+        /* Línea decorativa debajo del título */
         .title-decoration {
             width: 100px;
             height: 3px;
@@ -229,7 +229,7 @@
             overflow: hidden;
         }
         
-        /* NUEVO: Efecto de escaneo en la dirección */
+        /* Efecto de escaneo en la dirección */
         .header p::after {
             content: '';
             position: absolute;
@@ -274,7 +274,7 @@
             overflow: hidden;
         }
         
-        /* NUEVO: Efecto de onda en botones flotantes */
+        /* Efecto de onda en botones flotantes */
         .floating-btn::after {
             content: '';
             position: absolute;
@@ -339,7 +339,7 @@
             overflow: hidden;
         }
         
-        /* NUEVO: Efecto de energía en bordes */
+        /* Efecto de energía en bordes */
         .card::before {
             content: '';
             position: absolute;
@@ -370,7 +370,7 @@
             100% { filter: hue-rotate(360deg); }
         }
         
-        /* NUEVO: Partículas dentro de las cards */
+        /* Partículas dentro de las cards */
         .card-particles {
             position: absolute;
             top: 0;
@@ -442,7 +442,7 @@
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
         }
         
-        /* NUEVO: Efecto de brillo en botones */
+        /* Efecto de brillo en botones */
         .btn-gold::after {
             content: '';
             position: absolute;
@@ -466,83 +466,6 @@
             background: linear-gradient(145deg, #80ffff, #c080ff);
         }
         
-        /* Stats mejorados */
-        .stat-item {
-            background: rgba(0, 255, 255, 0.1);
-            border: 1px solid rgba(0, 255, 255, 0.4);
-            border-radius: 24px;
-            padding: 10px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-            transition: transform 0.2s, box-shadow 0.2s;
-            backdrop-filter: blur(5px);
-        }
-        
-        .stat-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
-            border-color: #ff80ff;
-        }
-        
-        .stat-value {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #00ffff;
-            text-shadow: 0 0 20px #00ffff, 0 0 40px rgba(0, 255, 255, 0.5);
-            animation: valueGlow 2s ease-in-out infinite;
-        }
-        
-        @keyframes valueGlow {
-            0%, 100% { text-shadow: 0 0 20px #00ffff; }
-            50% { text-shadow: 0 0 30px #00ffff, 0 0 50px #aa80ff; }
-        }
-        
-        /* Secciones de características (acordeón) */
-        details.card {
-            transition: all 0.3s;
-        }
-        
-        details.card summary {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: bold;
-            color: #00ffff;
-            cursor: pointer;
-            list-style: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        details.card summary::-webkit-details-marker {
-            display: none;
-        }
-        
-        details.card summary::after {
-            content: '▼';
-            font-size: 0.8rem;
-            transition: transform 0.3s;
-        }
-        
-        details.card[open] summary::after {
-            transform: rotate(180deg);
-        }
-        
-        /* Enlaces de BSCScan */
-        .bsc-link {
-            color: #ff80ff;
-            text-decoration: none;
-            transition: all 0.3s;
-            display: inline-block;
-            position: relative;
-        }
-        
-        .bsc-link:hover {
-            color: #00ffff;
-            text-shadow: 0 0 15px #00ffff;
-            transform: translateX(5px);
-        }
-        
-        /* Resto de estilos existentes (se mantienen igual) */
         .btn-gold:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -608,11 +531,111 @@
             gap: 10px;
             margin-bottom: 15px;
         }
+        .stat-item {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            border-radius: 24px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            backdrop-filter: blur(5px);
+        }
+        
+        .stat-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+            border-color: #ff80ff;
+        }
+        
         .stat-label {
             color: #aaa;
             font-size: 0.6rem;
             text-transform: uppercase;
         }
+        .stat-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff, 0 0 40px rgba(0, 255, 255, 0.5);
+            animation: valueGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes valueGlow {
+            0%, 100% { text-shadow: 0 0 20px #00ffff; }
+            50% { text-shadow: 0 0 30px #00ffff, 0 0 50px #aa80ff; }
+        }
+        
+        /* Secciones de características (acordeón) - MEJOR VISIBILIDAD */
+        details.card {
+            transition: all 0.3s;
+            background: rgba(20, 10, 30, 0.8);
+            border: 1px solid rgba(170, 128, 255, 0.5);
+        }
+        
+        details.card summary {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            color: #ff80ff;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            text-shadow: 0 0 10px #ff80ff;
+        }
+        
+        details.card summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        details.card summary::after {
+            content: '▼';
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+            color: #00ffff;
+        }
+        
+        details.card[open] summary::after {
+            transform: rotate(180deg);
+        }
+        
+        /* Texto más legible en características */
+        .feature-text {
+            color: #ffffff;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+        
+        .feature-highlight {
+            color: #00ffff;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        .feature-warning {
+            color: #ff80ff;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ff80ff;
+        }
+        
+        .bsc-link {
+            color: #ff80ff;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+            position: relative;
+            font-weight: bold;
+        }
+        
+        .bsc-link:hover {
+            color: #00ffff;
+            text-shadow: 0 0 15px #00ffff;
+            transform: translateX(5px);
+        }
+        
         .notification-tray {
             background: rgba(0,0,0,0.5);
             backdrop-filter: blur(5px);
@@ -819,6 +842,18 @@
             padding: 15px;
             margin: 15px 0;
         }
+        
+        /* Mensaje de wallets compatibles */
+        .wallet-info {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-top: 5px;
+            text-align: center;
+        }
+        .wallet-info i {
+            color: #00ffff;
+            margin-right: 3px;
+        }
     </style>
 </head>
 <body>
@@ -826,15 +861,15 @@
     <div class="nebula"></div>
     <div class="stars" id="stars"></div>
     
-    <!-- NUEVO: Partículas de polvo estelar -->
+    <!-- Partículas de polvo estelar -->
     <div class="stardust" id="stardust"></div>
     
-    <!-- NUEVO: Estrellas fugaces -->
+    <!-- Estrellas fugaces -->
     <div class="shooting-star" style="top: 10%; left: -10%; animation-delay: 0s;"></div>
     <div class="shooting-star" style="top: 30%; left: -10%; animation-delay: 3s;"></div>
     <div class="shooting-star" style="top: 60%; left: -10%; animation-delay: 6s;"></div>
     
-    <!-- NUEVO: Brillo ambiental -->
+    <!-- Brillo ambiental -->
     <div class="ambient-glow"></div>
 
     <div class="floating-buttons">
@@ -851,18 +886,20 @@
             <div class="slogan">⚡ El contrato es la ley, la comunidad es la fuerza ⚡</div>
             <p id="myAddress">No Conectado</p>
             <button id="btnConnect" class="btn btn-gold w-full max-w-md mx-auto">🔌 CONECTAR WALLET</button>
+            <div class="wallet-info">
+                <i class="fas fa-wallet"></i> Compatible con MetaMask, Trust Wallet, Binance Wallet y más
+            </div>
         </div>
 
-        <!-- ===== SECCIONES INFORMATIVAS (ACORDEÓN) ===== -->
+        <!-- ===== SECCIONES INFORMATIVAS (SOLO ANTES DE CONECTAR) ===== -->
         <div id="infoSection">
             <div class="space-y-4">
                 <!-- Enlaces a BSCScan -->
                 <details class="card" open>
-                    <summary class="font-bold text-cyan-300">
+                    <summary>
                         📌 CONTRATOS EN BSCSCAN
-                        <span class="text-sm opacity-70">(click para expandir)</span>
                     </summary>
-                    <div class="mt-4 space-y-3">
+                    <div class="mt-4 space-y-3 feature-text">
                         <p>
                             <i class="fas fa-file-contract text-fuchsia-400 mr-2"></i>
                             <a href="https://bscscan.com/address/0x35425E6416f799C30938cBc159523B43C1c358B2" target="_blank" class="bsc-link">
@@ -886,13 +923,12 @@
 
                 <!-- Características Milimar V5 -->
                 <details class="card">
-                    <summary class="font-bold text-cyan-300">
+                    <summary>
                         🌱 PLAN DE CRECIMIENTO COLECTIVO · MILIMAR V5
-                        <span class="text-sm opacity-70">(click para expandir)</span>
                     </summary>
-                    <div class="mt-4 space-y-4">
+                    <div class="mt-4 space-y-4 feature-text">
                         <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 p-4 rounded-xl border border-purple-500/30">
-                            <h3 class="text-fuchsia-400 font-bold mb-2">📊 Recompensas por niveles</h3>
+                            <h3 class="feature-highlight mb-2">📊 Recompensas por niveles</h3>
                             <div class="grid grid-cols-5 gap-1 text-center text-xs">
                                 <div class="bg-black/40 p-2 rounded">
                                     <div class="text-cyan-300 font-bold">Nivel 1</div>
@@ -919,12 +955,12 @@
                         </div>
                         
                         <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 p-4 rounded-xl border border-purple-500/30">
-                            <h3 class="text-fuchsia-400 font-bold mb-2">🏆 Bono especial nivel 3</h3>
+                            <h3 class="feature-highlight mb-2">🏆 Bono especial nivel 3</h3>
                             <p class="text-sm">Al alcanzar <span class="text-cyan-300 font-bold">64 personas</span> en tu nivel 3, recibes un bono único de <span class="text-green-400 font-bold">5 USDT</span></p>
                         </div>
                         
                         <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 p-4 rounded-xl border border-purple-500/30">
-                            <h3 class="text-fuchsia-400 font-bold mb-2">💰 Fondos colectivos</h3>
+                            <h3 class="feature-highlight mb-2">💰 Fondos colectivos</h3>
                             <ul class="list-disc list-inside text-sm space-y-1">
                                 <li><span class="text-cyan-300">Pool de liderazgo (3%)</span> - Para bonos y recompensas especiales</li>
                                 <li><span class="text-cyan-300">Fondo de solidaridad (1%)</span> - Asistencia comunitaria</li>
@@ -932,7 +968,7 @@
                         </div>
                         
                         <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 p-4 rounded-xl border border-purple-500/30">
-                            <h3 class="text-fuchsia-400 font-bold mb-2">📈 Requisitos de retiro</h3>
+                            <h3 class="feature-highlight mb-2">📈 Requisitos de retiro</h3>
                             <ul class="list-disc list-inside text-sm space-y-1">
                                 <li>Mínimo: <span class="text-cyan-300">10 USDT</span></li>
                                 <li>Máximo por transacción: <span class="text-cyan-300">1000 USDT</span></li>
@@ -941,7 +977,7 @@
                         </div>
                         
                         <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 p-4 rounded-xl border border-purple-500/30">
-                            <h3 class="text-fuchsia-400 font-bold mb-2">🎓 Tutorial rápido</h3>
+                            <h3 class="feature-highlight mb-2">🎓 Tutorial rápido</h3>
                             <ol class="list-decimal list-inside text-sm space-y-1">
                                 <li>Autoriza USDT (botón AUTORIZAR)</li>
                                 <li>Activa con 10 USDT (necesitas enlace de quien te invitó)</li>
@@ -955,13 +991,12 @@
 
                 <!-- Características Turbo -->
                 <details class="card">
-                    <summary class="font-bold text-cyan-300">
+                    <summary>
                         ⚡ BÓVEDA TURBO V13.2 · BENEFICIOS Y RIESGOS
-                        <span class="text-sm opacity-70">(click para expandir)</span>
                     </summary>
-                    <div class="mt-4 space-y-4">
+                    <div class="mt-4 space-y-4 feature-text">
                         <div class="bg-gradient-to-r from-green-900/30 to-blue-900/30 p-4 rounded-xl border border-green-500/30">
-                            <h3 class="text-green-400 font-bold mb-2">📈 BENEFICIOS</h3>
+                            <h3 class="feature-highlight mb-2">📈 BENEFICIOS</h3>
                             <ul class="list-disc list-inside text-sm space-y-1">
                                 <li>Rendimiento histórico simulado: <span class="text-green-300">+12% a +18% mensual</span></li>
                                 <li>Copy trading automático con exchanges autorizados</li>
@@ -972,7 +1007,7 @@
                         </div>
                         
                         <div class="bg-gradient-to-r from-red-900/30 to-orange-900/30 p-4 rounded-xl border border-red-500/30">
-                            <h3 class="text-red-400 font-bold mb-2">⚠️ RIESGOS</h3>
+                            <h3 class="feature-warning mb-2">⚠️ RIESGOS</h3>
                             <ul class="list-disc list-inside text-sm space-y-1">
                                 <li>Pérdidas parciales o totales del capital invertido</li>
                                 <li>Máxima pérdida por evento: <span class="text-red-300">5000 USDT</span></li>
@@ -984,7 +1019,7 @@
                         </div>
                         
                         <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 p-4 rounded-xl border border-purple-500/30">
-                            <h3 class="text-fuchsia-400 font-bold mb-2">⚙️ Mecánica de funcionamiento</h3>
+                            <h3 class="feature-highlight mb-2">⚙️ Mecánica de funcionamiento</h3>
                             <ul class="list-disc list-inside text-sm space-y-1">
                                 <li>Los fondos se asignan a exchanges autorizados para trading</li>
                                 <li>El bot (walker) reporta ganancias y pérdidas</li>
@@ -995,7 +1030,7 @@
                         </div>
                         
                         <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 p-4 rounded-xl border border-purple-500/30">
-                            <h3 class="text-fuchsia-400 font-bold mb-2">🔒 Seguridad</h3>
+                            <h3 class="feature-highlight mb-2">🔒 Seguridad</h3>
                             <ul class="list-disc list-inside text-sm space-y-1">
                                 <li>Contrato auditado con múltiples roles de seguridad</li>
                                 <li>Emergency committee con timelock de 24h</li>
@@ -1008,18 +1043,17 @@
 
                 <!-- Copy Trading -->
                 <details class="card">
-                    <summary class="font-bold text-cyan-300">
+                    <summary>
                         📊 COPY TRADING · BENEFICIOS Y RIESGOS
-                        <span class="text-sm opacity-70">(click para expandir)</span>
                     </summary>
-                    <div class="mt-4 space-y-4">
+                    <div class="mt-4 space-y-4 feature-text">
                         <div class="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 p-4 rounded-xl border border-yellow-500/30">
-                            <h3 class="text-yellow-400 font-bold mb-2">⚠️ ADVERTENCIA IMPORTANTE</h3>
+                            <h3 class="feature-warning mb-2">⚠️ ADVERTENCIA IMPORTANTE</h3>
                             <p class="text-sm">El copy trading implica riesgos significativos de pérdida de capital. Los resultados pasados no garantizan resultados futuros.</p>
                         </div>
                         
                         <div class="bg-gradient-to-r from-green-900/30 to-blue-900/30 p-4 rounded-xl border border-green-500/30">
-                            <h3 class="text-green-400 font-bold mb-2">✅ BENEFICIOS</h3>
+                            <h3 class="feature-highlight mb-2">✅ BENEFICIOS</h3>
                             <ul class="list-disc list-inside text-sm space-y-1">
                                 <li>Acceso a estrategias de traders experimentados</li>
                                 <li>Diversificación automática</li>
@@ -1029,7 +1063,7 @@
                         </div>
                         
                         <div class="bg-gradient-to-r from-red-900/30 to-orange-900/30 p-4 rounded-xl border border-red-500/30">
-                            <h3 class="text-red-400 font-bold mb-2">❌ RIESGOS</h3>
+                            <h3 class="feature-warning mb-2">❌ RIESGOS</h3>
                             <ul class="list-disc list-inside text-sm space-y-1">
                                 <li>Pérdidas pueden superar el capital invertido</li>
                                 <li>El trader puede cambiar su estrategia</li>
@@ -1039,7 +1073,7 @@
                         </div>
                         
                         <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 p-4 rounded-xl border border-purple-500/30">
-                            <h3 class="text-fuchsia-400 font-bold mb-2">📊 TRADERS DISPONIBLES</h3>
+                            <h3 class="feature-highlight mb-2">📊 TRADERS DISPONIBLES</h3>
                             <div class="grid grid-cols-2 gap-3 text-center">
                                 <div class="bg-black/40 p-3 rounded-xl">
                                     <div class="text-cyan-300 font-bold">CryptoWhale</div>
@@ -1351,7 +1385,7 @@
             </div>
         </div>
 
-        <!-- Feed de eventos -->
+        <!-- Feed de eventos (siempre visible) -->
         <div class="card">
             <span class="section-tag">📡 EVENTOS RECIENTES</span>
             <div id="eventFeed" class="notification-tray">
@@ -1447,6 +1481,7 @@
         const btnConnect = document.getElementById('btnConnect');
         const myAddressSpan = document.getElementById('myAddress');
         const appContent = document.getElementById('appContent');
+        const infoSection = document.getElementById('infoSection');
         const badgeMembresia = document.getElementById('membresiaBadge');
         const turboBadge = document.getElementById('turboMembresiaBadge');
         const eventFeed = document.getElementById('eventFeed');
@@ -1783,7 +1818,7 @@
         async function initConnection() {
             try {
                 if (!window.ethereum) {
-                    alert('Instala MetaMask');
+                    alert('Instala MetaMask, Trust Wallet u otra wallet compatible');
                     return;
                 }
                 
@@ -1795,6 +1830,9 @@
                 if (!await checkNetwork()) return;
                 
                 myAddressSpan.innerText = `${userAddress.slice(0,6)}...${userAddress.slice(-4)}`;
+                
+                // Ocultar sección informativa y mostrar app
+                infoSection.classList.add('hidden');
                 appContent.classList.remove('hidden');
                 
                 // Inicializar contratos
@@ -1880,6 +1918,7 @@
                     initConnection();
                 } else {
                     myAddressSpan.innerText = 'No Conectado';
+                    infoSection.classList.remove('hidden');
                     appContent.classList.add('hidden');
                     if (refreshInterval) clearInterval(refreshInterval);
                 }
