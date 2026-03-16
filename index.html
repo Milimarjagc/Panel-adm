@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Milimar Turbo · Definitivo</title>
+    <title>Milimar Turbo · Titan V23 (Membresía Activa)</title>
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
@@ -259,16 +259,6 @@
             line-height: 1.2;
             margin: 10px 0;
         }
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            margin: 5px 0;
-            color: #aaa;
-        }
-        .info-row b {
-            color: white;
-        }
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -371,34 +361,23 @@
             margin: 15px 0;
             text-align: center;
         }
-        .help-text { font-size: 0.8rem; color: #aaa; margin-top: 5px; text-align: center; }
-        .tooltip {
-            position: relative;
+        .membresia-badge {
             display: inline-block;
-            border-bottom: 1px dotted #00ffff;
-            cursor: help;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background: rgba(0,0,0,0.9);
-            border: 1px solid #00ffff;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -100px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.7rem;
+        .membresia-activa {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+            color: #00ff00;
         }
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
+        .membresia-inactiva {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0000;
+            color: #ff0000;
         }
         .node {
             width: 56px;
@@ -425,34 +404,6 @@
         .node-empty {
             border-color: rgba(255,0,255,0.3);
             color: rgba(255,0,255,0.5);
-        }
-        .loader-small {
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #00ffff;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-left: 5px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .risk-warning {
-            background: rgba(255, 0, 0, 0.15);
-            border-left: 4px solid #ff0000;
-            padding: 15px;
-            border-radius: 16px;
-            margin: 15px 0;
-        }
-        .benefit-box {
-            background: rgba(0, 255, 0, 0.1);
-            border-left: 4px solid #00ff00;
-            padding: 15px;
-            border-radius: 16px;
-            margin: 15px 0;
         }
         .dynamic-table {
             width: 100%;
@@ -493,10 +444,6 @@
             background: linear-gradient(45deg, transparent 30%, rgba(0,255,255,0.1) 50%, transparent 70%);
             animation: scan 4s linear infinite;
         }
-        @keyframes scan {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
         .bar-container {
             display: flex;
             flex-direction: column;
@@ -511,10 +458,6 @@
             transition: height 0.3s;
             box-shadow: 0 0 15px #00ffff;
             animation: glow 2s ease-in-out infinite;
-        }
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 15px #00ffff; }
-            50% { box-shadow: 0 0 30px #ff80ff; }
         }
         .bar-label {
             margin-top: 5px;
@@ -592,30 +535,24 @@
                     <div class="mt-4 space-y-4">
                         <div class="bg-black/40 p-4 rounded">
                             <h3 class="text-fuchsia-400 font-bold">📊 Recompensas por expansión de la comunidad</h3>
-                            <p>Al invitar a otros inversores, participas de las ganancias del fondo común en 5 niveles de profundidad:</p>
-                            <ul class="list-disc list-inside text-sm mt-2">
-                                <li>Nivel 1: 25% de las aportaciones de tus invitados directos</li>
-                                <li>Nivel 2: 17% de las aportaciones de los invitados de tus invitados</li>
-                                <li>Nivel 3: 10% - Nivel 4: 6% - Nivel 5: 3%</li>
-                            </ul>
-                            <p class="mt-2">Además, cuando tu comunidad alcanza 64 personas en el nivel 3, recibes un bono especial de 5 USDT.</p>
+                            <p>5 niveles: 25%, 17%, 10%, 6%, 3%. Bono especial de 5 USDT al alcanzar 64 personas en nivel 3.</p>
                         </div>
                         <div class="bg-black/40 p-4 rounded">
                             <h3 class="text-fuchsia-400 font-bold">💰 Fondos de recompensa colectiva</h3>
-                            <p>El 3% de cada aportación va a un fondo para líderes, y el 1% a un fondo de ayuda comunitaria.</p>
+                            <p>Pool de liderazgo (3%) y fondo de solidaridad (1%).</p>
                         </div>
                         <div class="bg-black/40 p-4 rounded">
                             <h3 class="text-fuchsia-400 font-bold">📈 Retiros de ganancias</h3>
-                            <p>Puedes retirar tus ganancias acumuladas cuando tengas al menos 10 USDT y hayas invitado a 4 personas que también estén activas.</p>
+                            <p>Mínimo 10 USDT, requiere 4 directos activos.</p>
                         </div>
                         <div class="bg-black/40 p-4 rounded">
-                            <h3 class="text-fuchsia-400 font-bold">🎓 Tutorial paso a paso</h3>
-                            <ol class="list-decimal list-inside text-sm space-y-1">
-                                <li><strong>Autoriza</strong> USDT para permitir las transacciones.</li>
-                                <li><strong>Activa</strong> tu membresía con 10 USDT (necesitas el enlace de quien te invitó).</li>
-                                <li><strong>Renueva</strong> cada mes para mantener tus beneficios.</li>
-                                <li><strong>Comparte</strong> tu enlace de invitación y construye tu comunidad.</li>
-                                <li><strong>Retira</strong> tus ganancias cuando alcances los requisitos.</li>
+                            <h3 class="text-fuchsia-400 font-bold">🎓 Tutorial</h3>
+                            <ol class="list-decimal list-inside text-sm">
+                                <li>Autoriza USDT</li>
+                                <li>Activa con 10 USDT (necesitas enlace de quien te invitó)</li>
+                                <li>Renueva cada mes</li>
+                                <li>Comparte tu enlace</li>
+                                <li>Retira ganancias</li>
                             </ol>
                         </div>
                     </div>
@@ -628,33 +565,21 @@
                     </summary>
                     <div class="mt-4 space-y-4">
                         <div class="benefit-box">
-                            <h3 class="text-green-400 font-bold">📈 BENEFICIOS POTENCIALES</h3>
+                            <h3 class="text-green-400 font-bold">📈 BENEFICIOS</h3>
                             <ul class="list-disc list-inside text-sm">
-                                <li><strong>Rendimiento histórico simulado:</strong> +12% a +18% mensual en los últimos 30 días (basado en traders destacados).</li>
-                                <li><strong>Copy trading automático:</strong> seguimos a los mejores traders de Binance.</li>
-                                <li><strong>Recompensas por liderazgo:</strong> 8% de las ganancias generadas por tu comunidad.</li>
-                                <li><strong>Ejemplo:</strong> Si depositas 1000 USDT, podrías generar entre 120 y 180 USDT al mes, dependiendo del mercado.</li>
+                                <li>Rendimiento histórico simulado: +12% a +18% mensual</li>
+                                <li>Copy trading automático</li>
+                                <li>Recompensas por liderazgo: 8%</li>
                             </ul>
                         </div>
                         <div class="risk-warning">
-                            <h3 class="text-red-400 font-bold">⚠️ RIESGOS A CONSIDERAR</h3>
-                            <ul class="list-disc list-inside text-sm text-red-300">
-                                <li>El capital invertido puede sufrir pérdidas parciales o totales.</li>
-                                <li>Pérdida máxima por evento: 5000 USDT, con enfriamiento de 1 hora.</li>
-                                <li>Retiros anticipados (antes de 7 días) tienen penalización del 10%.</li>
-                                <li>El valor de tu participación fluctúa según resultados de trading.</li>
-                                <li>No hay garantía de rendimientos; el mercado es volátil.</li>
+                            <h3 class="text-red-400 font-bold">⚠️ RIESGOS</h3>
+                            <ul class="list-disc list-inside text-sm">
+                                <li>Pérdidas parciales o totales</li>
+                                <li>Máx pérdida por evento: 5000 USDT, cooldown 1h</li>
+                                <li>Retiro anticipado: penalización 10%</li>
+                                <li>Valor de participación variable</li>
                             </ul>
-                        </div>
-                        <div class="bg-black/40 p-4 rounded">
-                            <h3 class="text-fuchsia-400 font-bold">🎓 Cómo empezar en Turbo</h3>
-                            <ol class="list-decimal list-inside text-sm space-y-1">
-                                <li>Debes tener membresía activa en el Plan de Crecimiento Colectivo.</li>
-                                <li>Autoriza USDT y deposita (mínimo 50 USDT).</li>
-                                <li>Espera 24h para calificar para participación en ganancias.</li>
-                                <li>Retira después de 7 días sin comisión, o antes con penalización.</li>
-                                <li>Reclama tus recompensas de liderazgo desde el panel.</li>
-                            </ol>
                         </div>
                     </div>
                 </details>
@@ -715,7 +640,7 @@
                     </div>
                 </div>
 
-                <!-- Subsección Mi Comunidad V5 (CORREGIDA) -->
+                <!-- Subsección Mi Comunidad V5 -->
                 <div id="v5Red" class="sub-content hidden">
                     <div class="card">
                         <span class="section-tag">🌐 MI COMUNIDAD</span>
@@ -747,7 +672,7 @@
                                 <tr><td colspan="5" class="text-center">Cargando...</td></tr>
                             </tbody>
                         </table>
-                        <p class="text-[10px] text-white/30 mt-1">*Proyección estimada basada en un promedio de 10 USDT por persona.</p>
+                        <p class="text-[10px] text-white/30 mt-1">*Proyección basada en 10 USDT por persona.</p>
 
                         <!-- Panel de detalle al hacer clic -->
                         <div id="levelDetail" class="detail-panel hidden">
@@ -842,6 +767,12 @@
                 <div id="turboDashboard" class="sub-content">
                     <div class="card">
                         <span class="section-tag">📈 DASHBOARD</span>
+                        
+                        <!-- BADGE DE MEMBRESÍA (NUEVO) -->
+                        <div id="membresiaBadge" class="membresia-badge membresia-inactiva" style="text-align: center; margin-bottom: 15px;">
+                            🔍 Verificando membresía...
+                        </div>
+
                         <div class="val-large" id="turboUserBal">0.00 USDT</div>
                         <div class="stats-grid">
                             <div class="stat-item">
@@ -949,7 +880,7 @@
                     </div>
                 </div>
 
-                <!-- Subsección Walker Turbo (CORREGIDA) -->
+                <!-- Subsección Walker Turbo -->
                 <div id="turboWalker" class="sub-content hidden">
                     <div class="card">
                         <span class="section-tag" style="background:#f59e0b;">🤖 WALKER</span>
@@ -976,7 +907,7 @@
                         <span class="section-tag" style="background:#00ffff;">📊 COPY TRADING</span>
                         <div class="risk-warning">
                             <p class="text-red-400 font-bold">⚠️ ADVERTENCIA DE RIESGOS</p>
-                            <p class="text-sm">El copy trading implica riesgos significativos. Puede perder parte o todo su capital. No hay garantías de ganancias. Solo invierta lo que esté dispuesto a perder.</p>
+                            <p class="text-sm">El copy trading implica riesgos significativos. Puede perder parte o todo su capital.</p>
                         </div>
                         <div class="stats-grid">
                             <div class="stat-item"><span class="stat-label">Trader #1</span><span class="stat-value">CryptoWhale</span></div>
@@ -984,7 +915,7 @@
                             <div class="stat-item"><span class="stat-label">Trader #2</span><span class="stat-value">AlphaSeeker</span></div>
                             <div class="stat-item"><span class="stat-label">ROI 30d</span><span class="stat-value">+12.7%</span></div>
                         </div>
-                        <p class="text-xs text-white/50 mt-2">* Datos simulados. Integración en vivo próximamente.</p>
+                        <p class="text-xs text-white/50 mt-2">* Datos simulados.</p>
                     </div>
                 </div>
             </div>
@@ -1096,7 +1027,6 @@
         // ========== FUNCIONES AUXILIARES ==========
         function showToast(msg, isError = false) {
             const toast = document.getElementById('toast');
-            if (!toast) return alert(msg);
             toast.innerText = msg;
             toast.style.display = 'block';
             toast.style.backgroundColor = isError ? '#7f1d1d' : '#065f46';
@@ -1150,6 +1080,39 @@
             return true;
         }
 
+        // ========== FUNCIÓN DE VERIFICACIÓN DE MEMBRESÍA ==========
+        async function checkMembresiaActiva() {
+            if (!contractMembresia || !userAddress) return false;
+            try {
+                const user = await contractMembresia.usuarios(userAddress);
+                const ahora = Math.floor(Date.now() / 1000);
+                const activa = user.registrado && user.vencimiento > ahora;
+                console.log("Membresía activa:", activa);
+                return activa;
+            } catch (e) {
+                console.error("Error verificando membresía:", e);
+                return false;
+            }
+        }
+
+        // ========== ACTUALIZAR BADGE DE MEMBRESÍA ==========
+        async function updateMembresiaBadge() {
+            const badge = document.getElementById('membresiaBadge');
+            if (!badge) return;
+            
+            const activa = await checkMembresiaActiva();
+            if (activa) {
+                badge.innerText = '✅ MEMBRESÍA ACTIVA EN MILIMAR';
+                badge.classList.remove('membresia-inactiva');
+                badge.classList.add('membresia-activa');
+            } else {
+                badge.innerText = '❌ MEMBRESÍA REQUERIDA (ACTÍVATE EN MILIMAR)';
+                badge.classList.remove('membresia-activa');
+                badge.classList.add('membresia-inactiva');
+            }
+            return activa;
+        }
+
         // ========== LISTENERS DE WALLET ==========
         function setupWalletListeners() {
             if (!window.ethereum) return;
@@ -1195,14 +1158,16 @@
                 usdtContract = new ethers.Contract(USDT_ADDR, usdtAbi, signer);
                 console.log("Contratos instanciados");
 
-                const addrSpan = document.getElementById('myAddress');
-                if (addrSpan) addrSpan.innerText = userAddress.slice(0,8) + '...' + userAddress.slice(-6);
+                document.getElementById('myAddress').innerText = userAddress.slice(0,8) + '...' + userAddress.slice(-6);
                 document.getElementById('infoSection').classList.add('hidden');
                 document.getElementById('appContent').classList.remove('hidden');
 
+                // Detección ultrarrápida de roles
                 console.log("Verificando roles...");
-                const isWalker = await contractTurbo.hasRole(ALLOCATOR_ROLE, userAddress);
-                const isAdmin = await contractTurbo.hasRole(DEFAULT_ADMIN_ROLE, userAddress);
+                const [isWalker, isAdmin] = await Promise.all([
+                    contractTurbo.hasRole(ALLOCATOR_ROLE, userAddress),
+                    contractTurbo.hasRole(DEFAULT_ADMIN_ROLE, userAddress)
+                ]);
                 console.log("Admin:", isAdmin, " | Walker:", isWalker);
 
                 const walkerTab = document.getElementById('turboWalkerTab');
@@ -1213,6 +1178,7 @@
                 if (isWalker) showToast('🤖 Modo OPERADOR activado');
                 if (isAdmin) showToast('🔱 Modo MASTER activado');
 
+                // Owner de Milimar
                 try {
                     const ownerAddr = await contractMembresia.owner();
                     isOwnerV5 = (ownerAddr.toLowerCase() === userAddress.toLowerCase());
@@ -1222,9 +1188,11 @@
                     console.warn("Error obteniendo owner de V5:", e);
                 }
 
+                // Generar link de referidos
                 const refInput = document.getElementById('refLink');
                 if (refInput) refInput.value = window.location.origin + window.location.pathname + "?ref=" + userAddress;
 
+                // Cargar datos iniciales
                 await loadUserDataV5();
                 await loadTurboData();
                 await addEvent('Wallet conectada: ' + userAddress.slice(0,6) + '...', 'success');
@@ -1305,16 +1273,18 @@
 
                 const maxCant = Math.max(...red.map(v => v.toNumber()), 1);
                 const barChart = document.getElementById('barChart');
-                barChart.innerHTML = '';
-                for (let j = 0; j < 5; j++) {
-                    const cant = red[j].toNumber();
-                    const height = (cant / maxCant) * 60;
-                    barChart.innerHTML += `
-                        <div class="bar-container">
-                            <div class="bar" style="height: ${height}px;"></div>
-                            <div class="bar-label">N${j+1}</div>
-                        </div>
-                    `;
+                if (barChart) {
+                    barChart.innerHTML = '';
+                    for (let j = 0; j < 5; j++) {
+                        const cant = red[j].toNumber();
+                        const height = (cant / maxCant) * 60;
+                        barChart.innerHTML += `
+                            <div class="bar-container">
+                                <div class="bar" style="height: ${height}px;"></div>
+                                <div class="bar-label">N${j+1}</div>
+                            </div>
+                        `;
+                    }
                 }
             } catch (e) {
                 console.error('Error cargando V5:', e);
@@ -1326,8 +1296,8 @@
             if (!contractTurbo || !userAddress) return;
             try {
                 const data = await contractTurbo.getVaultDashboard(userAddress);
-                const capital = ethers.utils.formatUnits(data[0], 6);
-                const residual = ethers.utils.formatUnits(data[1], 6);
+                const capital = ethers.utils.formatUnits(data[0], 18);
+                const residual = ethers.utils.formatUnits(data[1], 18);
                 const sharePrice = ethers.utils.formatUnits(data[4], 18);
                 const lockSec = Number(data[3]);
                 const calificado = data[2];
@@ -1341,39 +1311,78 @@
                 document.getElementById('turboStTimer').innerText = lockSec > 0 ? formatTime(lockSec) : 'AHORA LIBRE ✅';
 
                 window.turboLockSec = lockSec;
+                
+                // Actualizar badge de membresía
+                const membresiaActiva = await updateMembresiaBadge();
+                
+                // Habilitar/deshabilitar botones según membresía
+                const btnDeposit = document.getElementById('turboBtnDeposit');
+                const btnWithdraw = document.getElementById('turboBtnWithdraw');
+                const btnClaim = document.getElementById('turboBtnClaim');
+                
+                if (btnDeposit) btnDeposit.disabled = !membresiaActiva;
+                if (btnWithdraw) btnWithdraw.disabled = !membresiaActiva;
+                if (btnClaim) btnClaim.disabled = !membresiaActiva;
+
                 actualizarOpcionesRetiroTurbo();
 
+                // Cargar historial de precios
                 const history = await contractTurbo.getPriceHistory();
                 const chartDiv = document.getElementById('priceHistoryChart');
-                if (history && history.length > 0) {
-                    let html = '<div style="display:flex; flex-direction:column; gap:5px;">';
-                    for (let i = 0; i < history.length; i++) {
-                        const date = new Date(history[i].timestamp * 1000).toLocaleDateString();
-                        html += `<div style="display:flex; justify-content:space-between;">
-                            <span>${date}</span>
-                            <span style="color:#00ffff;">${ethers.utils.formatUnits(history[i].sharePrice, 18)} USDT</span>
-                        </div>`;
+                if (chartDiv) {
+                    if (history && history.length > 0) {
+                        let html = '<div style="display:flex; flex-direction:column; gap:5px;">';
+                        for (let i = 0; i < history.length; i++) {
+                            const date = new Date(history[i].timestamp * 1000).toLocaleDateString();
+                            html += `<div style="display:flex; justify-content:space-between;">
+                                <span>${date}</span>
+                                <span style="color:#00ffff;">${ethers.utils.formatUnits(history[i].sharePrice, 18)} USDT</span>
+                            </div>`;
+                        }
+                        html += '</div>';
+                        chartDiv.innerHTML = html;
+                    } else {
+                        chartDiv.innerHTML = '<p class="text-center text-white/30">Sin historial aún</p>';
                     }
-                    html += '</div>';
-                    chartDiv.innerHTML = html;
-                } else {
-                    chartDiv.innerHTML = '<p class="text-center text-white/30">Sin historial aún</p>';
                 }
 
+                // Si es admin, actualizar datos de admin
                 if (document.getElementById('turboAdminTab').style.display === 'block') {
                     const totalAssets = await contractTurbo.totalAssets();
                     const capitalTrading = await contractTurbo.capitalEnTrading();
-                    const tvlNum = parseFloat(ethers.utils.formatUnits(totalAssets, 6));
-                    const mktNum = parseFloat(ethers.utils.formatUnits(capitalTrading, 6));
+                    const tvlNum = parseFloat(ethers.utils.formatUnits(totalAssets, 18));
+                    const mktNum = parseFloat(ethers.utils.formatUnits(capitalTrading, 18));
                     document.getElementById('turboAdminBoveda').innerText = (tvlNum - mktNum).toFixed(2);
                     document.getElementById('turboAdminTrading').innerText = mktNum.toFixed(2);
+
+                    const minDep = await contractTurbo.minimoDeposito();
+                    const earlyFee = await contractTurbo.earlyExitFee();
+                    const maxRisk = await contractTurbo.porcentajeMaximoTrading();
+                    const maxSend = await contractTurbo.maxEnvioTrading();
+                    document.getElementById('turboConfigMinDep').innerText = ethers.utils.formatUnits(minDep, 18);
+                    document.getElementById('turboConfigEarlyFee').innerText = earlyFee + '%';
+                    document.getElementById('turboConfigMaxRisk').innerText = maxRisk + '%';
+                    document.getElementById('turboConfigMaxSend').innerText = ethers.utils.formatUnits(maxSend, 18);
+
+                    const pending = await contractTurbo.pendingAdminWithdrawal();
+                    if (pending && pending.amount > 0) {
+                        document.getElementById('turboPendingAmount').innerText = ethers.utils.formatUnits(pending.amount, 18);
+                        const readyAt = Number(pending.readyAt);
+                        const now = Math.floor(Date.now() / 1000);
+                        const remaining = readyAt > now ? readyAt - now : 0;
+                        document.getElementById('turboPendingReadyAt').innerText = remaining > 0 ? formatTime(remaining) : 'Listo';
+                    } else {
+                        document.getElementById('turboPendingAmount').innerText = '0.00';
+                        document.getElementById('turboPendingReadyAt').innerText = '--';
+                    }
                 }
 
+                // Si es allocator, actualizar datos del walker
                 if (document.getElementById('turboWalkerTab').style.display === 'block') {
                     const capitalTrading = await contractTurbo.capitalEnTrading();
                     const maxLoss = await contractTurbo.maxLossPerReport();
-                    document.getElementById('turboWalkerCapitalTrading').innerText = ethers.utils.formatUnits(capitalTrading, 6);
-                    document.getElementById('turboWalkerMaxLoss').innerText = ethers.utils.formatUnits(maxLoss, 6);
+                    document.getElementById('turboWalkerCapitalTrading').innerText = ethers.utils.formatUnits(capitalTrading, 18);
+                    document.getElementById('turboWalkerMaxLoss').innerText = ethers.utils.formatUnits(maxLoss, 18);
                 }
             } catch (e) {
                 console.error('Error cargando Turbo:', e);
@@ -1413,9 +1422,17 @@
 
         async function turboRealizarRetiro(amt) {
             if (!await checkNetwork()) return;
+            
+            // Verificar membresía activa
+            const membresiaActiva = await checkMembresiaActiva();
+            if (!membresiaActiva) {
+                showToast('❌ Necesitas membresía activa en Milimar V5 para retirar', true);
+                return;
+            }
+
             try {
                 if (amt < 5) return showToast('⚠️ Mínimo 5 USDT', true);
-                const wei = ethers.utils.parseUnits(amt.toString(), 6);
+                const wei = ethers.utils.parseUnits(amt.toString(), 18);
                 showToast('⚙️ Procesando retiro...');
                 const tx = await contractTurbo.withdraw(wei, userAddress, userAddress, { gasLimit: 300000 });
                 await tx.wait();
@@ -1435,14 +1452,23 @@
         // ========== BOTONES TURBO ==========
         document.getElementById('turboBtnDeposit')?.addEventListener('click', async () => {
             if (!await checkNetwork()) return;
+            
+            // Verificar membresía activa
+            const membresiaActiva = await checkMembresiaActiva();
+            if (!membresiaActiva) {
+                showToast('❌ Necesitas membresía activa en Milimar V5 para depositar', true);
+                return;
+            }
+
             const val = document.getElementById('turboAmtOp')?.value;
             if (!val || parseFloat(val) < 50) return showToast('⚠️ Mínimo 50 USDT', true);
+            
             try {
-                const wei = ethers.utils.parseUnits(val, 6);
+                const wei = ethers.utils.parseUnits(val, 18);
                 const usdtContractRead = new ethers.Contract(USDT_ADDR, ["function balanceOf(address) view returns (uint256)"], provider);
                 const saldo = await usdtContractRead.balanceOf(userAddress);
                 if (saldo.lt(wei)) {
-                    const saldoFormateado = ethers.utils.formatUnits(saldo, 6);
+                    const saldoFormateado = ethers.utils.formatUnits(saldo, 18);
                     return showToast(`⚠️ Saldo insuficiente: tienes ${saldoFormateado} USDT`, true);
                 }
                 showToast('⏳ Aprobando USDT...');
@@ -1462,6 +1488,14 @@
 
         document.getElementById('turboBtnClaim')?.addEventListener('click', async () => {
             if (!await checkNetwork()) return;
+            
+            // Verificar membresía activa
+            const membresiaActiva = await checkMembresiaActiva();
+            if (!membresiaActiva) {
+                showToast('❌ Necesitas membresía activa en Milimar V5 para reclamar recompensas', true);
+                return;
+            }
+
             try {
                 showToast('⏳ Reclamando recompensas...');
                 const tx = await contractTurbo.claimLeaderRewards();
@@ -1482,7 +1516,7 @@
             if (!ref || ref.length < 20) ref = userAddress;
             if (!val || parseFloat(val) <= 0) return showToast('⚠️ Monto inválido', true);
             try {
-                const wei = ethers.utils.parseUnits(val, 6);
+                const wei = ethers.utils.parseUnits(val, 18);
                 showToast('🤖 Reportando ganancia...');
                 const tx = await contractTurbo.reportProfit(wei, ref);
                 await tx.wait();
@@ -1500,7 +1534,7 @@
             const val = document.getElementById('turboReportAmount')?.value;
             if (!val || parseFloat(val) <= 0) return showToast('⚠️ Monto inválido', true);
             try {
-                const wei = ethers.utils.parseUnits(val, 6);
+                const wei = ethers.utils.parseUnits(val, 18);
                 showToast('⏳ Reportando pérdida...');
                 const tx = await contractTurbo.reportLoss(wei);
                 await tx.wait();
@@ -1522,7 +1556,7 @@
                 return showToast('⚠️ Dirección de exchange inválida', true);
             }
             try {
-                const wei = ethers.utils.parseUnits(val, 6);
+                const wei = ethers.utils.parseUnits(val, 18);
                 showToast('⏳ Registrando regreso...');
                 const tx = await contractTurbo.registrarRegresoCapital(wei, exch);
                 await tx.wait();
@@ -1543,7 +1577,7 @@
                 return showToast('⚠️ Dirección de exchange inválida', true);
             }
             try {
-                const wei = ethers.utils.parseUnits(val, 6);
+                const wei = ethers.utils.parseUnits(val, 18);
                 showToast('⏳ Enviando a trading...');
                 const tx = await contractTurbo.enviarATrading(wei, exch);
                 await tx.wait();
@@ -1563,10 +1597,10 @@
             const maxSend = document.getElementById('turboNewMaxSend')?.value;
             if (!min || !multa || !risk || !maxSend) return showToast('⚠️ Completa todos los campos', true);
             try {
-                const minWei = ethers.utils.parseUnits(min, 6);
+                const minWei = ethers.utils.parseUnits(min, 18);
                 const multaNum = parseInt(multa);
                 const riskNum = parseInt(risk);
-                const maxSendWei = ethers.utils.parseUnits(maxSend, 6);
+                const maxSendWei = ethers.utils.parseUnits(maxSend, 18);
                 showToast('⏳ Actualizando...');
                 const tx = await contractTurbo.configurarParametros(minWei, multaNum, riskNum, maxSendWei);
                 await tx.wait();
@@ -1604,7 +1638,7 @@
                 return showToast('⚠️ Datos inválidos', true);
             }
             try {
-                const wei = ethers.utils.parseUnits(maxAmt, 6);
+                const wei = ethers.utils.parseUnits(maxAmt, 18);
                 showToast('⏳ Autorizando exchange...');
                 const tx = await contractTurbo.authorizeExchange(exchange, true, wei);
                 await tx.wait();
@@ -1621,7 +1655,7 @@
             const val = document.getElementById('turboTreasuryAmount')?.value;
             if (!val || parseFloat(val) <= 0) return showToast('⚠️ Cantidad inválida', true);
             try {
-                const wei = ethers.utils.parseUnits(val, 6);
+                const wei = ethers.utils.parseUnits(val, 18);
                 showToast('⏳ Solicitando eventos...');
                 const tx = await contractTurbo.solicitarRetiroTesoreria(userAddress, wei, true);
                 await tx.wait();
@@ -1638,7 +1672,7 @@
             const val = document.getElementById('turboTreasuryAmount')?.value;
             if (!val || parseFloat(val) <= 0) return showToast('⚠️ Cantidad inválida', true);
             try {
-                const wei = ethers.utils.parseUnits(val, 6);
+                const wei = ethers.utils.parseUnits(val, 18);
                 showToast('⏳ Solicitando admin...');
                 const tx = await contractTurbo.solicitarRetiroTesoreria(userAddress, wei, false);
                 await tx.wait();
@@ -1721,13 +1755,12 @@
         // ========== BOTONES MILIMAR ==========
         document.getElementById('btnApprove')?.addEventListener('click', async () => {
             if (!await checkNetwork()) return;
-            if (!usdtContract) return;
             try {
                 const tx = await usdtContract.approve(CONTRACT_ADDR_MEMBRESIA, ethers.utils.parseUnits("1000", 18));
                 showToast('Autorizando...');
                 await tx.wait();
                 showToast('✅ USDT autorizado');
-                await addEvent('Autorizaste USDT para el Plan de Crecimiento', 'success');
+                await addEvent('Autorizaste USDT para Milimar', 'success');
             } catch (e) {
                 if (e.code === 4001) return showToast('⚠️ Transacción rechazada', true);
                 showToast('❌ Error: ' + (e.reason || e.message), true);
@@ -1736,7 +1769,6 @@
 
         document.getElementById('btnJoin')?.addEventListener('click', async () => {
             if (!await checkNetwork()) return;
-            if (!contractMembresia) return;
             try {
                 const urlParams = new URLSearchParams(window.location.search);
                 let sponsor = urlParams.get('ref');
@@ -1748,7 +1780,7 @@
                 showToast('Activando...');
                 await tx.wait();
                 showToast('✅ Membresía activada');
-                await addEvent(`Te uniste con el inversor ${sponsor.slice(0,6)}...`, 'success');
+                await addEvent(`Te uniste con inversor ${sponsor.slice(0,6)}...`, 'success');
                 loadUserDataV5();
             } catch (e) {
                 if (e.code === 4001) return showToast('⚠️ Transacción rechazada', true);
@@ -1758,7 +1790,6 @@
 
         document.getElementById('btnRenew')?.addEventListener('click', async () => {
             if (!await checkNetwork()) return;
-            if (!contractMembresia) return;
             try {
                 const tx = await contractMembresia.renovarSuscripcion();
                 showToast('Renovando...');
@@ -1774,7 +1805,6 @@
 
         document.getElementById('btnWithdraw')?.addEventListener('click', async () => {
             if (!await checkNetwork()) return;
-            if (!contractMembresia) return;
             try {
                 const tx = await contractMembresia.retirarGanancias();
                 showToast('Retirando...');
@@ -1788,15 +1818,16 @@
             }
         });
 
+        document.getElementById('btnReloadDetails')?.addEventListener('click', loadUserDataV5);
+
         document.getElementById('btnEmergencyWithdraw')?.addEventListener('click', async () => {
             if (!await checkNetwork()) return;
-            if (!contractMembresia) return;
             if (!confirm('¿Estás seguro?')) return;
             try {
                 const tx = await contractMembresia.emergencyWithdraw();
                 showToast('Procesando...');
                 await tx.wait();
-                showToast('✅ Retiro de emergencia completado');
+                showToast('✅ Retiro de emergencia');
                 await addEvent('⚠️ Retiro de emergencia', 'error');
                 loadUserDataV5();
             } catch (e) {
@@ -1804,8 +1835,6 @@
                 showToast('❌ Error: ' + (e.reason || e.message), true);
             }
         });
-
-        document.getElementById('btnReloadDetails')?.addEventListener('click', loadUserDataV5);
 
         document.getElementById('btnPausa')?.addEventListener('click', async () => {
             if (!await checkNetwork()) return;
@@ -1823,11 +1852,10 @@
         // ========== LINK DE REFERIDOS ==========
         document.getElementById('copyLinkBtn')?.addEventListener('click', () => {
             const refLink = document.getElementById('refLink');
-            if (!refLink) return;
             refLink.select();
             navigator.clipboard.writeText(refLink.value).then(() => {
-                document.getElementById('copyMsg')?.classList.remove('hidden');
-                setTimeout(() => document.getElementById('copyMsg')?.classList.add('hidden'), 2000);
+                document.getElementById('copyMsg').classList.remove('hidden');
+                setTimeout(() => document.getElementById('copyMsg').classList.add('hidden'), 2000);
                 showToast('✅ Enlace copiado');
             }).catch(() => showToast('❌ Error al copiar', true));
         });
@@ -1845,7 +1873,6 @@
         // ========== FUNCIÓN PARA ESTRELLAS ==========
         function createStars() {
             const starsDiv = document.getElementById('stars');
-            if (!starsDiv) return;
             for (let i = 0; i < 150; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
@@ -1885,7 +1912,7 @@
                 tab.classList.add('active');
                 const target = tab.dataset.sub;
                 Object.values(v5SubContents).forEach(c => c?.classList.add('hidden'));
-                v5SubContents[target]?.classList.remove('hidden');
+                if (v5SubContents[target]) v5SubContents[target].classList.remove('hidden');
             });
         });
 
@@ -1904,7 +1931,7 @@
                 tab.classList.add('active');
                 const target = tab.dataset.sub;
                 Object.values(turboSubContents).forEach(c => c?.classList.add('hidden'));
-                turboSubContents[target]?.classList.remove('hidden');
+                if (turboSubContents[target]) turboSubContents[target].classList.remove('hidden');
             });
         });
     </script>
