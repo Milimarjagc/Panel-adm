@@ -1147,6 +1147,12 @@
         .profit-negative {
             color: #ff0000 !important;
         }
+        
+        /* Botones pequeños */
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
@@ -1549,14 +1555,15 @@
 
             <!-- ========== SECCIÓN TURBO ========== -->
             <div id="seccionTurbo" class="main-content hidden">
-                <!-- Subpestañas de Turbo -->
+                <!-- Subpestañas de Turbo (ACTUALIZADAS con 2 nuevas) -->
                 <div class="sub-tabs">
                     <div class="sub-tab active" data-sub="turboDashboard">📈 Dashboard</div>
                     <div class="sub-tab" data-sub="turboOperaciones">⚡ Operaciones</div>
                     <div class="sub-tab" data-sub="turboRecompensas">💰 Recompensas</div>
                     <div class="sub-tab" data-sub="turboAdmin" id="turboAdminTab" style="display:none;">🔱 Admin</div>
                     <div class="sub-tab" data-sub="turboWalker" id="turboWalkerTab" style="display:none;">🤖 Walker</div>
-                    <div class="sub-tab" data-sub="turboCopy">📊 Copy Trading</div>
+                    <div class="sub-tab" data-sub="turboContrato">📊 Datos del Contrato</div>
+                    <div class="sub-tab" data-sub="turboBinance">🕯️ Gráfica Binance</div>
                 </div>
 
                 <!-- Subsección Dashboard Turbo -->
@@ -1678,108 +1685,100 @@
                     </div>
                 </div>
 
-                <!-- ===== NUEVA SECCIÓN: COPY TRADING PROFESSIONAL ===== -->
-                <div id="turboCopy" class="sub-content hidden">
+                <!-- ===== NUEVA PESTAÑA: DATOS DEL CONTRATO ===== -->
+                <div id="turboContrato" class="sub-content hidden">
                     <div class="card">
-                        <span class="section-tag" style="background:#00ffff;">📊 COPY TRADING PROFESSIONAL</span>
+                        <span class="section-tag" style="background:#00ffff;">📊 DATOS REALES DEL CONTRATO TURBO</span>
                         
-                        <!-- Ticker de precios en tiempo real -->
-                        <div class="tradingview-widget-container" style="margin-bottom: 20px; height: 50px;">
-                            <div id="tradingview_ticker"></div>
-                        </div>
-                        
-                        <!-- Gráfica principal de velas -->
-                        <div class="tradingview-widget-container" style="height: 400px; margin-bottom: 20px;">
-                            <div id="tradingview_chart" style="height: 100%; width: 100%;"></div>
-                        </div>
-                        
-                        <!-- Stats de la bóveda en tiempo real -->
+                        <!-- Stats principales del contrato -->
                         <div class="stats-grid" style="margin: 20px 0;">
                             <div class="stat-item">
-                                <span class="stat-label">PROFIT TOTAL</span>
-                                <span id="totalProfit" class="stat-value" style="color: #00ff00;">+24,567 USDT</span>
+                                <span class="stat-label">TOTAL ACTIVOS</span>
+                                <span id="contratoTotalAssets" class="stat-value">0.00 USDT</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">ROI 30d</span>
-                                <span id="profitPercentage" class="stat-value" style="color: #00ff00;">+18.4%</span>
+                                <span class="stat-label">CAPITAL EN TRADING</span>
+                                <span id="contratoCapitalTrading" class="stat-value">0.00 USDT</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">EN TRADING</span>
-                                <span id="enTrading" class="stat-value">156,789 USDT</span>
+                                <span class="stat-label">EN BÓVEDA</span>
+                                <span id="contratoEnBoveda" class="stat-value">0.00 USDT</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">POSICIONES</span>
-                                <span id="posiciones" class="stat-value">12</span>
+                                <span class="stat-label">PROFIT ESTIMADO*</span>
+                                <span id="contratoProfit" class="stat-value">0.00 USDT</span>
                             </div>
                         </div>
                         
-                        <!-- Panel de traders y rendimiento -->
-                        <div class="stats-grid" style="margin: 20px 0;">
-                            <div class="stat-item" style="background: rgba(0,255,255,0.15);">
-                                <span class="stat-label">TRADER #1</span>
-                                <span class="stat-value" style="color: #00ffff; font-size: 1.2rem;">CryptoWhale</span>
-                                <span class="stat-label" style="margin-top: 5px;">ROI 30d</span>
-                                <span class="stat-value profit-positive">+18.4%</span>
-                                <span class="stat-label" style="margin-top: 5px;">Operaciones</span>
-                                <span class="stat-value">142</span>
-                                <span class="stat-label" style="margin-top: 5px;">Win Rate</span>
-                                <span class="stat-value">68%</span>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">TOTAL SUPPLY</span>
+                                <span id="contratoTotalSupply" class="stat-value">0</span>
                             </div>
-                            <div class="stat-item" style="background: rgba(255,128,255,0.15);">
-                                <span class="stat-label">TRADER #2</span>
-                                <span class="stat-value" style="color: #ff80ff; font-size: 1.2rem;">AlphaSeeker</span>
-                                <span class="stat-label" style="margin-top: 5px;">ROI 30d</span>
-                                <span class="stat-value profit-positive">+12.7%</span>
-                                <span class="stat-label" style="margin-top: 5px;">Operaciones</span>
-                                <span class="stat-value">98</span>
-                                <span class="stat-label" style="margin-top: 5px;">Win Rate</span>
-                                <span class="stat-value">62%</span>
+                            <div class="stat-item">
+                                <span class="stat-label">PRECIO SHARE</span>
+                                <span id="contratoSharePrice" class="stat-value">1.0000</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">MÍNIMO DEPÓSITO</span>
+                                <span id="contratoMinDep" class="stat-value">50 USDT</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">USUARIOS</span>
+                                <span id="contratoUsuarios" class="stat-value">--</span>
                             </div>
                         </div>
                         
-                        <!-- Tabla de traders detallada -->
-                        <table class="dynamic-table">
-                            <thead>
-                                <tr>
-                                    <th>TRADER</th>
-                                    <th>PAR PRINCIPAL</th>
-                                    <th>ROI 30d</th>
-                                    <th>OPERACIONES</th>
-                                    <th>WIN RATE</th>
-                                    <th>PROFIT</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>CryptoWhale</td>
-                                    <td>BTC/USDT</td>
-                                    <td class="profit-positive">+18.4%</td>
-                                    <td>142</td>
-                                    <td>68%</td>
-                                    <td class="profit-positive">+12,345 USDT</td>
-                                </tr>
-                                <tr>
-                                    <td>AlphaSeeker</td>
-                                    <td>ETH/USDT</td>
-                                    <td class="profit-positive">+12.7%</td>
-                                    <td>98</td>
-                                    <td>62%</td>
-                                    <td class="profit-positive">+8,901 USDT</td>
-                                </tr>
-                                <tr>
-                                    <td>MoonTrader</td>
-                                    <td>BNB/USDT</td>
-                                    <td class="profit-positive">+8.2%</td>
-                                    <td>76</td>
-                                    <td>59%</td>
-                                    <td class="profit-positive">+5,234 USDT</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <!-- Fondos de reserva -->
+                        <h4 class="text-cyan-300 mb-2" style="margin-top: 15px;">💰 FONDOS DE RESERVA</h4>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">ACUM. EVENTOS</span>
+                                <span id="contratoEventos" class="stat-value">0.00 USDT</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">ACUM. ADMIN</span>
+                                <span id="contratoAdmin" class="stat-value">0.00 USDT</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">ACUM. REFERIDOS</span>
+                                <span id="contratoReferidos" class="stat-value">0.00 USDT</span>
+                            </div>
+                        </div>
+                        
+                        <p class="text-xs text-gray-400 mt-2 text-center">
+                            * Profit estimado basado en totalAssets() - valor inicial estimado<br>
+                            <span class="text-cyan-300">Todos los datos son REALES del contrato Turbo V13.2</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- ===== NUEVA PESTAÑA: GRÁFICA BINANCE ===== -->
+                <div id="turboBinance" class="sub-content hidden">
+                    <div class="card">
+                        <span class="section-tag" style="background:#f59e0b;">🕯️ GRÁFICA BINANCE EN VIVO</span>
+                        
+                        <!-- Ticker de precios -->
+                        <div class="tradingview-widget-container" style="margin-bottom: 20px; height: 50px; width: 100%;">
+                            <div id="binance_ticker" style="height: 100%; width: 100%;"></div>
+                        </div>
+                        
+                        <!-- Gráfica de velas japonesas -->
+                        <div class="tradingview-widget-container" style="height: 400px; margin-bottom: 20px; width: 100%;">
+                            <div id="binance_chart" style="height: 100%; width: 100%;"></div>
+                        </div>
+                        
+                        <!-- Selector de par -->
+                        <div class="flex-row" style="justify-content: center; margin: 15px 0;">
+                            <button class="btn btn-outline btn-small" style="width: auto; padding: 8px 15px;" onclick="changeBinancePair('BINANCE:BTCUSDT')">BTC/USDT</button>
+                            <button class="btn btn-outline btn-small" style="width: auto; padding: 8px 15px;" onclick="changeBinancePair('BINANCE:ETHUSDT')">ETH/USDT</button>
+                            <button class="btn btn-outline btn-small" style="width: auto; padding: 8px 15px;" onclick="changeBinancePair('BINANCE:BNBUSDT')">BNB/USDT</button>
+                            <button class="btn btn-outline btn-small" style="width: auto; padding: 8px 15px;" onclick="changeBinancePair('BINANCE:SOLUSDT')">SOL/USDT</button>
+                        </div>
                         
                         <!-- Disclaimer -->
                         <p class="text-xs text-gray-400 mt-2 text-center">
-                            * Datos en tiempo real de Binance · Las estrategias de copy trading conllevan riesgos
+                            * Datos en tiempo real de Binance · Velas de 1 hora
                         </p>
                     </div>
                 </div>
@@ -1856,7 +1855,11 @@
             "function configurarParametros(uint256 _min, uint256 _multa, uint256 _risk, uint256 _maxSend) external",
             "function setBotAddress(address _bot) external",
             "function pause() external",
-            "function unpause() external"
+            "function unpause() external",
+            // Funciones adicionales para la nueva pestaña
+            "function acumuladoEventos() view returns (uint256)",
+            "function acumuladoAdministracion() view returns (uint256)",
+            "function acumuladoParaReferidos() view returns (uint256)"
         ];
 
         const usdtAbi = [
@@ -2175,7 +2178,7 @@
                 const datos = cacheDatos.turbo;
                 document.getElementById('turboUserBal').innerText = datos.capital;
                 document.getElementById('turboLeaderBal').innerText = datos.residual;
-                document.getElementById('turboLeaderBal2').innerText = datos.residual;
+                document.getElementById('turboLeaderBal2').innerText = datos.residual + ' USDT';
                 document.getElementById('turboSharePrice').innerText = datos.sharePrice;
                 document.getElementById('turboCalificado').innerText = datos.calificado;
                 document.getElementById('turboLockTime').innerText = datos.lockTime;
@@ -2251,31 +2254,152 @@
                     } catch (e) {}
                 }
                 
-                // Actualizar datos de copy trading con valores reales de la bóveda
+            } catch (error) {
+                console.error('Error cargando Turbo:', error);
+            }
+        }
+
+        // ========== NUEVA FUNCIÓN: CARGAR DATOS DEL CONTRATO ==========
+        async function loadContratoData() {
+            if (!contratoTurbo) return;
+            
+            try {
+                console.log('📊 Cargando datos reales del contrato Turbo...');
+                
+                // Obtener totalAssets()
+                const totalAssets = await contratoTurbo.totalAssets();
+                const totalAssetsNum = parseFloat(ethers.utils.formatUnits(totalAssets, 18));
+                
+                // Obtener capitalEnTrading()
+                const capitalTrading = await contratoTurbo.capitalEnTrading();
+                const capitalTradingNum = parseFloat(ethers.utils.formatUnits(capitalTrading, 18));
+                
+                // Calcular en bóveda
+                const enBoveda = totalAssetsNum - capitalTradingNum;
+                
+                // Obtener totalSupply()
+                const totalSupply = await contratoTurbo.totalSupply();
+                const totalSupplyNum = parseFloat(ethers.utils.formatUnits(totalSupply, 18));
+                
+                // Obtener precio del share
+                let sharePrice = 1.0;
                 try {
-                    const totalAssets = await contratoTurbo.totalAssets();
-                    const capitalTrading = await contratoTurbo.capitalEnTrading();
+                    if (userAddress) {
+                        const dashboard = await contratoTurbo.getVaultDashboard(userAddress);
+                        sharePrice = parseFloat(ethers.utils.formatUnits(dashboard[4], 18));
+                    } else {
+                        sharePrice = totalSupplyNum > 0 ? totalAssetsNum / totalSupplyNum : 1.0;
+                    }
+                } catch (e) {}
+                
+                // Obtener mínimo depósito
+                const minDep = await contratoTurbo.minimoDeposito();
+                const minDepNum = parseFloat(ethers.utils.formatUnits(minDep, 18));
+                
+                // Calcular profit estimado (asumiendo valor inicial de 100,000 USDT)
+                const valorInicial = 100000;
+                const profitEstimado = totalAssetsNum - valorInicial;
+                
+                // Actualizar UI
+                document.getElementById('contratoTotalAssets').innerText = totalAssetsNum.toFixed(2) + ' USDT';
+                document.getElementById('contratoCapitalTrading').innerText = capitalTradingNum.toFixed(2) + ' USDT';
+                document.getElementById('contratoEnBoveda').innerText = enBoveda.toFixed(2) + ' USDT';
+                document.getElementById('contratoProfit').innerText = 
+                    (profitEstimado > 0 ? '+' : '') + profitEstimado.toFixed(2) + ' USDT';
+                document.getElementById('contratoProfit').style.color = profitEstimado >= 0 ? '#00ff00' : '#ff0000';
+                document.getElementById('contratoTotalSupply').innerText = totalSupplyNum.toFixed(0);
+                document.getElementById('contratoSharePrice').innerText = sharePrice.toFixed(4);
+                document.getElementById('contratoMinDep').innerText = minDepNum.toFixed(2) + ' USDT';
+                
+                // Intentar obtener reservas
+                try {
+                    const eventos = await contratoTurbo.acumuladoEventos();
+                    const admin = await contratoTurbo.acumuladoAdministracion();
+                    const referidos = await contratoTurbo.acumuladoParaReferidos();
                     
-                    const totalAssetsNum = parseFloat(ethers.utils.formatUnits(totalAssets, 18));
-                    const capitalTradingNum = parseFloat(ethers.utils.formatUnits(capitalTrading, 18));
-                    
-                    // Calcular profit (asumiendo que el valor inicial era 100,000 USDT - ajusta según tu contrato)
-                    const valorInicial = 100000;
-                    const profitActual = totalAssetsNum - valorInicial;
-                    const profitPorcentaje = (profitActual / valorInicial) * 100;
-                    
-                    document.getElementById('totalProfit').innerText = 
-                        (profitActual > 0 ? '+' : '') + profitActual.toFixed(2) + ' USDT';
-                    document.getElementById('profitPercentage').innerText = 
-                        (profitPorcentaje > 0 ? '+' : '') + profitPorcentaje.toFixed(2) + '%';
-                    document.getElementById('enTrading').innerText = capitalTradingNum.toFixed(2) + ' USDT';
-                    
+                    document.getElementById('contratoEventos').innerText = 
+                        parseFloat(ethers.utils.formatUnits(eventos, 18)).toFixed(2) + ' USDT';
+                    document.getElementById('contratoAdmin').innerText = 
+                        parseFloat(ethers.utils.formatUnits(admin, 18)).toFixed(2) + ' USDT';
+                    document.getElementById('contratoReferidos').innerText = 
+                        parseFloat(ethers.utils.formatUnits(referidos, 18)).toFixed(2) + ' USDT';
                 } catch (e) {
-                    console.log('Usando datos simulados para copy trading');
+                    console.log('No se pudieron cargar las reservas');
                 }
                 
             } catch (error) {
-                console.error('Error cargando Turbo:', error);
+                console.error('Error cargando datos del contrato:', error);
+            }
+        }
+
+        // ========== NUEVA FUNCIÓN: INICIALIZAR GRÁFICA BINANCE ==========
+        function initBinanceChart() {
+            console.log('🕯️ Inicializando gráfica Binance...');
+            
+            // Limpiar contenedores
+            const tickerContainer = document.getElementById('binance_ticker');
+            const chartContainer = document.getElementById('binance_chart');
+            
+            if (tickerContainer) tickerContainer.innerHTML = '';
+            if (chartContainer) chartContainer.innerHTML = '';
+            
+            setTimeout(() => {
+                try {
+                    // Verificar que TradingView está cargado
+                    if (typeof TradingView === 'undefined') {
+                        console.error('❌ TradingView no está cargado');
+                        return;
+                    }
+                    
+                    // Ticker de precios
+                    new TradingView.TickerTapeWidget({
+                        "container_id": "binance_ticker",
+                        "width": "100%",
+                        "height": 50,
+                        "colorTheme": "dark",
+                        "isTransparent": true,
+                        "displayMode": "adaptive",
+                        "locale": "es",
+                        "symbols": [
+                            { "proName": "BINANCE:BTCUSDT", "title": "BTC" },
+                            { "proName": "BINANCE:ETHUSDT", "title": "ETH" },
+                            { "proName": "BINANCE:BNBUSDT", "title": "BNB" },
+                            { "proName": "BINANCE:SOLUSDT", "title": "SOL" }
+                        ]
+                    });
+
+                    // Gráfica de velas
+                    window.binanceWidget = new TradingView.widget({
+                        "container_id": "binance_chart",
+                        "width": "100%",
+                        "height": 400,
+                        "symbol": "BINANCE:BTCUSDT",
+                        "interval": "60",
+                        "timezone": "America/Bogota",
+                        "theme": "dark",
+                        "style": "1",
+                        "locale": "es",
+                        "toolbar_bg": "#0a0a0f",
+                        "enable_publishing": false,
+                        "hide_side_toolbar": false,
+                        "allow_symbol_change": true,
+                        "studies": [
+                            "RSI@tv-basicstudies",
+                            "MACD@tv-basicstudies"
+                        ],
+                        "background": "#0a0a0f"
+                    });
+                    
+                } catch (e) {
+                    console.error('Error en gráfica Binance:', e);
+                }
+            }, 200);
+        }
+
+        // ========== NUEVA FUNCIÓN: CAMBIAR PAR EN GRÁFICA BINANCE ==========
+        function changeBinancePair(symbol) {
+            if (window.binanceWidget) {
+                window.binanceWidget.setSymbol(symbol);
             }
         }
 
@@ -2302,59 +2426,6 @@
                 opcionesDiv.innerHTML = `<div class="free-notice"><strong>✅ RETIRO SIN COMISIÓN</strong><br>Recibirás: ${amt.toFixed(2)} USDT</div>`;
                 btnWithdraw.disabled = false;
                 btnWithdraw.innerText = 'RETIRAR SIN COMISIÓN';
-            }
-        }
-
-        // ========== FUNCIÓN PARA INICIALIZAR TRADINGVIEW WIDGETS ==========
-        function initTradingViewWidgets() {
-            // Limpiar contenedores previos
-            document.getElementById('tradingview_ticker').innerHTML = '';
-            document.getElementById('tradingview_chart').innerHTML = '';
-            
-            try {
-                // Ticker de precios
-                new TradingView.TickerTapeWidget({
-                    "container_id": "tradingview_ticker",
-                    "width": "100%",
-                    "height": 50,
-                    "colorTheme": "dark",
-                    "isTransparent": true,
-                    "displayMode": "adaptive",
-                    "locale": "es",
-                    "symbols": [
-                        { "proName": "BINANCE:BTCUSDT", "title": "BTC" },
-                        { "proName": "BINANCE:ETHUSDT", "title": "ETH" },
-                        { "proName": "BINANCE:BNBUSDT", "title": "BNB" },
-                        { "proName": "BINANCE:SOLUSDT", "title": "SOL" },
-                        { "proName": "BINANCE:ADAUSDT", "title": "ADA" }
-                    ]
-                });
-
-                // Gráfica principal
-                new TradingView.widget({
-                    "container_id": "tradingview_chart",
-                    "width": "100%",
-                    "height": 400,
-                    "symbol": "BINANCE:BTCUSDT",
-                    "interval": "60",
-                    "timezone": "America/Bogota",
-                    "theme": "dark",
-                    "style": "1",
-                    "locale": "es",
-                    "toolbar_bg": "#0a0a0f",
-                    "enable_publishing": false,
-                    "hide_side_toolbar": false,
-                    "allow_symbol_change": true,
-                    "studies": [
-                        "RSI@tv-basicstudies",
-                        "MACD@tv-basicstudies"
-                    ],
-                    "show_popup_button": true,
-                    "popup_width": "1000",
-                    "popup_height": "650"
-                });
-            } catch (e) {
-                console.log('Error inicializando TradingView:', e);
             }
         }
 
@@ -2433,6 +2504,7 @@
                 // ===== SEGUNDO: Cargar datos =====
                 await loadUserDataV5(true); // Forzar carga inicial
                 await loadTurboData(true); // Forzar carga inicial
+                await loadContratoData(); // Cargar datos del contrato
                 
                 await addEvent('Wallet conectada: ' + userAddress.slice(0,6) + '...', 'success');
                 
@@ -2445,6 +2517,7 @@
                         checkMembresiaActiva();
                         loadUserDataV5(forzar);
                         loadTurboData(forzar);
+                        loadContratoData(); // Actualizar datos del contrato
                     }
                 }, 30000);
                 
@@ -2509,7 +2582,7 @@
             });
         });
 
-        // Subpestañas de Turbo
+        // Subpestañas de Turbo (ACTUALIZADAS con las nuevas)
         const turboSubTabs = document.querySelectorAll('#seccionTurbo .sub-tab');
         const turboSubContents = {
             turboDashboard: document.getElementById('turboDashboard'),
@@ -2517,8 +2590,10 @@
             turboRecompensas: document.getElementById('turboRecompensas'),
             turboAdmin: document.getElementById('turboAdmin'),
             turboWalker: document.getElementById('turboWalker'),
-            turboCopy: document.getElementById('turboCopy')
+            turboContrato: document.getElementById('turboContrato'),
+            turboBinance: document.getElementById('turboBinance')
         };
+
         turboSubTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 turboSubTabs.forEach(t => t.classList.remove('active'));
@@ -2527,14 +2602,15 @@
                 Object.values(turboSubContents).forEach(c => c?.classList.add('hidden'));
                 if (turboSubContents[target]) turboSubContents[target].classList.remove('hidden');
                 
-                // Carga perezosa
+                // Carga perezosa según la pestaña
                 if (target === 'turboOperaciones') {
                     loadTurboData(true);
                 }
-                if (target === 'turboCopy') {
-                    // Inicializar TradingView cuando se abre la pestaña de copy trading
-                    setTimeout(initTradingViewWidgets, 200);
-                    loadTurboData(true);
+                if (target === 'turboContrato') {
+                    loadContratoData(); // Cargar datos del contrato
+                }
+                if (target === 'turboBinance') {
+                    setTimeout(initBinanceChart, 200); // Inicializar gráfica Binance
                 }
             });
         });
@@ -2795,6 +2871,7 @@
                 showToast('✅ Depósito exitoso');
                 await addEvent(`Depósito de ${monto} USDT en Turbo`, 'success');
                 await loadTurboData(true);
+                await loadContratoData(); // Actualizar datos del contrato
                 
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
@@ -2821,6 +2898,7 @@
                 showToast('✅ Retiro exitoso');
                 await addEvent(`Retiro de ${monto} USDT de Turbo`, 'success');
                 await loadTurboData(true);
+                await loadContratoData(); // Actualizar datos del contrato
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -2839,6 +2917,7 @@
                 showToast('✅ Recompensas reclamadas');
                 await addEvent('Recompensas de líder reclamadas', 'success');
                 await loadTurboData(true);
+                await loadContratoData(); // Actualizar datos del contrato
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -2878,6 +2957,7 @@
                 showToast('✅ Ganancia reportada');
                 await addEvent(`Profit reportado: +${monto} USDT`, 'success');
                 await loadTurboData(true);
+                await loadContratoData(); // Actualizar datos del contrato
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -2903,6 +2983,7 @@
                 showToast('✅ Pérdida reportada');
                 await addEvent(`Pérdida reportada: -${monto} USDT`, 'error');
                 await loadTurboData(true);
+                await loadContratoData(); // Actualizar datos del contrato
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -2934,6 +3015,7 @@
                 await tx.wait();
                 showToast('✅ Capital registrado');
                 await loadTurboData(true);
+                await loadContratoData(); // Actualizar datos del contrato
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -2961,6 +3043,7 @@
                 await tx.wait();
                 showToast('✅ Fondos enviados');
                 await loadTurboData(true);
+                await loadContratoData(); // Actualizar datos del contrato
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -2993,6 +3076,7 @@
                 await tx.wait();
                 showToast('✅ Parámetros actualizados');
                 await loadTurboData(true);
+                await loadContratoData(); // Actualizar datos del contrato
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -3095,6 +3179,9 @@
                 setTimeout(initConnection, 500);
             }
         });
+
+        // Exponer función para cambiar par (para los botones)
+        window.changeBinancePair = changeBinancePair;
     </script>
 </body>
 </html>
