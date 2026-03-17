@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Ethers v5 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
-    <!-- TradingView Widgets -->
-    <script src="https://s3.tradingview.com/tv.js"></script>
     <style>
         /* ========== ESTILOS GALÁCTICOS ÉLITE ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -612,6 +610,16 @@
             font-size: 0.9rem;
         }
         
+        /* Estilos para select */
+        select.input-box {
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2300ffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+        
         /* Valores grandes con efecto brillante */
         .val-large {
             font-size: 2.8rem;
@@ -1133,11 +1141,23 @@
         }
 
         /* Estilos para TradingView widgets */
-        .tradingview-widget-container {
+        #tradingview_chart {
             border-radius: 16px;
             overflow: hidden;
-            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        #liveTradeInfo {
+            transition: all 0.3s ease;
+            border-left: 5px solid #ff00ff;
+            background: rgba(255, 0, 255, 0.05);
+            border-radius: 16px;
+            padding: 15px;
             margin-bottom: 20px;
+        }
+        
+        #liveTradeInfo:hover {
+            border-left-width: 8px;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
         }
         
         .profit-positive {
@@ -1555,7 +1575,7 @@
 
             <!-- ========== SECCIÓN TURBO ========== -->
             <div id="seccionTurbo" class="main-content hidden">
-                <!-- Subpestañas de Turbo (ACTUALIZADAS con 2 nuevas) -->
+                <!-- Subpestañas de Turbo -->
                 <div class="sub-tabs">
                     <div class="sub-tab active" data-sub="turboDashboard">📈 Dashboard</div>
                     <div class="sub-tab" data-sub="turboOperaciones">⚡ Operaciones</div>
@@ -1566,7 +1586,7 @@
                     <div class="sub-tab" data-sub="turboBinance">🕯️ Gráfica Binance</div>
                 </div>
 
-                <!-- Subsección Dashboard Turbo -->
+                <!-- Subsección Dashboard Turbo (MODIFICADA con gráfico y status) -->
                 <div id="turboDashboard" class="sub-content">
                     <div class="card">
                         <span class="section-tag">📈 DASHBOARD TURBO</span>
@@ -1576,6 +1596,29 @@
                             🔍 Verificando membresía...
                         </div>
 
+                        <!-- ===== NUEVO: GRÁFICO PROFESIONAL EN VIVO ===== -->
+                        <div class="card" style="padding: 0; overflow: hidden; border-color: #00ffff; height: 350px; margin-bottom: 20px;">
+                            <span class="section-tag" style="position: absolute; top: 10px; left: 10px; z-index: 10;">📡 MERCADO EN VIVO (BINANCE)</span>
+                            <!-- Widget de TradingView -->
+                            <div id="tradingview_chart" style="height: 100%; width: 100%;"></div>
+                        </div>
+
+                        <!-- ===== NUEVO: PANEL DE STATUS DE TRADING ===== -->
+                        <div id="liveTradeInfo">
+                            <span class="section-tag" style="background:#ff00ff; color:white; margin-bottom: 10px;">⚡ STATUS DE TRADING</span>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <small style="color:#aaa;">ESTRATEGIA ACTUAL:</small><br>
+                                    <b id="tradeStatus" style="color:#00ffff; font-size: 14px;">📡 ESPERANDO SEÑAL DEL BOT...</b>
+                                </div>
+                                <div style="text-align: right;">
+                                    <small style="color:#aaa;">RIESGO:</small><br>
+                                    <b style="color:#ff4d4d; font-size: 14px;">10X LEVERAGE</b>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- El resto del dashboard sigue igual -->
                         <div class="val-large" id="turboUserBal">0.00 USDT</div>
                         <div class="stats-grid">
                             <div class="stat-item">
@@ -1655,7 +1698,7 @@
                     </div>
                 </div>
 
-                <!-- Subsección Walker Turbo -->
+                <!-- Subsección Walker Turbo (MODIFICADA con control de status) -->
                 <div id="turboWalker" class="sub-content hidden">
                     <div class="card">
                         <span class="section-tag" style="background:#f59e0b;">🤖 WALKER</span>
@@ -1681,16 +1724,39 @@
                             <input type="number" id="turboReturnAmount" class="input-box" placeholder="Monto devuelto">
                             <input type="text" id="turboReturnExchange" class="input-box" placeholder="Exchange (0x...)">
                             <button id="turboBtnReturnCapital" class="btn btn-outline">↩️ REGISTRAR REGRESO</button>
+
+                            <!-- ===== NUEVO: CONTROL DE STATUS DE TRADING ===== -->
+                            <div class="card" style="margin-top: 20px; border-color: #ff00ff;">
+                                <span class="section-tag" style="background:#ff00ff;">🎮 CONTROL DE STATUS</span>
+                                <h4 class="text-cyan-300 mb-2">📢 Actualizar Status de Trading</h4>
+                                <select id="tradeMoneda" class="input-box" style="text-align: left;">
+                                    <option value="BTC">BTC/USDT</option>
+                                    <option value="ETH">ETH/USDT</option>
+                                    <option value="SOL">SOL/USDT</option>
+                                    <option value="BNB">BNB/USDT</option>
+                                </select>
+                                <select id="tradeAccion" class="input-box" style="text-align: left;">
+                                    <option value="espera">🟡 En espera</option>
+                                    <option value="long">🟢 LONG (Compra)</option>
+                                    <option value="short">🔴 SHORT (Venta)</option>
+                                </select>
+                                <select id="tradeLeverage" class="input-box" style="text-align: left;">
+                                    <option value="5X">5X Apalancamiento</option>
+                                    <option value="10X" selected>10X Apalancamiento</option>
+                                    <option value="20X">20X Apalancamiento</option>
+                                </select>
+                                <button id="btnUpdateTradeStatus" class="btn btn-gold">📢 PUBLICAR STATUS</button>
+                                <p class="text-xs text-gray-400 mt-2">* Todos los usuarios verán este mensaje en su dashboard</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ===== NUEVA PESTAÑA: DATOS DEL CONTRATO ===== -->
+                <!-- Pestaña Datos del Contrato -->
                 <div id="turboContrato" class="sub-content hidden">
                     <div class="card">
                         <span class="section-tag" style="background:#00ffff;">📊 DATOS REALES DEL CONTRATO TURBO</span>
                         
-                        <!-- Stats principales del contrato -->
                         <div class="stats-grid" style="margin: 20px 0;">
                             <div class="stat-item">
                                 <span class="stat-label">TOTAL ACTIVOS</span>
@@ -1729,7 +1795,6 @@
                             </div>
                         </div>
                         
-                        <!-- Fondos de reserva -->
                         <h4 class="text-cyan-300 mb-2" style="margin-top: 15px;">💰 FONDOS DE RESERVA</h4>
                         <div class="stats-grid">
                             <div class="stat-item">
@@ -1753,7 +1818,7 @@
                     </div>
                 </div>
 
-                <!-- ===== NUEVA PESTAÑA: GRÁFICA BINANCE ===== -->
+                <!-- Pestaña Gráfica Binance -->
                 <div id="turboBinance" class="sub-content hidden">
                     <div class="card">
                         <span class="section-tag" style="background:#f59e0b;">🕯️ GRÁFICA BINANCE EN VIVO</span>
@@ -1776,7 +1841,6 @@
                             <button class="btn btn-outline btn-small" style="width: auto; padding: 8px 15px;" onclick="changeBinancePair('BINANCE:SOLUSDT')">SOL/USDT</button>
                         </div>
                         
-                        <!-- Disclaimer -->
                         <p class="text-xs text-gray-400 mt-2 text-center">
                             * Datos en tiempo real de Binance · Velas de 1 hora
                         </p>
@@ -1856,7 +1920,6 @@
             "function setBotAddress(address _bot) external",
             "function pause() external",
             "function unpause() external",
-            // Funciones adicionales para la nueva pestaña
             "function acumuladoEventos() view returns (uint256)",
             "function acumuladoAdministracion() view returns (uint256)",
             "function acumuladoParaReferidos() view returns (uint256)"
@@ -2259,6 +2322,111 @@
             }
         }
 
+        // ========== NUEVA FUNCIÓN: CARGAR GRÁFICO TRADINGVIEW ==========
+        function loadTradingChart() {
+            // Verificar si ya existe el script para no duplicar
+            if (document.querySelector('script[src="https://s3.tradingview.com/tv.js"]')) {
+                // Si ya existe, solo inicializar el widget
+                if (typeof TradingView !== 'undefined') {
+                    new TradingView.widget({
+                        "autosize": true,
+                        "symbol": "BINANCE:BTCUSDT",
+                        "interval": "15",
+                        "timezone": "Etc/UTC",
+                        "theme": "dark",
+                        "style": "1",
+                        "locale": "es",
+                        "toolbar_bg": "#0a0a0f",
+                        "enable_publishing": false,
+                        "hide_top_toolbar": true,
+                        "hide_legend": false,
+                        "save_image": false,
+                        "container_id": "tradingview_chart",
+                        "studies": [
+                            "RSI@tv-basicstudies",
+                            "MACD@tv-basicstudies"
+                        ]
+                    });
+                }
+                return;
+            }
+            
+            // Cargar script por primera vez
+            const script = document.createElement('script');
+            script.src = "https://s3.tradingview.com/tv.js";
+            script.async = true;
+            script.onload = () => {
+                new TradingView.widget({
+                    "autosize": true,
+                    "symbol": "BINANCE:BTCUSDT",
+                    "interval": "15",
+                    "timezone": "Etc/UTC",
+                    "theme": "dark",
+                    "style": "1",
+                    "locale": "es",
+                    "toolbar_bg": "#0a0a0f",
+                    "enable_publishing": false,
+                    "hide_top_toolbar": true,
+                    "hide_legend": false,
+                    "save_image": false,
+                    "container_id": "tradingview_chart",
+                    "studies": [
+                        "RSI@tv-basicstudies",
+                        "MACD@tv-basicstudies"
+                    ]
+                });
+            };
+            document.head.appendChild(script);
+        }
+
+        // ========== NUEVA FUNCIÓN: ACTUALIZAR STATUS DE TRADING ==========
+        function updateTradeStatus(moneda, accion, leverage = "10X") {
+            const statusElement = document.getElementById('tradeStatus');
+            if (!statusElement) return;
+            
+            let color = "#00ffff";
+            let texto = "";
+            let emoji = "📡";
+            
+            if (accion.toLowerCase() === "long" || accion.toLowerCase() === "compra") {
+                color = "#00ff00";
+                emoji = "🟢";
+                texto = `LONG ${moneda} (${leverage})`;
+            } else if (accion.toLowerCase() === "short" || accion.toLowerCase() === "venta") {
+                color = "#ff0000";
+                emoji = "🔴";
+                texto = `SHORT ${moneda} (${leverage})`;
+            } else if (accion.toLowerCase() === "espera") {
+                color = "#ffaa00";
+                emoji = "🟡";
+                texto = `EN ESPERA - ${moneda}`;
+            } else {
+                texto = accion;
+            }
+            
+            statusElement.innerHTML = `${emoji} ${texto}`;
+            statusElement.style.color = color;
+            
+            // Guardar en localStorage para persistencia
+            localStorage.setItem('tradeStatus', JSON.stringify({
+                moneda,
+                accion,
+                leverage,
+                timestamp: Date.now()
+            }));
+        }
+
+        // ========== NUEVA FUNCIÓN: CARGAR STATUS GUARDADO ==========
+        function loadSavedTradeStatus() {
+            const saved = localStorage.getItem('tradeStatus');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    updateTradeStatus(data.moneda, data.accion, data.leverage);
+                } catch (e) {}
+            }
+        }
+
         // ========== NUEVA FUNCIÓN: CARGAR DATOS DEL CONTRATO ==========
         async function loadContratoData() {
             if (!contratoTurbo) return;
@@ -2506,6 +2674,10 @@
                 await loadTurboData(true); // Forzar carga inicial
                 await loadContratoData(); // Cargar datos del contrato
                 
+                // ===== NUEVO: Cargar gráfico y status =====
+                loadTradingChart();
+                loadSavedTradeStatus();
+                
                 await addEvent('Wallet conectada: ' + userAddress.slice(0,6) + '...', 'success');
                 
                 // Auto-refresh optimizado con caché
@@ -2582,7 +2754,7 @@
             });
         });
 
-        // Subpestañas de Turbo (ACTUALIZADAS con las nuevas)
+        // Subpestañas de Turbo
         const turboSubTabs = document.querySelectorAll('#seccionTurbo .sub-tab');
         const turboSubContents = {
             turboDashboard: document.getElementById('turboDashboard'),
@@ -2607,12 +2779,28 @@
                     loadTurboData(true);
                 }
                 if (target === 'turboContrato') {
-                    loadContratoData(); // Cargar datos del contrato
+                    loadContratoData();
                 }
                 if (target === 'turboBinance') {
-                    setTimeout(initBinanceChart, 200); // Inicializar gráfica Binance
+                    setTimeout(initBinanceChart, 200);
                 }
             });
+        });
+
+        // ===== NUEVO: CONTROL DE STATUS DE TRADING (en Walker) =====
+        document.getElementById('btnUpdateTradeStatus')?.addEventListener('click', () => {
+            if (!isWalkerTurbo) {
+                showToast('❌ Solo el walker puede actualizar el status', true);
+                return;
+            }
+            
+            const moneda = document.getElementById('tradeMoneda')?.value;
+            const accion = document.getElementById('tradeAccion')?.value;
+            const leverage = document.getElementById('tradeLeverage')?.value;
+            
+            updateTradeStatus(moneda, accion, leverage);
+            showToast(`✅ Status actualizado: ${accion.toUpperCase()} ${moneda}`);
+            addEvent(`Walker actualizó status: ${accion.toUpperCase()} ${moneda}`, 'info');
         });
 
         // ===== BOTONES MILIMAR V5 =====
@@ -2871,7 +3059,7 @@
                 showToast('✅ Depósito exitoso');
                 await addEvent(`Depósito de ${monto} USDT en Turbo`, 'success');
                 await loadTurboData(true);
-                await loadContratoData(); // Actualizar datos del contrato
+                await loadContratoData();
                 
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
@@ -2898,7 +3086,7 @@
                 showToast('✅ Retiro exitoso');
                 await addEvent(`Retiro de ${monto} USDT de Turbo`, 'success');
                 await loadTurboData(true);
-                await loadContratoData(); // Actualizar datos del contrato
+                await loadContratoData();
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -2917,7 +3105,7 @@
                 showToast('✅ Recompensas reclamadas');
                 await addEvent('Recompensas de líder reclamadas', 'success');
                 await loadTurboData(true);
-                await loadContratoData(); // Actualizar datos del contrato
+                await loadContratoData();
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -2957,7 +3145,7 @@
                 showToast('✅ Ganancia reportada');
                 await addEvent(`Profit reportado: +${monto} USDT`, 'success');
                 await loadTurboData(true);
-                await loadContratoData(); // Actualizar datos del contrato
+                await loadContratoData();
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -2983,7 +3171,7 @@
                 showToast('✅ Pérdida reportada');
                 await addEvent(`Pérdida reportada: -${monto} USDT`, 'error');
                 await loadTurboData(true);
-                await loadContratoData(); // Actualizar datos del contrato
+                await loadContratoData();
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -3015,7 +3203,7 @@
                 await tx.wait();
                 showToast('✅ Capital registrado');
                 await loadTurboData(true);
-                await loadContratoData(); // Actualizar datos del contrato
+                await loadContratoData();
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -3043,7 +3231,7 @@
                 await tx.wait();
                 showToast('✅ Fondos enviados');
                 await loadTurboData(true);
-                await loadContratoData(); // Actualizar datos del contrato
+                await loadContratoData();
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -3076,7 +3264,7 @@
                 await tx.wait();
                 showToast('✅ Parámetros actualizados');
                 await loadTurboData(true);
-                await loadContratoData(); // Actualizar datos del contrato
+                await loadContratoData();
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -3180,7 +3368,7 @@
             }
         });
 
-        // Exponer función para cambiar par (para los botones)
+        // Exponer funciones globalmente
         window.changeBinancePair = changeBinancePair;
     </script>
 </body>
