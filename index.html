@@ -1081,6 +1081,54 @@
             height: 1px;
             background: linear-gradient(90deg, transparent, #00ffff, transparent);
         }
+        
+        /* ========== OPTIMIZACIONES DE RENDIMIENTO PARA MÓVIL ========== */
+        @media (max-width: 768px) {
+            /* Reducir animaciones pesadas */
+            .card::before,
+            .card::after,
+            .bar-chart::before,
+            .btn-gold::before {
+                animation: none !important;
+            }
+            
+            /* Ocultar elementos decorativos que consumen recursos */
+            .shooting-star {
+                display: none;
+            }
+            
+            .dust-particle {
+                opacity: 0.2;
+                animation: none;
+            }
+            
+            /* Simplificar efectos hover */
+            .card:hover {
+                transform: translateY(-2px);
+            }
+            
+            .stat-item:hover {
+                transform: scale(1.02);
+            }
+            
+            /* Reducir blur effects en móvil */
+            .card,
+            .slogan,
+            .header p,
+            .floating-btn {
+                backdrop-filter: blur(5px);
+            }
+        }
+        
+        /* Loader animado */
+        .fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -1091,7 +1139,7 @@
     <!-- Partículas de polvo estelar -->
     <div class="stardust" id="stardust"></div>
     
-    <!-- Estrellas fugaces -->
+    <!-- Estrellas fugaces (se ocultan en móvil por CSS) -->
     <div class="shooting-star" style="top: 10%; left: -10%; animation-delay: 0s;"></div>
     <div class="shooting-star" style="top: 30%; left: -10%; animation-delay: 4s;"></div>
     <div class="shooting-star" style="top: 60%; left: -10%; animation-delay: 8s;"></div>
@@ -1490,7 +1538,6 @@
                     <div class="sub-tab" data-sub="turboRecompensas">💰 Recompensas</div>
                     <div class="sub-tab" data-sub="turboAdmin" id="turboAdminTab" style="display:none;">🔱 Admin</div>
                     <div class="sub-tab" data-sub="turboWalker" id="turboWalkerTab" style="display:none;">🤖 Walker</div>
-                    <div class="sub-tab" data-sub="turboCopy">📊 Copy Trading</div>
                 </div>
 
                 <!-- Subsección Dashboard Turbo -->
@@ -1545,120 +1592,38 @@
                     </div>
                 </div>
 
-                <!-- Subsección Admin Turbo - MEJORADA -->
+                <!-- Subsección Admin Turbo -->
                 <div id="turboAdmin" class="sub-content hidden">
                     <div class="card">
                         <span class="section-tag">🔱 ADMIN TURBO</span>
                         <div class="admin-section">
-                            <p class="text-yellow-300 text-sm mb-4 flex items-center">
-                                <i class="fas fa-crown mr-2"></i> Funciones exclusivas de administrador
-                            </p>
+                            <p class="text-yellow-300 text-sm mb-4">🔑 Funciones exclusivas de administrador</p>
                             
-                            <!-- ===== MÉTRICAS CLAVE ===== -->
-                            <h4 class="text-cyan-300 text-sm mb-3 flex items-center">
-                                <i class="fas fa-chart-line mr-2"></i> MÉTRICAS DEL CONTRATO
-                            </h4>
-                            <div class="stats-grid mb-4">
-                                <div class="stat-item">
-                                    <span class="stat-label">Total en Bóveda</span>
-                                    <span id="turboAdminBoveda" class="stat-value">0.00</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">En Trading</span>
-                                    <span id="turboAdminTrading" class="stat-value">0.00</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Total Usuarios</span>
-                                    <span id="turboAdminTotalUsers" class="stat-value">0</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Shares Totales</span>
-                                    <span id="turboAdminTotalShares" class="stat-value">0.00</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Precio Share</span>
-                                    <span id="turboAdminSharePrice" class="stat-value">1.0000</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Heartbeat</span>
-                                    <span id="turboAdminHeartbeat" class="stat-value">⏳</span>
-                                </div>
+                            <div class="stats-grid">
+                                <div class="stat-item"><span class="stat-label">En Bóveda</span><span id="turboAdminBoveda" class="stat-value">0.00</span></div>
+                                <div class="stat-item"><span class="stat-label">En Trading</span><span id="turboAdminTrading" class="stat-value">0.00</span></div>
                             </div>
-
-                            <!-- ===== CONFIGURACIÓN ACTUAL ===== -->
-                            <h4 class="text-cyan-300 text-sm mb-3 flex items-center">
-                                <i class="fas fa-sliders-h mr-2"></i> CONFIGURACIÓN ACTUAL
-                            </h4>
-                            <div class="grid grid-cols-2 gap-2 text-xs bg-black/40 p-3 rounded-xl mb-4">
-                                <div><span class="text-gray-400">Mínimo Depósito:</span> <span id="turboConfigMinDepDisplay" class="text-cyan-300">0.00</span></div>
-                                <div><span class="text-gray-400">Multa Early:</span> <span id="turboConfigEarlyFeeDisplay" class="text-cyan-300">0%</span></div>
-                                <div><span class="text-gray-400">Max Riesgo:</span> <span id="turboConfigMaxRiskDisplay" class="text-cyan-300">0%</span></div>
-                                <div><span class="text-gray-400">Max Envío:</span> <span id="turboConfigMaxSendDisplay" class="text-cyan-300">0.00</span></div>
-                                <div><span class="text-gray-400">Max Loss/Report:</span> <span id="turboConfigMaxLossDisplay" class="text-cyan-300">0.00</span></div>
-                                <div><span class="text-gray-400">Cooldown:</span> <span id="turboConfigCooldownDisplay" class="text-cyan-300">1h</span></div>
-                            </div>
-
-                            <!-- ===== EXCHANGES AUTORIZADOS ===== -->
-                            <h4 class="text-cyan-300 text-sm mb-3 flex items-center">
-                                <i class="fas fa-exchange-alt mr-2"></i> EXCHANGES AUTORIZADOS
-                            </h4>
-                            <div id="turboExchangesList" class="bg-black/40 p-3 rounded-xl mb-4 text-xs max-h-24 overflow-y-auto">
-                                <p class="text-gray-400">Cargando...</p>
-                            </div>
-
-                            <!-- ===== TRADING ===== -->
-                            <h4 class="text-cyan-300 text-sm mb-3 flex items-center">
-                                <i class="fas fa-rocket mr-2"></i> ENVIAR A TRADING
-                            </h4>
+                            
+                            <h4 class="text-cyan-300 mb-2">🚀 Trading</h4>
                             <input type="number" id="turboTradeAmount" class="input-box" placeholder="Cantidad a enviar">
                             <input type="text" id="turboExchangeAddr" class="input-box" placeholder="Dirección del exchange">
-                            <button id="turboBtnSendToMarket" class="btn btn-green mb-4">🚀 ENVIAR A TRADING</button>
-
-                            <!-- ===== ACTUALIZAR PARÁMETROS ===== -->
-                            <h4 class="text-cyan-300 text-sm mb-3 flex items-center">
-                                <i class="fas fa-cog mr-2"></i> ACTUALIZAR PARÁMETROS
-                            </h4>
-                            <div class="grid grid-cols-2 gap-2">
-                                <input type="number" id="turboNewMinDep" class="input-box text-sm" placeholder="Nuevo mínimo">
-                                <input type="number" id="turboNewEarlyFee" class="input-box text-sm" placeholder="Nueva multa %">
-                                <input type="number" id="turboNewMaxRisk" class="input-box text-sm" placeholder="Nuevo riesgo %">
-                                <input type="number" id="turboNewMaxSend" class="input-box text-sm" placeholder="Nuevo límite">
-                                <input type="number" id="turboNewMaxLoss" class="input-box text-sm" placeholder="Max pérdida">
-                                <input type="number" id="turboNewCooldown" class="input-box text-sm" placeholder="Cooldown (horas)">
-                            </div>
-                            <button id="turboBtnUpdateParams" class="btn btn-outline w-full mb-4">ACTUALIZAR TODOS</button>
-
-                            <!-- ===== BOT ===== -->
-                            <h4 class="text-cyan-300 text-sm mb-3 flex items-center">
-                                <i class="fas fa-robot mr-2"></i> CONFIGURACIÓN DEL BOT
-                            </h4>
-                            <input type="text" id="turboNewBotAddress" class="input-box" placeholder="Nueva dirección del bot">
-                            <button id="turboBtnSetBot" class="btn btn-outline w-full mb-2">CAMBIAR BOT</button>
+                            <button id="turboBtnSendToMarket" class="btn btn-green mb-3">🚀 ENVIAR A TRADING</button>
                             
-                            <!-- Heartbeat manual -->
-                            <button id="turboBtnHeartbeat" class="btn btn-outline w-full mb-4">
-                                <i class="fas fa-heartbeat mr-2"></i> ENVIAR HEARTBEAT
-                            </button>
-
-                            <!-- ===== EXCHANGES ===== -->
-                            <h4 class="text-cyan-300 text-sm mb-3 flex items-center">
-                                <i class="fas fa-university mr-2"></i> AUTORIZAR EXCHANGE
-                            </h4>
-                            <input type="text" id="turboNewExchange" class="input-box" placeholder="Dirección del exchange">
-                            <input type="number" id="turboExchangeMax" class="input-box" placeholder="Límite máximo (USDT)">
-                            <button id="turboBtnAuthorizeExchange" class="btn btn-outline w-full mb-4">AUTORIZAR EXCHANGE</button>
-
-                            <!-- ===== PAUSA Y MODO PÁNICO ===== -->
-                            <h4 class="text-cyan-300 text-sm mb-3 flex items-center">
-                                <i class="fas fa-power-off mr-2"></i> CONTROL DE ESTADO
-                            </h4>
-                            <div class="flex-row mb-2">
+                            <h4 class="text-cyan-300 mb-2">⚙️ Configuración</h4>
+                            <input type="number" id="turboNewMinDep" class="input-box" placeholder="Nuevo mínimo">
+                            <input type="number" id="turboNewEarlyFee" class="input-box" placeholder="Nueva multa %">
+                            <input type="number" id="turboNewMaxRisk" class="input-box" placeholder="Nuevo riesgo %">
+                            <input type="number" id="turboNewMaxSend" class="input-box" placeholder="Nuevo límite por envío">
+                            <button id="turboBtnUpdateParams" class="btn btn-outline w-full mb-3">ACTUALIZAR PARÁMETROS</button>
+                            
+                            <h4 class="text-cyan-300 mb-2">🤖 Bot</h4>
+                            <input type="text" id="turboNewBotAddress" class="input-box" placeholder="0x...">
+                            <button id="turboBtnSetBot" class="btn btn-outline w-full mb-3">CAMBIAR BOT</button>
+                            
+                            <h4 class="text-cyan-300 mb-2">⏸️ Pausa</h4>
+                            <div class="flex-row">
                                 <button id="turboBtnPause" class="btn btn-red flex-1">PAUSAR</button>
                                 <button id="turboBtnUnpause" class="btn btn-green flex-1">REANUDAR</button>
-                            </div>
-                            <div class="flex-row">
-                                <button id="turboBtnPanicOn" class="btn btn-red flex-1">MODO PÁNICO ON</button>
-                                <button id="turboBtnPanicOff" class="btn btn-green flex-1">MODO PÁNICO OFF</button>
                             </div>
                         </div>
                     </div>
@@ -1691,146 +1656,6 @@
                             <input type="text" id="turboReturnExchange" class="input-box" placeholder="Exchange (0x...)">
                             <button id="turboBtnReturnCapital" class="btn btn-outline">↩️ REGISTRAR REGRESO</button>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Subsección Copy Trading - MEJORADA -->
-                <div id="turboCopy" class="sub-content hidden">
-                    <div class="card">
-                        <span class="section-tag" style="background:#00ffff;">📊 COPY TRADING</span>
-                        
-                        <!-- Advertencia de riesgos -->
-                        <div class="bg-gradient-to-r from-red-900/30 to-orange-900/30 p-4 rounded-xl border border-red-500/30 mb-4">
-                            <p class="text-red-400 font-bold text-sm mb-1 flex items-center">
-                                <i class="fas fa-exclamation-triangle mr-2"></i> ADVERTENCIA DE RIESGOS
-                            </p>
-                            <p class="text-xs text-gray-300">El copy trading implica riesgos significativos de pérdida de capital. Los resultados pasados no garantizan resultados futuros. Invierte solo lo que estés dispuesto a perder.</p>
-                        </div>
-
-                        <!-- MÉTRICAS GLOBALES DEL CONTRATO -->
-                        <h4 class="text-cyan-300 text-sm mb-3 flex items-center">
-                            <i class="fas fa-chart-line mr-2"></i> MÉTRICAS GLOBALES
-                        </h4>
-                        <div class="stats-grid mb-4">
-                            <div class="stat-item">
-                                <span class="stat-label">Total en Bóveda (TVL)</span>
-                                <span id="turboTVL" class="stat-value">0.00</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-label">En Trading</span>
-                                <span id="turboTradingAmount" class="stat-value">0.00</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-label">Total Usuarios</span>
-                                <span id="turboTotalUsers" class="stat-value">0</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-label">Precio Share</span>
-                                <span id="turboGlobalSharePrice" class="stat-value">1.0000</span>
-                            </div>
-                        </div>
-
-                        <!-- RENDIMIENTO Y GANANCIAS -->
-                        <h4 class="text-cyan-300 text-sm mb-3 flex items-center">
-                            <i class="fas fa-chart-bar mr-2"></i> RENDIMIENTO
-                        </h4>
-                        <div class="grid grid-cols-2 gap-3 mb-4">
-                            <div class="bg-gradient-to-br from-green-900/30 to-blue-900/30 p-3 rounded-xl border border-green-500/30">
-                                <p class="text-xs text-gray-400">Ganancia 24h</p>
-                                <p class="text-lg font-bold text-green-400" id="turboGanancia24h">+0.00%</p>
-                            </div>
-                            <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 p-3 rounded-xl border border-purple-500/30">
-                                <p class="text-xs text-gray-400">Ganancia 7d</p>
-                                <p class="text-lg font-bold text-purple-400" id="turboGanancia7d">+0.00%</p>
-                            </div>
-                            <div class="bg-gradient-to-br from-blue-900/30 to-cyan-900/30 p-3 rounded-xl border border-blue-500/30">
-                                <p class="text-xs text-gray-400">Ganancia 30d</p>
-                                <p class="text-lg font-bold text-blue-400" id="turboGanancia30d">+0.00%</p>
-                            </div>
-                            <div class="bg-gradient-to-br from-yellow-900/30 to-orange-900/30 p-3 rounded-xl border border-yellow-500/30">
-                                <p class="text-xs text-gray-400">Desde inicio</p>
-                                <p class="text-lg font-bold text-yellow-400" id="turboGananciaTotal">+0.00%</p>
-                            </div>
-                        </div>
-
-                        <!-- GRÁFICA SIMPLE DE HISTORIAL -->
-                        <h4 class="text-cyan-300 text-sm mb-3 flex items-center">
-                            <i class="fas fa-chart-pie mr-2"></i> HISTORIAL DE PRECIOS (30 DÍAS)
-                        </h4>
-                        <div class="bg-black/40 p-3 rounded-xl mb-4">
-                            <div class="bar-chart" id="turboPriceHistoryChart" style="height: 80px;">
-                                <!-- Se llena con JS -->
-                            </div>
-                            <div class="flex justify-between text-[8px] text-gray-500 mt-1 px-2">
-                                <span>Hace 30d</span>
-                                <span>Hace 15d</span>
-                                <span>Hoy</span>
-                            </div>
-                        </div>
-
-                        <!-- DISTRIBUCIÓN DE FONDOS -->
-                        <h4 class="text-cyan-300 text-sm mb-3 flex items-center">
-                            <i class="fas fa-pie-chart mr-2"></i> DISTRIBUCIÓN DE FONDOS
-                        </h4>
-                        <div class="grid grid-cols-2 gap-3 mb-4">
-                            <div class="bg-black/40 p-3 rounded-xl">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-xs">Bóveda</span>
-                                    <span class="text-xs text-cyan-300" id="turboDistribucionBoveda">0%</span>
-                                </div>
-                                <div class="w-full bg-gray-800 rounded-full h-2">
-                                    <div class="bg-cyan-400 h-2 rounded-full" id="turboBarraBoveda" style="width:0%"></div>
-                                </div>
-                            </div>
-                            <div class="bg-black/40 p-3 rounded-xl">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-xs">Trading</span>
-                                    <span class="text-xs text-purple-300" id="turboDistribucionTrading">0%</span>
-                                </div>
-                                <div class="w-full bg-gray-800 rounded-full h-2">
-                                    <div class="bg-purple-400 h-2 rounded-full" id="turboBarraTrading" style="width:0%"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- TRADERS DESTACADOS -->
-                        <h4 class="text-cyan-300 text-sm mb-3 flex items-center">
-                            <i class="fas fa-users mr-2"></i> TRADERS DESTACADOS
-                        </h4>
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-center bg-black/30 p-2 rounded-lg">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-xs font-bold text-black">🐋</div>
-                                    <div>
-                                        <p class="text-xs font-bold">CryptoWhale</p>
-                                        <p class="text-[8px] text-gray-400">ROI: +18.4% · Seguidores: 2.3k</p>
-                                    </div>
-                                </div>
-                                <span class="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">ACTIVO</span>
-                            </div>
-                            <div class="flex justify-between items-center bg-black/30 p-2 rounded-lg">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-xs font-bold text-black">🦊</div>
-                                    <div>
-                                        <p class="text-xs font-bold">AlphaSeeker</p>
-                                        <p class="text-[8px] text-gray-400">ROI: +12.7% · Seguidores: 1.8k</p>
-                                    </div>
-                                </div>
-                                <span class="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">ACTIVO</span>
-                            </div>
-                            <div class="flex justify-between items-center bg-black/30 p-2 rounded-lg">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-full bg-gradient-to-r from-green-400 to-teal-500 flex items-center justify-center text-xs font-bold text-black">🐺</div>
-                                    <div>
-                                        <p class="text-xs font-bold">MoonWolf</p>
-                                        <p class="text-[8px] text-gray-400">ROI: +9.8% · Seguidores: 956</p>
-                                    </div>
-                                </div>
-                                <span class="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">ACTIVO</span>
-                            </div>
-                        </div>
-
-                        <p class="text-[8px] text-gray-500 mt-3 text-center">* Datos simulados para referencia. El rendimiento pasado no garantiza resultados futuros.</p>
                     </div>
                 </div>
             </div>
@@ -1906,14 +1731,7 @@
             "function configurarParametros(uint256 _min, uint256 _multa, uint256 _risk, uint256 _maxSend) external",
             "function setBotAddress(address _bot) external",
             "function pause() external",
-            "function unpause() external",
-            "function exchangeList(uint256) view returns (address)",
-            "function maxPerExchange(address) view returns (uint256)",
-            "function lastHeartbeat() view returns (uint256)",
-            "function setPanicMode(bool) external",
-            "function setMaxLossPerReport(uint256) external",
-            "function setLossCooldown(uint256) external",
-            "function authorizeExchange(address, bool, uint256) external"
+            "function unpause() external"
         ];
 
         const usdtAbi = [
@@ -1933,6 +1751,33 @@
         let eventLog = [];
         let porcentajesNiveles = [25, 17, 10, 6, 3];
         let turboLockSec = 0;
+
+        // ========== OPTIMIZACIÓN: SISTEMA DE CACHÉ ==========
+        let cacheDatos = {
+            milimar: null,
+            turbo: null,
+            timestamp: 0
+        };
+
+        function isCacheValido() {
+            return (Date.now() - cacheDatos.timestamp) < 10000; // 10 segundos de caché
+        }
+
+        function mostrarLoader(elementoId) {
+            const elemento = document.getElementById(elementoId);
+            if (elemento && !elemento.querySelector('.fa-spinner')) {
+                elemento.dataset.original = elemento.innerText;
+                elemento.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            }
+        }
+
+        function ocultarLoader(elementoId) {
+            const elemento = document.getElementById(elementoId);
+            if (elemento && elemento.dataset.original) {
+                elemento.innerText = elemento.dataset.original;
+                delete elemento.dataset.original;
+            }
+        }
 
         // ========== ELEMENTOS DOM ==========
         const toastDiv = document.getElementById('toast');
@@ -2064,12 +1909,25 @@
             }
         }
 
-        // ========== CARGAR DATOS DE MILIMAR V5 ==========
-        async function loadUserDataV5() {
+        // ========== CARGAR DATOS DE MILIMAR V5 (CON CACHÉ) ==========
+        async function loadUserDataV5(force = false) {
             if (!contratoMilimar || !userAddress) return;
             
+            // Si hay caché válido y no forzamos, usar caché
+            if (!force && isCacheValido() && cacheDatos.milimar) {
+                console.log('📦 Usando datos en caché de Milimar');
+                const datos = cacheDatos.milimar;
+                document.getElementById('valSaldo').innerText = datos.saldo;
+                document.getElementById('valTotalGanado').innerText = datos.totalGanado;
+                document.getElementById('valTotalRetirado').innerText = datos.totalRetirado;
+                document.getElementById('valDirectos').innerText = datos.directos;
+                document.getElementById('valRedTotal').innerText = datos.redTotal;
+                document.getElementById('valDias').innerText = datos.dias;
+                return;
+            }
+            
             try {
-                console.log('📊 Cargando datos de Milimar V5...');
+                console.log('📊 Cargando datos frescos de Milimar V5...');
                 
                 // Usar consultarEstado() que devuelve un array por índices
                 const estado = await contratoMilimar.consultarEstado(userAddress);
@@ -2084,19 +1942,26 @@
                 // [5] = diasRestantes
                 // [6] = activo
                 
-                // Actualizar UI con los valores correctos (SIEMPRE con 18 decimales)
-                document.getElementById('valSaldo').innerText = 
-                    ethers.utils.formatUnits(estado[0] || 0, 18);
-                document.getElementById('valTotalGanado').innerText = 
-                    ethers.utils.formatUnits(estado[1] || 0, 18);
-                document.getElementById('valTotalRetirado').innerText = 
-                    ethers.utils.formatUnits(estado[2] || 0, 18);
-                document.getElementById('valDirectos').innerText = 
-                    (estado[3] || 0).toString();
-                document.getElementById('valRedTotal').innerText = 
-                    (estado[4] || 0).toString();
-                document.getElementById('valDias').innerText = 
-                    (estado[5] || 0).toString();
+                const saldo = ethers.utils.formatUnits(estado[0] || 0, 18);
+                const totalGanado = ethers.utils.formatUnits(estado[1] || 0, 18);
+                const totalRetirado = ethers.utils.formatUnits(estado[2] || 0, 18);
+                const directos = (estado[3] || 0).toString();
+                const redTotal = (estado[4] || 0).toString();
+                const dias = (estado[5] || 0).toString();
+                
+                // Actualizar UI
+                document.getElementById('valSaldo').innerText = saldo;
+                document.getElementById('valTotalGanado').innerText = totalGanado;
+                document.getElementById('valTotalRetirado').innerText = totalRetirado;
+                document.getElementById('valDirectos').innerText = directos;
+                document.getElementById('valRedTotal').innerText = redTotal;
+                document.getElementById('valDias').innerText = dias;
+                
+                // Guardar en caché
+                cacheDatos.milimar = {
+                    saldo, totalGanado, totalRetirado, directos, redTotal, dias
+                };
+                cacheDatos.timestamp = Date.now();
                 
                 // Guardar membresía
                 tieneMembresia = estado[6] === true;
@@ -2175,12 +2040,25 @@
             }
         }
 
-        // ========== CARGAR DATOS DE TURBO ==========
-        async function loadTurboData() {
+        // ========== CARGAR DATOS DE TURBO (CON CACHÉ) ==========
+        async function loadTurboData(force = false) {
             if (!contratoTurbo || !userAddress) return;
             
+            // Si hay caché válido y no forzamos, usar caché
+            if (!force && isCacheValido() && cacheDatos.turbo) {
+                console.log('📦 Usando datos en caché de Turbo');
+                const datos = cacheDatos.turbo;
+                document.getElementById('turboUserBal').innerText = datos.capital;
+                document.getElementById('turboLeaderBal').innerText = datos.residual;
+                document.getElementById('turboLeaderBal2').innerText = datos.residual;
+                document.getElementById('turboSharePrice').innerText = datos.sharePrice;
+                document.getElementById('turboCalificado').innerText = datos.calificado;
+                document.getElementById('turboLockTime').innerText = datos.lockTime;
+                return;
+            }
+            
             try {
-                console.log('📈 Cargando datos de Turbo...');
+                console.log('📈 Cargando datos frescos de Turbo...');
                 
                 const dashboard = await contratoTurbo.getVaultDashboard(userAddress);
                 console.log('📊 Dashboard Turbo:', dashboard);
@@ -2191,18 +2069,25 @@
                 // dashboard[3] = cronometroLock
                 // dashboard[4] = sharePrice
                 
-                const capital = ethers.utils.formatUnits(dashboard[0], 18);
-                const residual = ethers.utils.formatUnits(dashboard[1], 18);
-                const sharePrice = ethers.utils.formatUnits(dashboard[4], 18);
+                const capital = parseFloat(ethers.utils.formatUnits(dashboard[0], 18)).toFixed(2) + ' USDT';
+                const residual = parseFloat(ethers.utils.formatUnits(dashboard[1], 18)).toFixed(2);
+                const sharePrice = parseFloat(ethers.utils.formatUnits(dashboard[4], 18)).toFixed(4);
                 const lockSec = Number(dashboard[3]);
-                const calificado = dashboard[2];
+                const calificado = dashboard[2] ? '✅ SÍ' : '⏳ MADURANDO';
+                const lockTime = lockSec > 0 ? formatTime(lockSec) : 'LIBRE ✅';
                 
-                document.getElementById('turboUserBal').innerText = parseFloat(capital).toFixed(2) + ' USDT';
-                document.getElementById('turboLeaderBal').innerText = parseFloat(residual).toFixed(2);
-                document.getElementById('turboLeaderBal2').innerText = parseFloat(residual).toFixed(2) + ' USDT';
-                document.getElementById('turboSharePrice').innerText = parseFloat(sharePrice).toFixed(4);
-                document.getElementById('turboCalificado').innerText = calificado ? '✅ SÍ' : '⏳ MADURANDO';
-                document.getElementById('turboLockTime').innerText = lockSec > 0 ? formatTime(lockSec) : 'LIBRE ✅';
+                document.getElementById('turboUserBal').innerText = capital;
+                document.getElementById('turboLeaderBal').innerText = residual;
+                document.getElementById('turboLeaderBal2').innerText = residual + ' USDT';
+                document.getElementById('turboSharePrice').innerText = sharePrice;
+                document.getElementById('turboCalificado').innerText = calificado;
+                document.getElementById('turboLockTime').innerText = lockTime;
+                
+                // Guardar en caché
+                cacheDatos.turbo = {
+                    capital, residual, sharePrice, calificado, lockTime
+                };
+                cacheDatos.timestamp = Date.now();
                 
                 turboLockSec = lockSec;
                 actualizarOpcionesRetiro();
@@ -2216,12 +2101,17 @@
                     console.log('No se pudo obtener mínimo depósito');
                 }
                 
-                // Cargar métricas globales para Copy Trading
-                await loadGlobalTurboMetrics();
-                
                 // Si es admin, cargar datos adicionales
                 if (isAdminTurbo) {
-                    await loadTurboAdminData();
+                    try {
+                        const totalAssets = await contratoTurbo.totalAssets();
+                        const capitalTrading = await contratoTurbo.capitalEnTrading();
+                        document.getElementById('turboAdminBoveda').innerText = 
+                            (parseFloat(ethers.utils.formatUnits(totalAssets, 18)) - 
+                             parseFloat(ethers.utils.formatUnits(capitalTrading, 18))).toFixed(2);
+                        document.getElementById('turboAdminTrading').innerText = 
+                            ethers.utils.formatUnits(capitalTrading, 18);
+                    } catch (e) {}
                 }
                 
                 // Si es walker, cargar datos adicionales
@@ -2266,270 +2156,6 @@
                 btnWithdraw.innerText = 'RETIRAR SIN COMISIÓN';
             }
         }
-
-        // ========== MÉTRICAS GLOBALES PARA COPY TRADING ==========
-        async function loadGlobalTurboMetrics() {
-            try {
-                const totalAssets = await contratoTurbo.totalAssets();
-                const capitalTrading = await contratoTurbo.capitalEnTrading();
-                const totalSupply = await contratoTurbo.totalSupply();
-                
-                // TVL
-                document.getElementById('turboTVL').innerText = 
-                    parseFloat(ethers.utils.formatUnits(totalAssets, 18)).toFixed(2);
-                
-                // En Trading
-                document.getElementById('turboTradingAmount').innerText = 
-                    parseFloat(ethers.utils.formatUnits(capitalTrading, 18)).toFixed(2);
-                
-                // Precio share
-                const sharePrice = totalSupply > 0 ? 
-                    parseFloat(ethers.utils.formatUnits(totalAssets, 18)) / 
-                    parseFloat(ethers.utils.formatUnits(totalSupply, 18)) : 1;
-                document.getElementById('turboGlobalSharePrice').innerText = sharePrice.toFixed(4);
-                
-                // Distribución
-                const bovedaPorcentaje = totalAssets > 0 ? 
-                    ((parseFloat(ethers.utils.formatUnits(totalAssets, 18)) - 
-                      parseFloat(ethers.utils.formatUnits(capitalTrading, 18))) / 
-                     parseFloat(ethers.utils.formatUnits(totalAssets, 18)) * 100).toFixed(1) : 0;
-                const tradingPorcentaje = totalAssets > 0 ? 
-                    (parseFloat(ethers.utils.formatUnits(capitalTrading, 18)) / 
-                     parseFloat(ethers.utils.formatUnits(totalAssets, 18)) * 100).toFixed(1) : 0;
-                
-                document.getElementById('turboDistribucionBoveda').innerText = bovedaPorcentaje + '%';
-                document.getElementById('turboDistribucionTrading').innerText = tradingPorcentaje + '%';
-                document.getElementById('turboBarraBoveda').style.width = bovedaPorcentaje + '%';
-                document.getElementById('turboBarraTrading').style.width = tradingPorcentaje + '%';
-                
-                // Total usuarios (estimado)
-                try {
-                    // Si hay función para contar usuarios
-                    const totalUsers = await contratoTurbo.totalUsers?.() || 0;
-                    document.getElementById('turboTotalUsers').innerText = totalUsers;
-                } catch (e) {
-                    document.getElementById('turboTotalUsers').innerText = 'N/A';
-                }
-                
-                // Ganancias simuladas (esto deberías calcularlo con historial real)
-                document.getElementById('turboGanancia24h').innerText = '+2.3%';
-                document.getElementById('turboGanancia7d').innerText = '+8.7%';
-                document.getElementById('turboGanancia30d').innerText = '+15.2%';
-                document.getElementById('turboGananciaTotal').innerText = '+124.5%';
-                
-            } catch (error) {
-                console.log('Error cargando métricas globales:', error);
-            }
-        }
-
-        // ===== FUNCIONES ADICIONALES PARA ADMIN TURBO =====
-        async function loadTurboAdminData() {
-            if (!isAdminTurbo || !contratoTurbo) return;
-            
-            try {
-                // Total de usuarios (supply de shares)
-                const totalSupply = await contratoTurbo.totalSupply();
-                document.getElementById('turboAdminTotalShares').innerText = 
-                    parseFloat(ethers.utils.formatUnits(totalSupply, 18)).toFixed(2);
-                
-                // Precio del share
-                const totalAssets = await contratoTurbo.totalAssets();
-                const sharePrice = totalSupply > 0 ? totalAssets * 1e18 / totalSupply : 1e18;
-                document.getElementById('turboAdminSharePrice').innerText = 
-                    (sharePrice / 1e18).toFixed(4);
-                
-                // Heartbeat
-                try {
-                    const lastHeartbeat = await contratoTurbo.lastHeartbeat?.() || 0;
-                    const ahora = Math.floor(Date.now() / 1000);
-                    const diff = ahora - Number(lastHeartbeat);
-                    if (diff < 3600) {
-                        document.getElementById('turboAdminHeartbeat').innerHTML = '✅ Activo';
-                    } else {
-                        document.getElementById('turboAdminHeartbeat').innerHTML = '⚠️ Inactivo';
-                    }
-                } catch (e) {
-                    document.getElementById('turboAdminHeartbeat').innerHTML = '⏳ No disponible';
-                }
-                
-                // Configuración actual
-                const minDep = await contratoTurbo.minimoDeposito();
-                const earlyFee = await contratoTurbo.earlyExitFee();
-                const maxRisk = await contratoTurbo.porcentajeMaximoTrading();
-                const maxSend = await contratoTurbo.maxEnvioTrading();
-                const maxLoss = await contratoTurbo.maxLossPerReport();
-                const cooldown = await contratoTurbo.lossCooldown();
-                
-                document.getElementById('turboConfigMinDepDisplay').innerText = 
-                    ethers.utils.formatUnits(minDep, 18);
-                document.getElementById('turboConfigEarlyFeeDisplay').innerText = earlyFee + '%';
-                document.getElementById('turboConfigMaxRiskDisplay').innerText = maxRisk + '%';
-                document.getElementById('turboConfigMaxSendDisplay').innerText = 
-                    ethers.utils.formatUnits(maxSend, 18);
-                document.getElementById('turboConfigMaxLossDisplay').innerText = 
-                    ethers.utils.formatUnits(maxLoss, 18);
-                document.getElementById('turboConfigCooldownDisplay').innerText = 
-                    (cooldown / 3600) + 'h';
-                
-                // Cargar exchanges autorizados
-                await loadExchangesList();
-                
-            } catch (error) {
-                console.log('Error cargando datos de admin:', error);
-            }
-        }
-
-        async function loadExchangesList() {
-            try {
-                const exchangesList = document.getElementById('turboExchangesList');
-                
-                // Intento 1: Si hay un array público de exchanges
-                let exchanges = [];
-                try {
-                    const length = await contratoTurbo.exchangeList?.length || 0;
-                    for (let i = 0; i < length; i++) {
-                        const exchange = await contratoTurbo.exchangeList(i);
-                        const maxAmount = await contratoTurbo.maxPerExchange(exchange);
-                        exchanges.push({ address: exchange, max: maxAmount });
-                    }
-                } catch (e) {
-                    console.log('No se pudo cargar lista de exchanges');
-                }
-                
-                if (exchanges.length > 0) {
-                    let html = '';
-                    exchanges.forEach(ex => {
-                        html += `<div class="flex justify-between items-center py-1 border-b border-gray-800">
-                            <span class="text-cyan-300">${ex.address.slice(0,6)}...${ex.address.slice(-4)}</span>
-                            <span class="text-green-400">${ethers.utils.formatUnits(ex.max, 18)} USDT</span>
-                        </div>`;
-                    });
-                    exchangesList.innerHTML = html;
-                } else {
-                    exchangesList.innerHTML = '<p class="text-gray-400">No hay exchanges autorizados</p>';
-                }
-            } catch (error) {
-                console.log('Error cargando exchanges:', error);
-            }
-        }
-
-        // Heartbeat manual
-        document.getElementById('turboBtnHeartbeat')?.addEventListener('click', async () => {
-            if (!isAdminTurbo) {
-                showToast('❌ Solo admin puede enviar heartbeat', true);
-                return;
-            }
-            try {
-                showToast('💓 Enviando heartbeat...');
-                const tx = await contratoTurbo.heartbeat();
-                await tx.wait();
-                showToast('✅ Heartbeat enviado');
-                await loadTurboAdminData();
-            } catch (error) {
-                showToast('Error: ' + (error.reason || error.message), true);
-            }
-        });
-
-        // Modo pánico
-        document.getElementById('turboBtnPanicOn')?.addEventListener('click', async () => {
-            if (!isAdminTurbo) {
-                showToast('❌ Solo admin puede activar modo pánico', true);
-                return;
-            }
-            try {
-                showToast('⚠️ Activando modo pánico...');
-                const tx = await contratoTurbo.setPanicMode(true);
-                await tx.wait();
-                showToast('✅ Modo pánico activado');
-            } catch (error) {
-                showToast('Error: ' + (error.reason || error.message), true);
-            }
-        });
-
-        document.getElementById('turboBtnPanicOff')?.addEventListener('click', async () => {
-            if (!isAdminTurbo) {
-                showToast('❌ Solo admin puede desactivar modo pánico', true);
-                return;
-            }
-            try {
-                showToast('✅ Desactivando modo pánico...');
-                const tx = await contratoTurbo.setPanicMode(false);
-                await tx.wait();
-                showToast('✅ Modo pánico desactivado');
-            } catch (error) {
-                showToast('Error: ' + (error.reason || error.message), true);
-            }
-        });
-
-        // Autorizar exchange
-        document.getElementById('turboBtnAuthorizeExchange')?.addEventListener('click', async () => {
-            if (!isAdminTurbo) {
-                showToast('❌ Solo admin puede autorizar exchanges', true);
-                return;
-            }
-            const exchange = document.getElementById('turboNewExchange')?.value;
-            const maxAmt = document.getElementById('turboExchangeMax')?.value;
-            if (!ethers.utils.isAddress(exchange) || !maxAmt) {
-                showToast('⚠️ Datos inválidos', true);
-                return;
-            }
-            try {
-                const maxWei = ethers.utils.parseUnits(maxAmt, 18);
-                showToast('⏳ Autorizando exchange...');
-                const tx = await contratoTurbo.authorizeExchange(exchange, true, maxWei);
-                await tx.wait();
-                showToast('✅ Exchange autorizado');
-                await loadExchangesList();
-            } catch (error) {
-                showToast('Error: ' + (error.reason || error.message), true);
-            }
-        });
-
-        // Actualizar todos los parámetros
-        document.getElementById('turboBtnUpdateParams')?.addEventListener('click', async () => {
-            if (!isAdminTurbo) {
-                showToast('❌ Solo admin puede actualizar parámetros', true);
-                return;
-            }
-            
-            const min = document.getElementById('turboNewMinDep')?.value;
-            const multa = document.getElementById('turboNewEarlyFee')?.value;
-            const risk = document.getElementById('turboNewMaxRisk')?.value;
-            const maxSend = document.getElementById('turboNewMaxSend')?.value;
-            const maxLoss = document.getElementById('turboNewMaxLoss')?.value;
-            const cooldown = document.getElementById('turboNewCooldown')?.value;
-            
-            if (!min || !multa || !risk || !maxSend) {
-                showToast('⚠️ Completa al menos los campos obligatorios', true);
-                return;
-            }
-            
-            try {
-                const minWei = ethers.utils.parseUnits(min, 18);
-                const multaNum = parseInt(multa);
-                const riskNum = parseInt(risk);
-                const maxSendWei = ethers.utils.parseUnits(maxSend, 18);
-                
-                showToast('⏳ Actualizando parámetros...');
-                const tx = await contratoTurbo.configurarParametros(minWei, multaNum, riskNum, maxSendWei);
-                await tx.wait();
-                showToast('✅ Parámetros actualizados');
-                
-                // Actualizar otros si existen
-                if (maxLoss) {
-                    const maxLossWei = ethers.utils.parseUnits(maxLoss, 18);
-                    await contratoTurbo.setMaxLossPerReport(maxLossWei);
-                }
-                if (cooldown) {
-                    const cooldownSec = parseInt(cooldown) * 3600;
-                    await contratoTurbo.setLossCooldown(cooldownSec);
-                }
-                
-                await loadTurboAdminData();
-            } catch (error) {
-                showToast('Error: ' + (error.reason || error.message), true);
-            }
-        });
 
         // ========== FUNCIÓN PRINCIPAL DE CONEXIÓN ==========
         async function initConnection() {
@@ -2604,18 +2230,20 @@
                 await checkMembresiaActiva();
                 
                 // ===== SEGUNDO: Cargar datos =====
-                await loadUserDataV5();
-                await loadTurboData();
+                await loadUserDataV5(true); // Forzar carga inicial
+                await loadTurboData(true); // Forzar carga inicial
                 
                 await addEvent('Wallet conectada: ' + userAddress.slice(0,6) + '...', 'success');
                 
-                // Auto-refresh cada 30 segundos
+                // Auto-refresh optimizado con caché
                 if (refreshInterval) clearInterval(refreshInterval);
                 refreshInterval = setInterval(() => {
                     if (userAddress) {
+                        // Solo forzar refresh cada 2 minutos
+                        const forzar = (Date.now() - cacheDatos.timestamp) > 120000;
                         checkMembresiaActiva();
-                        loadUserDataV5();
-                        loadTurboData();
+                        loadUserDataV5(forzar);
+                        loadTurboData(forzar);
                     }
                 }, 30000);
                 
@@ -2672,6 +2300,11 @@
                 const target = tab.dataset.sub;
                 Object.values(v5SubContents).forEach(c => c?.classList.add('hidden'));
                 if (v5SubContents[target]) v5SubContents[target].classList.remove('hidden');
+                
+                // Carga perezosa: cuando cambia a v5Red, forzar carga de datos de red
+                if (target === 'v5Red') {
+                    loadUserDataV5(true);
+                }
             });
         });
 
@@ -2682,8 +2315,7 @@
             turboOperaciones: document.getElementById('turboOperaciones'),
             turboRecompensas: document.getElementById('turboRecompensas'),
             turboAdmin: document.getElementById('turboAdmin'),
-            turboWalker: document.getElementById('turboWalker'),
-            turboCopy: document.getElementById('turboCopy')
+            turboWalker: document.getElementById('turboWalker')
         };
         turboSubTabs.forEach(tab => {
             tab.addEventListener('click', () => {
@@ -2692,6 +2324,11 @@
                 const target = tab.dataset.sub;
                 Object.values(turboSubContents).forEach(c => c?.classList.add('hidden'));
                 if (turboSubContents[target]) turboSubContents[target].classList.remove('hidden');
+                
+                // Carga perezosa: cuando cambia a operaciones, forzar datos
+                if (target === 'turboOperaciones') {
+                    loadTurboData(true);
+                }
             });
         });
 
@@ -2726,7 +2363,7 @@
                 await addEvent('Membresía activada', 'success');
                 
                 await checkMembresiaActiva();
-                await loadUserDataV5();
+                await loadUserDataV5(true);
                 
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
@@ -2742,7 +2379,7 @@
                 await addEvent('Membresía renovada', 'success');
                 
                 await checkMembresiaActiva();
-                await loadUserDataV5();
+                await loadUserDataV5(true);
                 
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
@@ -2756,14 +2393,14 @@
                 await tx.wait();
                 showToast('✅ Retiro exitoso');
                 await addEvent('Ganancias retiradas', 'success');
-                await loadUserDataV5();
+                await loadUserDataV5(true);
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
         });
 
         document.getElementById('btnReloadDetails')?.addEventListener('click', () => {
-            loadUserDataV5();
+            loadUserDataV5(true);
             showToast('Datos actualizados');
         });
 
@@ -2950,7 +2587,7 @@
                 await tx.wait();
                 showToast('✅ Depósito exitoso');
                 await addEvent(`Depósito de ${monto} USDT en Turbo`, 'success');
-                await loadTurboData();
+                await loadTurboData(true);
                 
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
@@ -2976,7 +2613,7 @@
                 await tx.wait();
                 showToast('✅ Retiro exitoso');
                 await addEvent(`Retiro de ${monto} USDT de Turbo`, 'success');
-                await loadTurboData();
+                await loadTurboData(true);
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -2994,7 +2631,7 @@
                 await tx.wait();
                 showToast('✅ Recompensas reclamadas');
                 await addEvent('Recompensas de líder reclamadas', 'success');
-                await loadTurboData();
+                await loadTurboData(true);
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -3033,7 +2670,7 @@
                 await tx.wait();
                 showToast('✅ Ganancia reportada');
                 await addEvent(`Profit reportado: +${monto} USDT`, 'success');
-                await loadTurboData();
+                await loadTurboData(true);
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -3058,7 +2695,7 @@
                 await tx.wait();
                 showToast('✅ Pérdida reportada');
                 await addEvent(`Pérdida reportada: -${monto} USDT`, 'error');
-                await loadTurboData();
+                await loadTurboData(true);
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
@@ -3089,13 +2726,13 @@
                 const tx = await contratoTurbo.registrarRegresoCapital(montoWei, exchange);
                 await tx.wait();
                 showToast('✅ Capital registrado');
-                await loadTurboData();
+                await loadTurboData(true);
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
         });
 
-        // ===== BOTONES ADMIN TURBO (YA DEFINIDOS ANTES) =====
+        // ===== BOTONES ADMIN TURBO =====
         document.getElementById('turboBtnSendToMarket')?.addEventListener('click', async () => {
             if (!isAdminTurbo) {
                 showToast('❌ Solo el admin puede enviar a trading', true);
@@ -3116,7 +2753,39 @@
                 const tx = await contratoTurbo.enviarATrading(montoWei, exchange);
                 await tx.wait();
                 showToast('✅ Fondos enviados');
-                await loadTurboData();
+                await loadTurboData(true);
+            } catch (error) {
+                showToast('Error: ' + (error.reason || error.message), true);
+            }
+        });
+
+        document.getElementById('turboBtnUpdateParams')?.addEventListener('click', async () => {
+            if (!isAdminTurbo) {
+                showToast('❌ Solo el admin puede actualizar parámetros', true);
+                return;
+            }
+            
+            const min = document.getElementById('turboNewMinDep')?.value;
+            const multa = document.getElementById('turboNewEarlyFee')?.value;
+            const risk = document.getElementById('turboNewMaxRisk')?.value;
+            const maxSend = document.getElementById('turboNewMaxSend')?.value;
+            
+            if (!min || !multa || !risk || !maxSend) {
+                showToast('⚠️ Completa todos los campos', true);
+                return;
+            }
+            
+            try {
+                const minWei = ethers.utils.parseUnits(min, 18);
+                const multaNum = parseInt(multa);
+                const riskNum = parseInt(risk);
+                const maxSendWei = ethers.utils.parseUnits(maxSend, 18);
+                
+                showToast('⏳ Actualizando parámetros...');
+                const tx = await contratoTurbo.configurarParametros(minWei, multaNum, riskNum, maxSendWei);
+                await tx.wait();
+                showToast('✅ Parámetros actualizados');
+                await loadTurboData(true);
             } catch (error) {
                 showToast('Error: ' + (error.reason || error.message), true);
             }
